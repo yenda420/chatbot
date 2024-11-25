@@ -1,0 +1,28 @@
+package com.example.chatbot;
+
+import javafx.application.Application;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.scene.Parent;
+
+import java.io.IOException;
+
+public class App extends Application {
+    @Override
+    public void start(Stage stage) throws IOException {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/chatbot/fxml/main.fxml"));
+        Parent root = loader.load();
+        Scene scene = new Scene(root);
+
+        scene.getStylesheets().add(getClass().getResource("/com/example/chatbot/style/style.css").toExternalForm());
+
+        stage.setTitle("OpenAI Chatbot");
+        stage.setScene(scene);
+        stage.show();git remote get-url origin
+    }
+
+    public static void main(String[] args) {
+        launch();
+    }
+}
