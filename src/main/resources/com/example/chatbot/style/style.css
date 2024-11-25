@@ -1,0 +1,69 @@
+.background {
+    -fx-background-color: black;
+}
+
+.input, .combobox {
+    -fx-background-color: maroon;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-prompt-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-display-caret: true;
+    -fx-padding: 0 12 0 12;
+}
+
+.button {
+    -fx-background-color: maroon;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+}
+
+.combo-box, .check-box {
+    -fx-background-radius: 20;
+    -fx-cursor: hand;
+}
+
+.combo-box .list-view {
+    -fx-background-radius: 0 0 20 20;
+    -fx-background-color: maroon;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: maroon;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+}
+
+.combo-box .list-cell:hover {
+    -fx-background-color: darkred;
+}
+
+.combo-box .arrow-button {
+    -fx-background-radius: 20;
+}
+
+.checkbox {
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+}
+
+.textarea {
+    -fx-background-color: maroon;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-control-inner-background: maroon;
+    -fx-prompt-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10;
+}
+
+.submit {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+    -fx-background-radius: 20;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+}
