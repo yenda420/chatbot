@@ -1,5 +1,6 @@
 package com.example.chatbot;
 
+import com.example.chatbot.services.AIService;
 import com.example.chatbot.services.DatabaseService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -21,11 +22,20 @@ public class App extends Application {
 
         DatabaseService.initialize();
 
+        String prompt = "Hello, how can I help you?";
+        String response = AIService.askChatGPT(prompt);
+
+        if (response != null) {
+            System.out.println("ChatGPT Response: " + response);
+        } else {
+            System.out.println("Failed to get a response from ChatGPT.");
+        }
+
+        DatabaseService.disconnect();
+
         stage.setTitle("Generátor testů");
         stage.setScene(scene);
         stage.show();
-
-        DatabaseService.disconnect();
     }
 
     public static void main(String[] args) {

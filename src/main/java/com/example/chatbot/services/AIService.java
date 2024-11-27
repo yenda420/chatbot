@@ -12,18 +12,7 @@ import java.nio.charset.StandardCharsets;
 
 public class AIService {
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_KEY = "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";
-
-    public static void main(String[] args) {
-        String prompt = "Hello, how can I help you?";
-        String response = askChatGPT(prompt);
-
-        if (response != null) {
-            System.out.println("ChatGPT Response: " + response);
-        } else {
-            System.out.println("Failed to get a response from ChatGPT.");
-        }
-    }
+    private static final String API_KEY = "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";
 
     public static String askChatGPT(String prompt) {
         try {
@@ -37,7 +26,7 @@ public class AIService {
 
             // Create the JSON payload
             JsonObject payload = new JsonObject();
-            payload.addProperty("model", "gpt-3.5-turbo"); // You can use "gpt-3.5-turbo" or another model
+            payload.addProperty("model", "gpt-3.5-turbo");
             payload.addProperty("temperature", 0.7);
             payload.add("messages", JsonParser.parseString("[{\"role\":\"user\", \"content\":\"" + prompt + "\"}]"));
 

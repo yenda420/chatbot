@@ -1,0 +1,2 @@
+1. Budeme chtít nahradit API Key proměnnou?
+2. Který free model chceme použít?
