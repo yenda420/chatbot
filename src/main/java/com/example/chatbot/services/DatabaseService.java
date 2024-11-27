@@ -129,15 +129,17 @@ public class DatabaseService {
         }
     }
 
+    // This should enforce a One-to-One relationship between Tests and Prompts
     private void createTableTests() {
         String sql = "CREATE TABLE IF NOT EXISTS tests (" +
-                "testId INT PRIMARY KEY AUTO_INCREMENT, " +
+                "testId INT PRIMARY KEY, " +
                 "name VARCHAR(100) NOT NULL, " +
                 "difficulty INT, " +
                 "numberOfQuestions INT, " +
                 "timeLimit INT, " +
                 "promptId INT UNIQUE, " +
-                "FOREIGN KEY (promptId) REFERENCES prompts(promptId))";
+                "FOREIGN KEY (promptId) REFERENCES prompts(promptId) " +
+                "ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.execute();
