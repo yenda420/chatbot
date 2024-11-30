@@ -1,4 +1,4 @@
-package com.example.chatbot.controllers;
+package app.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;

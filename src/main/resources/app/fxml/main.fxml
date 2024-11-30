@@ -6,7 +6,7 @@
 <?import javafx.geometry.*?>
 <?import java.lang.String?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="com.example.chatbot.controllers.MainController" prefWidth="450" prefHeight="850" styleClass="background">
+<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.MainController" prefWidth="450" prefHeight="850" styleClass="background">
   <VBox spacing="20" alignment="CENTER" prefHeight="850" prefWidth="450">
     <padding>
       <Insets top="20" right="20" bottom="20" left="20"/>

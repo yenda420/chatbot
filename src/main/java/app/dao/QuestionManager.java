@@ -1,4 +1,4 @@
-package com.example.chatbot.dao;
+package app.dao;
 
 public class QuestionManager {
 }

@@ -1,4 +1,4 @@
-package com.example.chatbot.services;
+package app.services;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

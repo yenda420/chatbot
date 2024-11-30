@@ -1,7 +1,8 @@
-package com.example.chatbot;
+package app;
 
-import com.example.chatbot.services.AIService;
-import com.example.chatbot.services.DatabaseService;
+import app.dao.SubjectManager;
+import app.dao.TopicManager;
+import app.services.DatabaseService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -14,14 +15,19 @@ import java.sql.SQLException;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException, SQLException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/example/chatbot/fxml/main.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/app/fxml/main.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
-        scene.getStylesheets().add(getClass().getResource("/com/example/chatbot/style/style.css").toExternalForm());
+        scene.getStylesheets().add(getClass().getResource("/app/style/style.css").toExternalForm());
+
+        stage.setTitle("Generátor testů");
+        stage.setScene(scene);
+        stage.show();
 
         DatabaseService.initialize();
 
+        /*
         String prompt = "Hello, how can I help you?";
         String response = AIService.askChatGPT(prompt);
 
@@ -30,12 +36,9 @@ public class App extends Application {
         } else {
             System.out.println("Failed to get a response from ChatGPT.");
         }
+        */
 
         DatabaseService.disconnect();
-
-        stage.setTitle("Generátor testů");
-        stage.setScene(scene);
-        stage.show();
     }
 
     public static void main(String[] args) {

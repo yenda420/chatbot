@@ -8,8 +8,8 @@ module com.example.chatbot {
     requires java.sql;
     requires com.google.gson;
 
-    opens com.example.chatbot to javafx.fxml;
-    exports com.example.chatbot;
-    exports com.example.chatbot.controllers;
-    opens com.example.chatbot.controllers to javafx.fxml;
+    opens app to javafx.fxml;
+    exports app;
+    exports app.controllers;
+    opens app.controllers to javafx.fxml;
 }

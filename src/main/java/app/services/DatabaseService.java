@@ -1,15 +1,26 @@
-package com.example.chatbot.services;
+package app.services;
+
+import app.dao.SubjectManager;
+import app.dao.TopicManager;
 
 import java.sql.*;
 
 public class DatabaseService {
     private static Connection conn;
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
+    private static final String DB_NAME = "test_generator";
 
-    private DatabaseService() {
+    public DatabaseService() {
         try {
-            conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/", "root", "");
-            if (!conn.isClosed()) {
-                System.out.println("[INFO] - Database connected.");
+            if (conn == null || conn.isClosed()) {
+                conn = DriverManager.getConnection(URL, USER, PASSWORD);
+                if (!conn.isClosed()) {
+                    System.out.println("[INFO] - Database connected.");
+                }
+            } else {
+                System.out.println("[INFO] - Using existing database connection.");
             }
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to connect to the database.");
@@ -22,26 +33,26 @@ public class DatabaseService {
     }
 
     private void createDatabase() {
-        String sql = "CREATE DATABASE IF NOT EXISTS test_generator " +
+        String sql = "CREATE DATABASE IF NOT EXISTS " + DB_NAME + " " +
                 "CHARACTER SET UTF8 COLLATE UTF8_CZECH_CI";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.execute();
-            System.out.println("[INFO] - Database 'test_generator' created.");
+            System.out.println("[INFO] - Database '" + DB_NAME + "' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create database 'test_generator'.");
+            System.err.println("[ERROR] - Failed to create database '" + DB_NAME + "'.");
             e.printStackTrace();
         }
     }
 
     private void useDatabase() {
-        String sql = "USE test_generator";
+        String sql = "USE " + DB_NAME;
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.execute();
-            System.out.println("[INFO] - Now using database 'test_generator'.");
+            System.out.println("[INFO] - Now using database '" + DB_NAME + "'.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to switch to database 'test_generator'.");
+            System.err.println("[ERROR] - Failed to switch to database '" + DB_NAME + "'.");
             e.printStackTrace();
         }
     }
@@ -49,8 +60,8 @@ public class DatabaseService {
     private void createTableSubjects() {
         String sql = "CREATE TABLE IF NOT EXISTS subjects (" +
                 "subjectId INT PRIMARY KEY AUTO_INCREMENT, " +
-                "name VARCHAR(50) NOT NULL, " +
-                "shortage VARCHAR(10) NOT NULL, " +
+                "name VARCHAR(50) UNIQUE NOT NULL, " +
+                "shortage VARCHAR(10) UNIQUE NOT NULL, " +
                 "description LONGTEXT)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -200,9 +211,28 @@ public class DatabaseService {
         }
     }
 
+    public static boolean instanceInDatabase(String table, String column, String instance) throws SQLException {
+        String sql = "SELECT * FROM " + table + " WHERE " + column + " = ?";
+        PreparedStatement pstmt = conn.prepareStatement(sql);
+        pstmt.setString(1, instance);
+        ResultSet resultSet = pstmt.executeQuery();
+
+        return resultSet.next();
+    }
+
+    private void insertDefaultData() {
+        SubjectManager subjectManager = new SubjectManager();
+        TopicManager topicManager = new TopicManager();
+
+        SubjectManager.insertDefaultSubjects();
+        TopicManager.insertDefaultTopics();
+    }
+
     public static void initialize() {
         DatabaseService dbService = new DatabaseService();
+
         if (dbService.getConn() != null) {
+            dbService.dropDatabase();
             dbService.createDatabase();
             dbService.useDatabase();
             dbService.createTableSubjects();
@@ -210,12 +240,27 @@ public class DatabaseService {
             dbService.createTablePrompts();
             dbService.createTableTopicsPrompts();
             dbService.createTableQuestions();
-            dbService.createTableTests(); // This will now enforce a 1:1 relationship
+            dbService.createTableTests();
             dbService.createTableQuestionsTests();
             dbService.createTableAnswers();
             dbService.createTableQuestionsAnswers();
+
+            dbService.insertDefaultData();
         } else {
             System.err.println("[ERROR] - Database initialization failed due to connection issues.");
+        }
+    }
+
+    // =================
+    // DELETE THIS METHOD LATER
+    // =================
+    private void dropDatabase() {
+        try {
+            conn.createStatement().execute("DROP DATABASE IF EXISTS " + DB_NAME);
+            System.out.println("[INFO] - Database '" + DB_NAME + "' dropped.");
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - Failed to drop database '" + DB_NAME + "'.");
+            e.printStackTrace();
         }
     }
 
