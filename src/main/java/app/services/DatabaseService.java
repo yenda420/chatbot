@@ -1,6 +1,7 @@
 package app.services;
 
 import app.dao.SubjectManager;
+import app.dao.TestManager;
 import app.dao.TopicManager;
 
 import java.sql.*;
@@ -93,7 +94,7 @@ public class DatabaseService {
     private void createTablePrompts() {
         String sql = "CREATE TABLE IF NOT EXISTS prompts (" +
                 "promptId INT PRIMARY KEY AUTO_INCREMENT, " +
-                "message LONGTEXT NOT NULL, " +
+                "message LONGTEXT, " +
                 "attachedFile LONGBLOB, " +
                 "tags VARCHAR(255))";
 
@@ -128,7 +129,7 @@ public class DatabaseService {
                 "questionId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "text LONGTEXT NOT NULL, " +
                 "type ENUM('Ano / Ne', 'Výběr z odpověí', 'Otevřená otázka') NOT NULL, " +
-                "difficulty INT, " +
+                "difficulty ENUM('Lehká', 'Těžká', 'Střední') NOT NULL, " +
                 "points INT)";
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -145,7 +146,7 @@ public class DatabaseService {
         String sql = "CREATE TABLE IF NOT EXISTS tests (" +
                 "testId INT PRIMARY KEY, " +
                 "name VARCHAR(100) NOT NULL, " +
-                "difficulty INT, " +
+                "difficulty ENUM('Lehká', 'Těžká', 'Střední') NOT NULL, " +
                 "numberOfQuestions INT, " +
                 "timeLimit INT, " +
                 "promptId INT UNIQUE, " +
@@ -221,11 +222,15 @@ public class DatabaseService {
     }
 
     private void insertDefaultData() {
-        SubjectManager subjectManager = new SubjectManager();
-        TopicManager topicManager = new TopicManager();
-
         SubjectManager.insertDefaultSubjects();
         TopicManager.insertDefaultTopics();
+    }
+
+    // This will force to create connections to all the managers
+    private void createManagers() {
+        SubjectManager subjectManager = new SubjectManager();
+        TopicManager topicManager = new TopicManager();
+        TestManager testManager = new TestManager();
     }
 
     public static void initialize() {
@@ -245,15 +250,17 @@ public class DatabaseService {
             dbService.createTableAnswers();
             dbService.createTableQuestionsAnswers();
 
+            dbService.createManagers();
+
             dbService.insertDefaultData();
         } else {
             System.err.println("[ERROR] - Database initialization failed due to connection issues.");
         }
     }
 
-    // =================
-    // DELETE THIS METHOD LATER
-    // =================
+    // ======================== //
+    // DELETE THIS METHOD LATER //
+    // ======================== //
     private void dropDatabase() {
         try {
             conn.createStatement().execute("DROP DATABASE IF EXISTS " + DB_NAME);

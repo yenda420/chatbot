@@ -104,4 +104,20 @@ public class TopicManager {
         }
         return true;
     }
+
+    public static ArrayList<String> getTopics() {
+        ArrayList<String> topics = new ArrayList<>();
+        String sql = "SELECT name FROM topics";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                topics.add(rs.getString("name"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return topics;
+    }
 }

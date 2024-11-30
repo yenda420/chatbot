@@ -1,7 +1,5 @@
 package app;
 
-import app.dao.SubjectManager;
-import app.dao.TopicManager;
 import app.services.DatabaseService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,11 +8,12 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class App extends Application {
     @Override
-    public void start(Stage stage) throws IOException, SQLException {
+    public void start(Stage stage) throws IOException {
+        DatabaseService.initialize();
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/app/fxml/main.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
@@ -23,9 +22,8 @@ public class App extends Application {
 
         stage.setTitle("Generátor testů");
         stage.setScene(scene);
+        // stage.setFullScreen(true);
         stage.show();
-
-        DatabaseService.initialize();
 
         /*
         String prompt = "Hello, how can I help you?";

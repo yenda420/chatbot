@@ -1,51 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.geometry.*?>
-<?import java.lang.String?>
 
-<AnchorPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.MainController" prefWidth="450" prefHeight="850" styleClass="background">
-  <VBox spacing="20" alignment="CENTER" prefHeight="850" prefWidth="450">
-    <padding>
-      <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
-    <TextField fx:id="testName" promptText="Název testu" prefWidth="350" prefHeight="40" styleClass="input"/>
-    <TextField fx:id="questionCount" promptText="Počet otázek" prefWidth="350" prefHeight="40" styleClass="input"/>
-    <TextField fx:id="timeLimit" promptText="Časový limit v minutách" prefWidth="350" prefHeight="40" styleClass="input"/>
-    <Button text="Připojte soubor" prefWidth="350" prefHeight="40" onAction="#handleFileUpload" styleClass="button"/>
-    <ComboBox fx:id="difficulty" promptText="--- Vyberte obtížnost ---" prefWidth="350" styleClass="combobox">
-      <items>
-        <FXCollections fx:factory="observableArrayList">
-          <String fx:value="Lehká"/>
-          <String fx:value="Střední"/>
-          <String fx:value="Těžká"/>
-        </FXCollections>
-      </items>
-    </ComboBox>
-    <FlowPane alignment="CENTER" hgap="10" vgap="10" prefWrapLength="350">
-      <CheckBox fx:id="topicMath" text="Matematika" styleClass="checkbox"/>
-      <CheckBox fx:id="topicScience" text="Přírodní vědy" styleClass="checkbox"/>
-      <CheckBox fx:id="topicHistory" text="Historie" styleClass="checkbox"/>
-      <CheckBox fx:id="topicLiterature" text="Literatura" styleClass="checkbox"/>
-      <CheckBox fx:id="topicGeography" text="Geografie" styleClass="checkbox"/>
-      <CheckBox fx:id="topicArt" text="Umění" styleClass="checkbox"/>
-      <CheckBox fx:id="test" text="test" styleClass="checkbox"/>
-      <CheckBox fx:id="testt" text="test" styleClass="checkbox"/>
-      <CheckBox fx:id="testtt" text="test" styleClass="checkbox"/>
-      <CheckBox fx:id="testttt" text="test" styleClass="checkbox"/>
-    </FlowPane>
-    <ComboBox fx:id="questionType" promptText="--- Vyberte typ otázek ---" prefWidth="350" styleClass="combobox">
-      <items>
-        <FXCollections fx:factory="observableArrayList">
-          <String fx:value="Výběr z možností"/>
-          <String fx:value="Krátká odpověď"/>
-          <String fx:value="Dlouhá odpověď"/>
-        </FXCollections>
-      </items>
-    </ComboBox>
-    <TextArea promptText="Další specifikace testu" prefWidth="350" prefHeight="120" styleClass="textarea"/>
-    <Button text="Vygeneruj test" prefWidth="350" prefHeight="40" styleClass="submit"/>
-  </VBox>
-</AnchorPane>
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.MainController" styleClass="background">
+  <children>
+    <VBox spacing="10" alignment="CENTER" maxWidth="400" styleClass="form-container">
+      <TextField fx:id="testName" promptText="Název testu" styleClass="input" maxWidth="350"/>
+      <TextField fx:id="questionCount" promptText="Počet otázek" styleClass="input" maxWidth="350"/>
+      <TextField fx:id="timeLimit" promptText="Časový limit v minutách" styleClass="input" maxWidth="350"/>
+
+      <Button text="Připojte soubor" onAction="#handleFileUpload" styleClass="button" maxWidth="350"/>
+
+      <ComboBox fx:id="difficulty" promptText="--- Vyberte obtížnost ---" styleClass="combobox" maxWidth="350"></ComboBox>
+
+      <FlowPane fx:id="topicsPane" alignment="CENTER" hgap="10" vgap="10" maxWidth="350"></FlowPane>
+
+      <ComboBox fx:id="questionType" promptText="--- Vyberte typ otázek ---" styleClass="combobox" maxWidth="350"></ComboBox>
+
+      <TextArea fx:id="message" promptText="Další specifikace testu" styleClass="textarea" maxWidth="350" prefHeight="150"/>
+
+      <Button onAction="#handleCreateTest" text="Vygeneruj test" styleClass="submit" maxWidth="350"/>
+    </VBox>
+  </children>
+</StackPane>
