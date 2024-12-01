@@ -26,14 +26,14 @@ public class TestManager {
                     pstmt.setInt(5, promptId);
                     pstmt.executeUpdate();
 
-                    System.out.println("[INFO] - Test inserted into database.");
+                    System.out.println("[INFO] - Test " + test + "  inserted into database.");
                     return true;
                 } catch (SQLException e) {
-                    System.err.println("[ERROR] - Failed to insert test into database.");
+                    System.err.println("[ERROR] - Failed to insert test " + test + " into database.");
                     e.printStackTrace();
                 }
             } else {
-                System.err.println("[ERROR] - promptId can't ne 0.");
+                System.err.println("[ERROR] - promptId can't be 0.");
             }
         }
         return false;

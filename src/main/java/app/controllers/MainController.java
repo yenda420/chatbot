@@ -10,6 +10,7 @@ import app.enums.QuestionTypeEnum;
 import app.models.Prompt;
 import app.models.Test;
 import app.models.Topic;
+import app.services.AIService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -72,6 +73,8 @@ public class MainController {
     @FXML
     public void handleCreateTest(ActionEvent actionEvent) throws SQLException {
         if (validateInputs()) {
+            AIService aiService = new AIService();
+
             Prompt prompt;
             Test test;
 
@@ -102,7 +105,25 @@ public class MainController {
                 System.out.println("[INFO] - Prompt " + prompt + " inserted into database.");
 
                 if (TestManager.insert(test, promptId)) {
-                    System.out.println("[INFO] - Test" + test + "  inserted into database.");
+                    try {
+                        // Generate the test
+                        String testContent = aiService.generateTest(test);
+
+                        // Check if the test was generated successfully
+                        if (testContent != null) {
+                            // Specify the output file path
+                            String outputFilePath = testName.getText() + ".txt";
+
+                            // Write the test to a file
+                            aiService.writeTestToFile(testContent, outputFilePath);
+                        } else {
+                            System.err.println("[ERROR] - Failed to generate the test.");
+                        }
+                    } catch (SQLException e) {
+                        System.err.println("[ERROR] - An error occurred while working with the database.");
+                        e.printStackTrace();
+                    }
+
                 } else {
                     System.err.println("[ERROR] - Failed to insert test " + test + "  into database.");
                 }

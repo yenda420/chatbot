@@ -77,6 +77,21 @@ public class SubjectManager {
         return true;
     }
 
+    public static int getSubjectId(Subject subject) throws SQLException {
+        String sql = "SELECT subjectId FROM subjects WHERE name = ? AND shortage = ?";
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setString(1, subject.getName());
+            pstmt.setString(2, subject.getShortage());
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("subjectId");
+                } else {
+                    return -1;
+                }
+            }
+        }
+    }
+
     public static Subject getSubject(int subjectId) throws SQLException {
         String sql = "SELECT * FROM subjects WHERE subjectId = ?";
 
@@ -89,6 +104,34 @@ public class SubjectManager {
                             rs.getString("shortage"),
                             rs.getString("description")
                     );
+                }
+            }
+        }
+        return null;
+    }
+
+    public static Subject getTopicSubject(String topicName) throws SQLException {
+        String sql = "SELECT subjectId FROM topics WHERE name = ?";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setString(1, topicName);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    sql = "SELECT * FROM subjects WHERE subjectId = ?";
+
+                    try (PreparedStatement pstmt2 = db.getConn().prepareStatement(sql)) {
+                        pstmt2.setInt(1, rs.getInt("subjectId"));
+                        try (ResultSet rs2 = pstmt2.executeQuery()) {
+                            if (rs2.next()) {
+                                return new Subject(
+                                        rs2.getString("name"),
+                                        rs2.getString("shortage"),
+                                        rs2.getString("description")
+                                );
+                            }
+                        }
+                    }
                 }
             }
         }

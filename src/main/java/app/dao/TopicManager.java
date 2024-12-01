@@ -30,7 +30,7 @@ public class TopicManager {
 
     public static boolean insert(Topic topic) throws SQLException {
         if (db.getConn() != null) {
-            int subjectId = getSubjectId(topic.getSubject());
+            int subjectId = SubjectManager.getSubjectId(topic.getSubject());
 
             if (subjectId == -1) {
                 System.err.println("[ERROR] - Subject " + topic.getSubject() + " not found in database.");
@@ -64,21 +64,6 @@ public class TopicManager {
             }
         }
         return false;
-    }
-
-    private static int getSubjectId(Subject subject) throws SQLException {
-        String sql = "SELECT subjectId FROM subjects WHERE name = ? AND shortage = ?";
-        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
-            pstmt.setString(1, subject.getName());
-            pstmt.setString(2, subject.getShortage());
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("subjectId");
-                } else {
-                    return -1;
-                }
-            }
-        }
     }
 
     private static boolean topicExists(String topicName, int subjectId) throws SQLException {

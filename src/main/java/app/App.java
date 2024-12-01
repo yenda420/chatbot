@@ -24,22 +24,10 @@ public class App extends Application {
         stage.setScene(scene);
         // stage.setFullScreen(true);
         stage.show();
-
-        /*
-        String prompt = "Hello, how can I help you?";
-        String response = AIService.askChatGPT(prompt);
-
-        if (response != null) {
-            System.out.println("ChatGPT Response: " + response);
-        } else {
-            System.out.println("Failed to get a response from ChatGPT.");
-        }
-        */
     }
 
     @Override
     public void stop() throws Exception {
-        // This method is called when the application is about to close
         DatabaseService.disconnect();
         super.stop();
     }
