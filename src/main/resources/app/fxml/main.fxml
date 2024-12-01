@@ -4,7 +4,6 @@
 <?import javafx.scene.layout.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.MainController" styleClass="background">
-  <children>
     <VBox spacing="10" alignment="CENTER" maxWidth="400" styleClass="form-container">
       <TextField fx:id="testName" promptText="Název testu" styleClass="input" maxWidth="350"/>
       <TextField fx:id="questionCount" promptText="Počet otázek" styleClass="input" maxWidth="350"/>
@@ -14,13 +13,12 @@
 
       <ComboBox fx:id="difficulty" promptText="--- Vyberte obtížnost ---" styleClass="combobox" maxWidth="350"></ComboBox>
 
-      <FlowPane fx:id="topicsPane" alignment="CENTER" hgap="10" vgap="10" maxWidth="350"></FlowPane>
-
       <ComboBox fx:id="questionType" promptText="--- Vyberte typ otázek ---" styleClass="combobox" maxWidth="350"></ComboBox>
+
+      <FlowPane fx:id="topicsPane" alignment="CENTER" hgap="10" vgap="10" maxWidth="350"></FlowPane>
 
       <TextArea fx:id="message" promptText="Další specifikace testu" styleClass="textarea" maxWidth="350" prefHeight="150"/>
 
       <Button onAction="#handleCreateTest" text="Vygeneruj test" styleClass="submit" maxWidth="350"/>
     </VBox>
-  </children>
 </StackPane>

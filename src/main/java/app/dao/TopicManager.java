@@ -33,7 +33,7 @@ public class TopicManager {
             int subjectId = getSubjectId(topic.getSubject());
 
             if (subjectId == -1) {
-                System.err.println("[ERROR] - Subject not found in database.");
+                System.err.println("[ERROR] - Subject " + topic.getSubject() + " not found in database.");
                 return false;
             }
 
@@ -53,14 +53,14 @@ public class TopicManager {
                         pstmt.setString(3, topic.getDescription());
                     }
                     pstmt.executeUpdate();
-                    System.out.println("[INFO] - Topic inserted into database.");
+                    System.out.println("[INFO] - Topic " + topic.getName() + " inserted into database.");
                     return true;
                 } catch (SQLException e) {
-                    System.err.println("[ERROR] - Failed to insert topic into database.");
+                    System.err.println("[ERROR] - Failed to insert topic " + topic.getName() + " into database.");
                     e.printStackTrace();
                 }
             } else {
-                System.out.println("[INFO] - Topic already exists in database.");
+                System.out.println("[INFO] - Topic " + topic.getName() + " already exists in database.");
             }
         }
         return false;
@@ -119,5 +119,48 @@ public class TopicManager {
             e.printStackTrace();
         }
         return topics;
+    }
+
+    public static Topic getTopic(String topicName) {
+        Topic topic = null;
+        String sql = "SELECT * FROM topics WHERE name = ?";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setString(1, topicName);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int subjectId = rs.getInt("subjectId");
+                    Subject subject = SubjectManager.getSubject(subjectId);
+                    topic = new Topic(topicName, subject);
+
+                    if (rs.getString("description") != null) {
+                        topic.setDescription(rs.getString("description"));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return topic;
+    }
+
+    public static int getId(String topicName) {
+        String sql = "SELECT topicId FROM topics WHERE name = ?";
+        int topicId = -1;
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setString(1, topicName);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    topicId = rs.getInt("topicId");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - Failed to get topic ID.");
+            e.printStackTrace();
+        }
+        return topicId;
     }
 }

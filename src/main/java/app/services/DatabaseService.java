@@ -1,8 +1,6 @@
 package app.services;
 
-import app.dao.SubjectManager;
-import app.dao.TestManager;
-import app.dao.TopicManager;
+import app.dao.*;
 
 import java.sql.*;
 
@@ -78,7 +76,7 @@ public class DatabaseService {
         String sql = "CREATE TABLE IF NOT EXISTS topics (" +
                 "topicId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "subjectId INT NOT NULL, " +
-                "name VARCHAR(100) NOT NULL, " +
+                "name VARCHAR(100) UNIQUE NOT NULL, " +
                 "description LONGTEXT, " +
                 "FOREIGN KEY (subjectId) REFERENCES subjects(subjectId))";
 
@@ -144,7 +142,7 @@ public class DatabaseService {
     // This should enforce a One-to-One relationship between Tests and Prompts
     private void createTableTests() {
         String sql = "CREATE TABLE IF NOT EXISTS tests (" +
-                "testId INT PRIMARY KEY, " +
+                "testId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "name VARCHAR(100) NOT NULL, " +
                 "difficulty ENUM('Lehká', 'Těžká', 'Střední') NOT NULL, " +
                 "numberOfQuestions INT, " +
@@ -227,10 +225,13 @@ public class DatabaseService {
     }
 
     // This will force to create connections to all the managers
-    private void createManagers() {
+    private void createAllManagers() {
+        AnswerManager answerManager = new AnswerManager();
+        PromptManager promptManager = new PromptManager();
+        QuestionManager questionManager = new QuestionManager();
         SubjectManager subjectManager = new SubjectManager();
-        TopicManager topicManager = new TopicManager();
         TestManager testManager = new TestManager();
+        TopicManager topicManager = new TopicManager();
     }
 
     public static void initialize() {
@@ -250,7 +251,7 @@ public class DatabaseService {
             dbService.createTableAnswers();
             dbService.createTableQuestionsAnswers();
 
-            dbService.createManagers();
+            dbService.createAllManagers();
 
             dbService.insertDefaultData();
         } else {

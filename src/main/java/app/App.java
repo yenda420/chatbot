@@ -35,8 +35,13 @@ public class App extends Application {
             System.out.println("Failed to get a response from ChatGPT.");
         }
         */
+    }
 
+    @Override
+    public void stop() throws Exception {
+        // This method is called when the application is about to close
         DatabaseService.disconnect();
+        super.stop();
     }
 
     public static void main(String[] args) {

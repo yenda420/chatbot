@@ -16,6 +16,10 @@ public class Topic {
         this.subject = subject;
     }
 
+    public Topic(String name) {
+        this.name = name;
+    }
+
     public String getName() {
         return name;
     }
@@ -26,6 +30,10 @@ public class Topic {
 
     public Subject getSubject() {
         return subject;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

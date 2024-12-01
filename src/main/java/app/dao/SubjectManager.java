@@ -5,6 +5,7 @@ import app.models.Subject;
 import app.services.DatabaseService;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -39,10 +40,10 @@ public class SubjectManager {
                         pstmt.setString(2, subject.getShortage());
                         pstmt.setString(3, subject.getDescription());
                         pstmt.executeUpdate();
-                        System.out.println("[INFO] - Subject inserted into database.");
+                        System.out.println("[INFO] - Subject " + subject.getName() + " inserted into database.");
                         return true;
                     } catch (SQLException e) {
-                        System.err.println("[ERROR] - Failed to insert subject into database.");
+                        System.err.println("[ERROR] - Failed to insert subject " + subject.getName() + "  into database.");
                         e.printStackTrace();
                     }
                 } else {
@@ -52,10 +53,10 @@ public class SubjectManager {
                         pstmt.setString(1, subject.getName());
                         pstmt.setString(2, subject.getShortage());
                         pstmt.executeUpdate();
-                        System.out.println("[INFO] - Subject inserted into database.");
+                        System.out.println("[INFO] - Subject " + subject.getName() + "  inserted into database.");
                         return true;
                     } catch (SQLException e) {
-                        System.err.println("[ERROR] - Failed to insert subject into database.");
+                        System.err.println("[ERROR] - Failed to insert subject " + subject.getName() + "  into database.");
                         e.printStackTrace();
                     }
                 }
@@ -74,5 +75,23 @@ public class SubjectManager {
             }
         }
         return true;
+    }
+
+    public static Subject getSubject(int subjectId) throws SQLException {
+        String sql = "SELECT * FROM subjects WHERE subjectId = ?";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setInt(1, subjectId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Subject(
+                            rs.getString("name"),
+                            rs.getString("shortage"),
+                            rs.getString("description")
+                    );
+                }
+            }
+        }
+        return null;
     }
 }

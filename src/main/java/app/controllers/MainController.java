@@ -1,8 +1,15 @@
 package app.controllers;
 
+import app.dao.PromptManager;
+import app.dao.QuestionManager;
 import app.dao.TestManager;
 import app.dao.TopicManager;
 
+import app.enums.DifficultyEnum;
+import app.enums.QuestionTypeEnum;
+import app.models.Prompt;
+import app.models.Test;
+import app.models.Topic;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -11,11 +18,12 @@ import javafx.scene.layout.FlowPane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class MainController {
     @FXML
-    public TextField testName;
+    private TextField testName;
 
     @FXML
     private TextField questionCount;
@@ -33,12 +41,16 @@ public class MainController {
     private FlowPane topicsPane;
 
     @FXML
-    public TextArea message;
+    private TextArea message;
+
+    private File fileAttached;
+
+    ArrayList<Topic> checkedTopics;
 
     @FXML
     private void initialize() {
-        difficulty.getItems().addAll(TestManager.getQuestionDifficulties());
-        questionType.getItems().addAll(TestManager.getQuestionTypes());
+        difficulty.getItems().addAll(QuestionManager.getQuestionDifficulties());
+        questionType.getItems().addAll(QuestionManager.getQuestionTypes());
 
         for (String topic : TopicManager.getTopics()) {
             CheckBox checkBox = new CheckBox(topic);
@@ -51,17 +63,52 @@ public class MainController {
     @FXML
     private void handleFileUpload() {
         FileChooser fileChooser = new FileChooser();
-        File file = fileChooser.showOpenDialog(null);
-        if (file != null) {
-            System.out.println("File selected: " + file.getAbsolutePath());
+        fileAttached = fileChooser.showOpenDialog(null);
+        if (fileAttached != null) {
+            System.out.println("[INFO] - File selected: " + fileAttached.getAbsolutePath());
         }
     }
 
     @FXML
-    public void handleCreateTest(ActionEvent actionEvent) {
+    public void handleCreateTest(ActionEvent actionEvent) throws SQLException {
         if (validateInputs()) {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "Success!");
-            alert.showAndWait();
+            Prompt prompt;
+            Test test;
+
+            boolean isFileAttached = this.fileAttached != null;
+            boolean isMessage = !message.getText().isEmpty() && !message.getText().isBlank();
+            int promptId;
+
+            if (isFileAttached && isMessage) {
+                prompt = new Prompt(message.getText(), fileAttached, checkedTopics, "test");
+            } else if (isFileAttached) {
+                prompt = new Prompt(fileAttached, checkedTopics, "test");
+            } else if (isMessage) {
+                prompt = new Prompt(message.getText(), checkedTopics, "test");
+            } else {
+                prompt = new Prompt(checkedTopics, "test");
+            }
+
+            test = new Test(
+                    testName.getText(),
+                    Integer.parseInt(questionCount.getText()),
+                    Integer.parseInt(timeLimit.getText()),
+                    DifficultyEnum.fromString(difficulty.getValue()),
+                    QuestionTypeEnum.fromString(questionType.getValue()),
+                    prompt
+            );
+
+            if ((promptId = PromptManager.insert(prompt)) != -1) {
+                System.out.println("[INFO] - Prompt " + prompt + " inserted into database.");
+
+                if (TestManager.insert(test, promptId)) {
+                    System.out.println("[INFO] - Test" + test + "  inserted into database.");
+                } else {
+                    System.err.println("[ERROR] - Failed to insert test " + test + "  into database.");
+                }
+            } else {
+                System.err.println("[ERROR] - Failed to insert prompt " + prompt + " into database.");
+            }
         }
     }
 
@@ -91,13 +138,13 @@ public class MainController {
             return false;
         }
 
-        ArrayList<String> checkedTopics = new ArrayList<>();
+        checkedTopics = new ArrayList<>();
 
         for (Node node : topicsPane.getChildren()) {
             if (node instanceof CheckBox) {
                 CheckBox checkBox = (CheckBox) node;
                 if (checkBox.isSelected()) {
-                    checkedTopics.add(checkBox.getText());
+                    checkedTopics.add(new Topic(checkBox.getText()));
                 }
             }
         }

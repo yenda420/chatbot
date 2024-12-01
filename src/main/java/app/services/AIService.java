@@ -11,23 +11,25 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
 public class AIService {
-    private static final String API_URL = "https://api.openai.com/v1/chat/completions";
-    private static final String API_KEY = "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";
+    private static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
+    private static final String OPENAI_API_KEY = "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";
+    private static final String OPENAI_MODEL = "gpt-3.5-turbo";
+    private static final double OPENAI_TEMPERATURE = 0.7;
 
     public static String askChatGPT(String prompt) {
         try {
             // Set up the connection
-            URL url = new URL(API_URL);
+            URL url = new URL(OPENAI_API_URL);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("Authorization", "Bearer " + API_KEY);
+            connection.setRequestProperty("Authorization", "Bearer " + OPENAI_API_KEY);
             connection.setDoOutput(true);
 
             // Create the JSON payload
             JsonObject payload = new JsonObject();
-            payload.addProperty("model", "gpt-3.5-turbo");
-            payload.addProperty("temperature", 0.7);
+            payload.addProperty("model", OPENAI_MODEL);
+            payload.addProperty("temperature", OPENAI_TEMPERATURE);
             payload.add("messages", JsonParser.parseString("[{\"role\":\"user\", \"content\":\"" + prompt + "\"}]"));
 
             // Send the request
