@@ -10,7 +10,7 @@ import app.enums.QuestionTypeEnum;
 import app.models.Prompt;
 import app.models.Test;
 import app.models.Topic;
-import app.services.AIService;
+import app.services.AITestGeneratorService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -21,6 +21,8 @@ import javafx.stage.FileChooser;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import static app.services.FileService.writeTestToFile;
 
 public class MainController {
     @FXML
@@ -73,7 +75,7 @@ public class MainController {
     @FXML
     public void handleCreateTest(ActionEvent actionEvent) throws SQLException {
         if (validateInputs()) {
-            AIService aiService = new AIService();
+            AITestGeneratorService aiTestGeneratorService = new AITestGeneratorService();
 
             Prompt prompt;
             Test test;
@@ -107,7 +109,7 @@ public class MainController {
                 if (TestManager.insert(test, promptId)) {
                     try {
                         // Generate the test
-                        String testContent = aiService.generateTest(test);
+                        String testContent = aiTestGeneratorService.generateTest(test);
 
                         // Check if the test was generated successfully
                         if (testContent != null) {
@@ -115,9 +117,10 @@ public class MainController {
                             String outputFilePath = testName.getText() + ".txt";
 
                             // Write the test to a file
-                            aiService.writeTestToFile(testContent, outputFilePath);
+                            writeTestToFile(testContent, outputFilePath);
                         } else {
-                            System.err.println("[ERROR] - Failed to generate the test.");
+                            String errorMessage = "AI z vašeho zadání nebylo schopné vygenerovat test. Zkuste to, prosím, znovu.";
+                            showErrorAlert(testName, errorMessage);
                         }
                     } catch (SQLException e) {
                         System.err.println("[ERROR] - An error occurred while working with the database.");

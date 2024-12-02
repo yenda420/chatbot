@@ -2,8 +2,8 @@ package app.enums;
 
 public enum QuestionTypeEnum {
     YES_NO("Ano / Ne"),
-    SELECT("Výběr z odpověí"),
-    QUESTION("Otevřená otázka");
+    MULTIPLE_CHOICE("Výběr z odpověí"),
+    OPEN_ENDED("Otevřená otázka");
 
     private final String name;
 
