@@ -17,33 +17,42 @@ public class AIValidatorService extends AIService {
             List<String> issues = checkFormatIssues(assistantResponse, test);
 
             if (issues.isEmpty()) {
-                return removeUnwantedLines(assistantResponse);
-            } else {
-                StringBuilder correctionPrompt = new StringBuilder();
-                attempts++;
+                AIValidatorService validator = new AIValidatorService();
+                assistantResponse = removeUnwantedLines(assistantResponse);
 
-                correctionPrompt.append("Ve tvé předchozí odpovědi jsem našel následující problémy:\n");
-
-                for (String issue : issues) {
-                    correctionPrompt.append("- ").append(issue).append("\n");
+                if (validator.isFactuallyCorrect(assistantResponse)) {
+                    return assistantResponse;
+                } else {
+                    issues.add("Test obsahuje faktické chyby, či misinformace.");
+                    attempts++;
+                    continue;
                 }
-
-                correctionPrompt
-                        .append("Prosím, oprav tyto problémy a znovu vytvoř test ve správném formátu. ")
-                        .append("Ujisti se, že vypíšeš všechny otázky a odpovědi v plném znění, bez použití '... a tak dále ...' nebo jiných zkratek. ")
-                        .append("Dodrž přesně formátování uvedené v původním zadání. ")
-                        .append("Nepřidávej žádné nové informace a neměň obsah otázek a odpovědí, pokud to není nutné kvůli opravě formátu.");
-
-                assistantResponse = ai.askAI(correctionPrompt.toString());
-
-                if (assistantResponse == null) {
-                    System.err.println("[ERROR] - Failed to get a response from the assistant.");
-                    return null;
-                }
-
-                System.out.println("[INFO] - Attempt " + attempts + ": \n" + correctionPrompt + "\n");
-                System.out.println("[INFO] - New response number " + attempts + ": \n" + assistantResponse);
             }
+
+            StringBuilder correctionPrompt = new StringBuilder();
+            attempts++;
+
+            correctionPrompt.append("Ve tvé předchozí odpovědi jsem našel následující problémy:\n");
+
+            for (String issue : issues) {
+                correctionPrompt.append("- ").append(issue).append("\n");
+            }
+
+            correctionPrompt
+                    .append("Prosím, oprav tyto problémy a znovu vytvoř celý test ve správném formátu. ")
+                    .append("Ujisti se, že test obsahuje všech ").append(test.getNumberOfQuestions()).append(" kompletních otázek, každá s jednou správnou odpovědí a vysvětlením. ")
+                    .append("Nepoužívej placeholdery ani zkratky. ")
+                    .append("Dodrž přesně formátování uvedené v původním zadání.");
+
+            assistantResponse = ai.askAI(correctionPrompt.toString());
+
+            if (assistantResponse == null) {
+                System.err.println("[ERROR] - Failed to get a response from the assistant.");
+                return null;
+            }
+
+            System.out.println("[INFO] - Attempt " + attempts + ": \n" + correctionPrompt + "\n");
+            System.out.println("[INFO] - New response number " + attempts + ": \n" + assistantResponse);
         }
 
         System.err.println("[WARNING] - Failed to get a valid response from the assistant after " + MAX_ATTEMPTS + " attempts.");
@@ -117,6 +126,10 @@ public class AIValidatorService extends AIService {
         while (index < lines.length) {
             String line = lines[index].trim();
 
+            if (line.matches(".*\\[Otázka \\d+\\].*") || line.matches(".*\\[Odpověď \\d+\\].*")) {
+                issues.add("Používáš placeholdery jako '[Otázka " + questionCount + "]' nebo '[Odpověď " + answerCount + "]'. Prosím, nahraď je skutečnými otázkami a odpověďmi.");
+            }
+
             if (line.equalsIgnoreCase("Správné odpovědi:")) {
                 inQuestions = false;
                 inAnswers = true;
@@ -187,17 +200,37 @@ public class AIValidatorService extends AIService {
                     int answerNumber = answerCount;
                     index++;
 
-                    // Expect 'Vysvětlení:'
-                    if (index < lines.length && lines[index].trim().startsWith("Vysvětlení:")) {
-                        index++;
-                    } else {
-                        issues.add("Odpověď " + answerNumber + " nemá 'Vysvětlení:'.");
-                        index++; // Increment index to move to the next line
+                    boolean foundVysvetleni = false;
+
+                    // Read lines until 'Vysvětlení:' is found or next answer starts
+                    while (index < lines.length) {
+                        String currentLine = lines[index].trim();
+
+                        if (currentLine.startsWith("Vysvětlení:")) {
+                            foundVysvetleni = true;
+                            index++;
+                            // Read explanation lines until next answer or end of answers
+                            while (index < lines.length) {
+                                String explanationLine = lines[index].trim();
+
+                                if (explanationLine.matches("^\\d+\\.\\s+.*") || explanationLine.startsWith("Maximální počet bodů:")) {
+                                    // Reached next answer or end of answers
+                                    break;
+                                }
+
+                                index++;
+                            }
+                            break;
+                        } else if (currentLine.matches("^\\d+\\.\\s+.*") || currentLine.startsWith("Maximální počet bodů:")) {
+                            // No 'Vysvětlení:' provided before next answer or end
+                            break;
+                        } else {
+                            index++;
+                        }
                     }
 
-                    // Skip empty lines
-                    while (index < lines.length && lines[index].trim().isEmpty()) {
-                        index++;
+                    if (!foundVysvetleni && test.getQuestionType() != QuestionTypeEnum.OPEN_ENDED) {
+                        issues.add("Odpověď " + answerNumber + " nemá 'Vysvětlení:'.");
                     }
                 } else {
                     index++;
@@ -213,8 +246,14 @@ public class AIValidatorService extends AIService {
         }
 
         if (answerCount != test.getNumberOfQuestions()) {
-            issues.add("Počet odpovědí (" + answerCount + ") neodpovídá počtu otázek (" + test.getNumberOfQuestions() + "). " +
-                    "Ujisti se, že každá otázka má právě jednu správnou odpověď níže v sekci 'Správné odpovědi'.");
+            if (questionCount == test.getNumberOfQuestions()) {
+                issues.add("Napsal jsi mi " + questionCount + " otázek, ale " + answerCount + " odpovědí. " +
+                        "Ujisti se, že do sekce 'Správné odpovědi' jsi zapsal všech " + questionCount + " odpovědí.");
+            } else {
+                issues.add("Počet odpovědí (" + answerCount + ") neodpovídá počtu otázek (" + test.getNumberOfQuestions() + "). " +
+                        "Ujisti se, že každá otázka má právě jednu správnou odpověď níže v sekci 'Správné odpovědi'.");
+            }
+
         }
 
         if (!foundMaxPoints) {
@@ -226,42 +265,47 @@ public class AIValidatorService extends AIService {
         if (responseLowerCase.contains("a tak dále") || responseLowerCase.contains("...") ||
                 responseLowerCase.contains("a podobně") || responseLowerCase.contains("atd")) {
             issues.add("Zdá se, že test není kompletní. Prosím, vypiš všechny otázky a odpovědi v plném znění, " +
-                    "bez použití zkratek jako '... a tak dále ...'. Ke každé otázce musí být právě jedna správná odpověď níže v sekci 'Správné odpovědi'.");
+                    "bez použití zkratek jako '... a tak dále ...', nebo '...' a podobně. " +
+                    "Ke každé otázce **musí** být právě jedna správná odpověď níže v sekci 'Správné odpovědi'.");
         }
 
         return issues;
     }
 
-    public String factCheckTest(String testContent, AITestGeneratorService aiTestGeneratorService, Test test) {
+    public boolean isFactuallyCorrect(String testContent) {
         AIService ai = new AIService();
 
-        System.out.println("[INFO] - Fact checking test...");
+        System.out.println("[INFO] - Fact-checking the test.");
 
-        String factCheckPrompt = "Důkladně zkontroluj a ověř fakta v následujícím testu." +
-                " Test obsahuje název, předmět, temata, obtížnost, časový limit, otázky a jejich odpovědi a ke každé odpovědi vysvětlení." +
-                " Převážně zkontroluj, zda-li jsou dané odpovědi ke každé otázce přiřazeny a vysvětleny správně." +
-                " V případě testu, kde se vybírá z odpovědí se také důkladně ujisti, že se ve výběru pod otázkou nachází pouze jedna správná odpověď." +
-                " V případě, že najdeš nějaké chyby, oprav je a vypiš mi pouze opravený test v přesně stejném formátu, jaký jsi dostal." +
-                " V případě, že nenajdeš žádnou chybu vypiš mi pouze test, který jsi dostal v přesně stejném formátu." +
-                " Opravuj pouze otázky, u kterých si jsi opravdu jistý, že jsou špatně." +
-                " Zde je test pro kontrolu: " + testContent;
+        String factCheckPrompt = "Prosím, proveď kontrolu faktických chyb v následujícím testu. "
+                + "Jsou v testu nějaké faktické chyby v odpovědích nebo vysvětleních? "
+                + "Odpověz pouze 'Ano' nebo 'Ne'. V případě, že ano, napiš 'Ano, [číslo otázky]'. ";
 
-        testContent = ai.askAI(factCheckPrompt);
+        factCheckPrompt += "\n\nTest:\n" + testContent;
 
-        if (testContent == null) {
+        String assistantResponse = ai.askAI(factCheckPrompt);
+
+        if (assistantResponse == null || assistantResponse.isEmpty()) {
             System.err.println("[ERROR] - Failed to get a response from the assistant during fact-checking.");
-            return null;
+            return false; // Assume test has errors if AI does not respond
         }
 
-        // Re-validate format after fact-checking using the same validator instance
-        testContent = validateOutput(testContent, aiTestGeneratorService, test);
+        System.out.println("[INFO] - Assistant response during fact-checking: " + assistantResponse);
 
-        if (testContent != null) {
-            System.out.println("[INFO] - Test fact-checked successfully.");
-            return testContent;
+        // Parse the assistant's response
+        String responseLower = assistantResponse.trim().toLowerCase(Locale.ROOT);
+        if (responseLower.startsWith("ne")) {
+            // Assistant indicates no factual errors
+            System.out.println("[INFO] - Test fact-checked successfully with no errors.");
+            return true;
+        } else if (responseLower.startsWith("ano")) {
+            // Assistant indicates there are factual errors
+            System.out.println("[INFO] - Test contains factual errors.");
+            return false;
         } else {
-            System.err.println("[ERROR] - Failed to fact-check the test.");
-            return null;
+            // Unclear response, defaulting to false
+            System.out.println("[WARNING] - Assistant response unclear. Assuming test has factual errors.");
+            return false;
         }
     }
 
@@ -285,8 +329,6 @@ public class AIValidatorService extends AIService {
             //System.out.println("End index line " + endIndex + ": " + lines[endIndex]);
             endIndex--;
         }
-
-        System.out.println("[INFO] - Removing lines between: " + lines[startIndex] + " \nand: " + lines[endIndex]);
 
         if (startIndex > endIndex) {
             System.err.println("[ERROR] - The testContent parametr wasnt formatted correctly.");

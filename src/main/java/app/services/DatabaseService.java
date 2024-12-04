@@ -4,12 +4,17 @@ import app.dao.*;
 
 import java.sql.*;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 public class DatabaseService {
+    private static final Dotenv dotenv = Dotenv.load();
+
+    private static final String URL = dotenv.get("DB_URL");
+    private static final String USER = dotenv.get("DB_USER");
+    private static final String PASSWORD = dotenv.get("DB_PASSWORD");
+    private static final String DB_NAME = dotenv.get("DB_NAME");
+
     private static Connection conn;
-    private static final String URL = "jdbc:mysql://127.0.0.1:3306/";
-    private static final String USER = "root";
-    private static final String PASSWORD = "";
-    private static final String DB_NAME = "test_generator";
 
     public DatabaseService() {
         try {

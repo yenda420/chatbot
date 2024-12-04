@@ -4,6 +4,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import io.github.cdimascio.dotenv.Dotenv;
+
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -11,10 +13,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class AIService {
-    protected static final String OPENAI_API_KEY = System.getenv("OPENAI_API_KEY");
-    protected static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-    protected static final String OPENAI_MODEL = "gpt-3.5-turbo";
-    protected static final double OPENAI_TEMPERATURE = 0.7;
+    private static final Dotenv dotenv = Dotenv.load();
+
+    protected static final String OPENAI_API_KEY = dotenv.get("OPENAI_API_KEY");
+    protected static final String OPENAI_API_URL = dotenv.get("OPENAI_API_URL");
+    protected static final String OPENAI_MODEL = dotenv.get("OPENAI_MODEL");
+    protected static final double OPENAI_TEMPERATURE = Double.parseDouble(dotenv.get("OPENAI_TEMPERATURE"));
 
     protected static URL url;
     private JsonArray conversationHistory;
@@ -71,6 +75,7 @@ public class AIService {
             JsonObject payload = new JsonObject();
             payload.addProperty("model", OPENAI_MODEL);
             payload.addProperty("temperature", OPENAI_TEMPERATURE);
+            payload.addProperty("max_tokens", 3500);
             payload.add("messages", messagesArray);
 
             // Open the connection

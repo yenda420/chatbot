@@ -117,11 +117,9 @@ public class AITestGeneratorService extends AIService {
                     .append("... a tak dále ...\n\n")
 
                     .append("Správné odpovědi:\n")
-                    .append("1. [Správná odpověď 1]\n")
-                    .append("Vysvětlení: [Vysvětlení 1. otázky]\n\n")
+                    .append("1. [Správná odpověď 1]\n\n")
 
-                    .append("2. [Správná odpověď 2]\n")
-                    .append("Vysvětlení: [Vysvětlení 2. otázky]\n\n")
+                    .append("2. [Správná odpověď 2]\n\n")
 
                     .append("... a tak dále ...\n\n");
         }
@@ -155,10 +153,10 @@ public class AITestGeneratorService extends AIService {
 
         String subjectName = subject.getName();
         String testName = test.getName();
-        int numberOfQuestions = test.getNumberOfQuestions();
-        int timeLimit = test.getTimeLimitInMinutes();
         String difficulty = test.getDifficulty().getName();
         String questionType = test.getQuestionType().getName();
+        int numberOfQuestions = test.getNumberOfQuestions();
+        int timeLimit = test.getTimeLimitInMinutes();
 
         // Information from the Prompt object
         String messageContent = prompt.getMessage();
@@ -210,6 +208,8 @@ public class AITestGeneratorService extends AIService {
         JsonObject userPromptJson = stringPromptToJsonObject(userPromptBuilder.toString());
         messages.add(userPromptJson);
 
+        System.out.println("[INFO] - Prompting the AI...\n");
+
         // Send the prompt to the AI and get the response
         String response = this.askAI(messages);
 
@@ -218,15 +218,7 @@ public class AITestGeneratorService extends AIService {
         AIValidatorService validator = new AIValidatorService();
 
         // Validate the output and handle corrections
-        response = validator.validateOutput(response, this, test);
-
-        if (response != null) {
-            // Fact-check the validated response using the same validator instance
-            response = validator.factCheckTest(response, this, test);
-            return response;
-        } else {
-            return null;
-        }
+        return validator.validateOutput(response, this, test);
     }
 
     private JsonObject stringPromptToJsonObject(String prompt) {

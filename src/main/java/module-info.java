@@ -7,6 +7,7 @@ module com.example.chatbot {
     requires org.kordamp.bootstrapfx.core;
     requires java.sql;
     requires com.google.gson;
+    requires io.github.cdimascio.dotenv.java;
 
     opens app to javafx.fxml;
     exports app;

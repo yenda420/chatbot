@@ -1,10 +1,12 @@
 package app.dao;
 
 import app.models.Test;
+import app.services.AIService;
 import app.services.DatabaseService;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Locale;
 
 public class TestManager {
     private static DatabaseService db;

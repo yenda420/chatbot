@@ -1,3 +1,0 @@
--- Který free model chceme použít?
--- Jak na jeho API key?
--- Problém s vytvořením 1 : 1 relace v tabulce tests a prompts
