@@ -153,7 +153,7 @@ public class DatabaseService {
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.execute();
-            System.out.println("[INFO] - Table 'tests' created with one-to-one relationship to 'prompts'.");
+            System.out.println("[INFO] - Table 'tests' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create table 'tests'.");
             e.printStackTrace();

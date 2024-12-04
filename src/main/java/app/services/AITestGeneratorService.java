@@ -7,14 +7,9 @@ import app.models.Test;
 import app.models.Topic;
 import app.enums.QuestionTypeEnum;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,11 +23,13 @@ public class AITestGeneratorService extends AIService {
     }
 
     // Set initial context for the AI Test Generator
-    public void setContextFor(Test test) {
+    public static String getContextFor(Test test) {
         StringBuilder setContextPrompt = new StringBuilder();
 
-        setContextPrompt.append("Jsi AI asistent pověřený generováním testů na základě poskytnutých parametrů.")
+        setContextPrompt
+                .append("Jsi AI asistent pověřený generováním testů na základě poskytnutých parametrů.")
                 .append(" Ujisti se, že ve svém testu nemáš žádné chyby a že používáš správnou gramatiku.")
+                .append(" Ujisti se, že vypíšeš všechny otázky a odpovědi v plném rozsahu, bez použití zkratek jako '... a tak dále ...' nebo 'atd.'.")
                 .append(" Ujisti se také, že vždy zahrneš vysvětlení každé správné odpovědi.")
                 .append(" Důkladně ověř fakta a informace, které uvádíš, aby byla zajištěna jejich správnost.")
                 .append(" Pokud si nejsi jistý některými informacemi, raději je neuváděj.")
@@ -54,22 +51,25 @@ public class AITestGeneratorService extends AIService {
                     .append(" Otevřené otázky jsou takové, kde student sám vypracuje odpověď.");
         }
 
-        setContextPrompt.append(" Prosím, vytvoř test v následujícím formátu:\n\n")
+        setContextPrompt
+                .append(" Prosím, vytvoř test v následujícím formátu:\n\n")
 
-        .append("Název testu: [Název testu]\n")
-        .append("Předmět: [Název předmětu]\n")
-        .append("Témata: [Názvy témat]\n\n")
+                .append("Název testu: [Název testu]\n")
+                .append("Předmět: [Název předmětu]\n")
+                .append("Témata: [Názvy témat]\n\n")
 
-        .append("Obtížnost: [Obtížnost]\n")
-        .append("Časový limit: [Časový limit]\n\n");
+                .append("Obtížnost: [Obtížnost]\n")
+                .append("Časový limit: [Časový limit]\n\n");
 
         // Add the specific format based on question type
         if (test.getQuestionType() == QuestionTypeEnum.YES_NO) {
             setContextPrompt
                     .append("1. [Text 1. otázky]\n")
+                    .append("Body: [Body 1. otázky]\n")
                     .append("Ano / Ne\n\n")
 
                     .append("2. [Text 2. otázky]\n")
+                    .append("Body: [Body 2. otázky]\n")
                     .append("Ano / Ne\n\n")
 
                     .append("... a tak dále ...\n\n")
@@ -81,15 +81,17 @@ public class AITestGeneratorService extends AIService {
                     .append("2. [Správná odpověď 2]\n")
                     .append("Vysvětlení: [Vysvětlení 2. otázky]\n\n")
 
-                    .append("... a tak dále ...");
+                    .append("... a tak dále ...\n\n");
         } else if (test.getQuestionType() == QuestionTypeEnum.MULTIPLE_CHOICE) {
             setContextPrompt
                     .append("1. [Text 1. otázky]\n")
+                    .append("Body: [Body 1. otázky]\n")
                     .append("a) [Odpověď 1.1]\n")
                     .append("b) [Odpověď 1.2]\n")
                     .append("c) [Odpověď 1.3]\n\n")
 
                     .append("2. [Text 2. otázky]\n")
+                    .append("Body: [Body 2. otázky]\n")
                     .append("a) [Odpověď 2.1]\n")
                     .append("b) [Odpověď 2.2]\n")
                     .append("c) [Odpověď 2.3]\n\n")
@@ -103,36 +105,30 @@ public class AITestGeneratorService extends AIService {
                     .append("2. [Správná odpověď 2]\n")
                     .append("Vysvětlení: [Vysvětlení 2. otázky]\n\n")
 
-                    .append("... a tak dále ...");
+                    .append("... a tak dále ...\n\n");
         } else if (test.getQuestionType() == QuestionTypeEnum.OPEN_ENDED) {
             setContextPrompt
-                    .append("1. [Text 1. otázky]\n\n")
+                    .append("1. [Text 1. otázky]\n")
+                    .append("Body: [Body 1. otázky]\n\n")
 
-                    .append("2. [Text 2. otázky]\n\n")
+                    .append("2. [Text 2. otázky]\n")
+                    .append("Body: [Body 2. otázky]\n\n")
 
                     .append("... a tak dále ...\n\n")
 
                     .append("Správné odpovědi:\n")
-                    .append("1. [Správná odpově 1]\n")
+                    .append("1. [Správná odpověď 1]\n")
                     .append("Vysvětlení: [Vysvětlení 1. otázky]\n\n")
 
-                    .append("2. [Správná odpově 2]\n")
+                    .append("2. [Správná odpověď 2]\n")
                     .append("Vysvětlení: [Vysvětlení 2. otázky]\n\n")
 
-                    .append("... a tak dále ...");
+                    .append("... a tak dále ...\n\n");
         }
 
-        // Add the system prompt to the messages list
-        JsonObject systemMessage = new JsonObject();
-        systemMessage.addProperty("role", "system");
-        systemMessage.addProperty("content", setContextPrompt.toString());
-        messages.add(systemMessage);
+        setContextPrompt.append("Maximální počet bodů: [Maximální počet bodů]\n");
 
-        // Confirm that AI understands
-        String assistantResponse = askAI("");
-        if (assistantResponse != null) {
-            System.out.println("[INFO] - AI Assistant Context is set.");
-        }
+        return setContextPrompt.toString();
     }
 
     public String generateTest(Test test) throws SQLException {
@@ -174,12 +170,14 @@ public class AITestGeneratorService extends AIService {
             topics.add(topicObj.getName());
         }
 
-        // Set the context
-        setContextFor(test);
+        // Get the context
+        String context = getContextFor(test);
 
         // Build the user prompt with the test attributes
         StringBuilder userPromptBuilder = new StringBuilder();
-        userPromptBuilder.append("Vygenerujte test s následujícími parametry.")
+        userPromptBuilder
+                .append(context)
+                .append("\nVygenerujte test s následujícími parametry.")
                 .append(" Dodrž stejné formátování, které jsi použil u předchozího testu.")
                 .append(" Důkladně ověř správnost všech informací a faktů ve tvém testu.\n\n")
 
@@ -192,7 +190,7 @@ public class AITestGeneratorService extends AIService {
                 .append("Časový limit: ").append(timeLimit).append(" minut\n");
 
         // Include additional message content if provided
-        if (messageContent != null && !messageContent.isEmpty()) {
+        if (messageContent != null && !messageContent.isEmpty() && !messageContent.isBlank()) {
             userPromptBuilder.append("Dodatečné instrukce: ").append(messageContent).append("\n");
         }
 
@@ -200,10 +198,12 @@ public class AITestGeneratorService extends AIService {
         if (attachedFile != null) {
             try {
                 String fileContent = FileService.readFileContent(attachedFile);
-                userPromptBuilder.append("Obsah přiloženého souboru:\n").append(fileContent).append("\n");
+
+                if (!fileContent.isEmpty() && !fileContent.isBlank()) {
+                    userPromptBuilder.append("Obsah přiloženého souboru:\n").append(fileContent).append("\n");
+                }
             } catch (IOException e) {
-                System.err.println("[ERROR] - Failed to read the attached file.");
-                e.printStackTrace();
+                System.err.println("[ERROR] - Failed to read the attached file. Error: " + e.getMessage());
             }
         }
 
@@ -211,22 +211,20 @@ public class AITestGeneratorService extends AIService {
         messages.add(userPromptJson);
 
         // Send the prompt to the AI and get the response
-        String response = askAI(messages);
+        String response = this.askAI(messages);
+
+        System.out.println("[INFO] - Assistant response:\n" + response + "\n");
+
+        AIValidatorService validator = new AIValidatorService();
 
         // Validate the output and handle corrections
-        response = AIValidatorService.validateOutput(response, this, test);
+        response = validator.validateOutput(response, this, test);
 
         if (response != null) {
-            // Fact-check the validated response
-            response = AIValidatorService.factCheckTest(response, this, test);
-
-            if (response != null) {
-                return response;
-            } else {
-                return null;
-            }
+            // Fact-check the validated response using the same validator instance
+            response = validator.factCheckTest(response, this, test);
+            return response;
         } else {
-            System.err.println("[WARNING] - The assistant could not produce a valid test after multiple attempts.");
             return null;
         }
     }

@@ -11,56 +11,57 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class AIService {
-    protected static URL url;
-
+    protected static final String OPENAI_API_KEY = System.getenv("OPENAI_API_KEY");
     protected static final String OPENAI_API_URL = "https://api.openai.com/v1/chat/completions";
-    protected static final String OPENAI_API_KEY = "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";
     protected static final String OPENAI_MODEL = "gpt-3.5-turbo";
     protected static final double OPENAI_TEMPERATURE = 0.7;
+
+    protected static URL url;
+    private JsonArray conversationHistory;
 
     public AIService() {
         try {
             // Set up the connection URL
             url = new URL(OPENAI_API_URL);
+            // Initialize the conversation history
+            conversationHistory = new JsonArray();
         } catch (IOException e) {
             System.err.println("[ERROR] - Failed to set up the connection to the OpenAI API");
             e.printStackTrace();
         }
     }
 
+    // Method to send a single prompt
     public String askAI(String userPrompt) {
-        if (userPrompt == null || userPrompt.isEmpty() || userPrompt.isBlank()) {
+        if (userPrompt == null) {
             System.err.println("[ERROR] - User prompt is null or empty.");
             return null;
         }
 
-        // Prepare the messages array
-        JsonArray messagesArray = new JsonArray();
-
-        // Add the user's message
+        // Add the user's message to the conversation history
         JsonObject userMessage = new JsonObject();
         userMessage.addProperty("role", "user");
         userMessage.addProperty("content", userPrompt);
-        messagesArray.add(userMessage);
+        conversationHistory.add(userMessage);
 
-        // Call the helper method
-        return sendRequestToAI(messagesArray);
+        // Call the helper method with the entire conversation history
+        return sendRequestToAI(conversationHistory);
     }
 
+    // Method to send a list of messages
     public String askAI(ArrayList<JsonObject> messagesToSend) {
         if (messagesToSend == null || messagesToSend.isEmpty()) {
             System.err.println("[ERROR] - Messages to send are null or empty.");
             return null;
         }
 
-        // Prepare the messages array
-        JsonArray messagesArray = new JsonArray();
+        // Add the messages to the conversation history
         for (JsonObject message : messagesToSend) {
-            messagesArray.add(message);
+            conversationHistory.add(message);
         }
 
-        // Call the helper method
-        return sendRequestToAI(messagesArray);
+        // Call the helper method with the updated conversation history
+        return sendRequestToAI(conversationHistory);
     }
 
     // Private helper method to handle the request
@@ -87,8 +88,8 @@ public class AIService {
 
             // Read the response
             int statusCode = conn.getResponseCode();
-            // Success response
             if (statusCode == 200) {
+                // Success response
                 try (BufferedReader br = new BufferedReader(
                         new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
 
@@ -108,6 +109,12 @@ public class AIService {
                             .getAsJsonObject("message")
                             .get("content")
                             .getAsString();
+
+                    // Add the assistant's message to the conversation history
+                    JsonObject assistantMessage = new JsonObject();
+                    assistantMessage.addProperty("role", "assistant");
+                    assistantMessage.addProperty("content", assistantResponse);
+                    conversationHistory.add(assistantMessage);
 
                     // Return the assistant's response
                     return assistantResponse;

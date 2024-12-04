@@ -80,7 +80,7 @@ public class MainController {
             Prompt prompt;
             Test test;
 
-            boolean isFileAttached = this.fileAttached != null;
+            boolean isFileAttached = fileAttached != null;
             boolean isMessage = !message.getText().isEmpty() && !message.getText().isBlank();
             int promptId;
 
@@ -104,8 +104,6 @@ public class MainController {
             );
 
             if ((promptId = PromptManager.insert(prompt)) != -1) {
-                System.out.println("[INFO] - Prompt " + prompt + " inserted into database.");
-
                 if (TestManager.insert(test, promptId)) {
                     try {
                         // Generate the test
