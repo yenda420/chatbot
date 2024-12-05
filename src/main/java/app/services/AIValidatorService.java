@@ -7,7 +7,7 @@ import java.util.*;
 
 public class AIValidatorService extends AIService {
     private static final int MAX_ATTEMPTS = 5;
-    private int attempts = 0; // Instance variable to keep track of attempts
+    private int attempts = 0;
 
     // Validates the assistant's response and handles corrections
     public String validateOutput(String assistantResponse, AITestGeneratorService ai, Test test) {
@@ -78,10 +78,12 @@ public class AIValidatorService extends AIService {
         while (endIndex >= 0 && lines[endIndex].trim().isEmpty()) {
             endIndex--;
         }
+
         if (startIndex > endIndex) {
             issues.add("Text testu je prázdný.");
             return issues;
         }
+
         lines = Arrays.copyOfRange(lines, startIndex, endIndex + 1);
 
         // Required sections
@@ -92,6 +94,8 @@ public class AIValidatorService extends AIService {
                 "Obtížnost:",
                 "Časový limit:"
         };
+
+        // Using HashSet for effective lookup
         Set<String> requiredSectionsSet = new HashSet<>(Arrays.asList(requiredSections));
         Set<String> foundSections = new HashSet<>();
 
@@ -126,6 +130,7 @@ public class AIValidatorService extends AIService {
         while (index < lines.length) {
             String line = lines[index].trim();
 
+            // Does line match a question or answer placeholder
             if (line.matches(".*\\[Otázka \\d+\\].*") || line.matches(".*\\[Odpověď \\d+\\].*")) {
                 issues.add("Používáš placeholdery jako '[Otázka " + questionCount + "]' nebo '[Odpověď " + answerCount + "]'. Prosím, nahraď je skutečnými otázkami a odpověďmi.");
             }
@@ -139,7 +144,7 @@ public class AIValidatorService extends AIService {
 
             if (line.startsWith("Maximální počet bodů:")) {
                 foundMaxPoints = true;
-                inAnswers = false; // Reset the inAnswers flag
+                inAnswers = false;
                 index++;
                 continue;
             }
@@ -149,25 +154,27 @@ public class AIValidatorService extends AIService {
                 continue;
             }
 
+            // Before questions
             if (!inQuestions && !inAnswers) {
-                // Before questions
                 if (line.matches("^\\d+\\.\\s+.*")) {
+                    // First questions line, do not increment index here
                     inQuestions = true;
-                    continue; // Do not increment index here
+                    continue;
                 } else {
-                    // Accept any introductory lines or apologies
+                    // Above first questions line
                     index++;
                     continue;
                 }
             }
 
             if (inQuestions) {
+                // Pattern example: "1. Otazka"
                 if (line.matches("^\\d+\\.\\s+.*")) {
+                    index++;
                     questionCount++;
                     int questionNumber = questionCount;
-                    index++;
 
-                    // Expect 'Body: [number]'
+                    // Start with 'Body: [number]'
                     if (index < lines.length && lines[index].trim().startsWith("Body:")) {
                         index++;
                     } else {
@@ -175,9 +182,9 @@ public class AIValidatorService extends AIService {
                     }
 
                     if (questionType == QuestionTypeEnum.YES_NO) {
-                        // Expect 'Ano / Ne' with flexible matching
                         if (index < lines.length) {
                             String optionLine = lines[index].trim();
+                            // Does optionLine exactly match "ano / ne" (case-insensitive)
                             if (optionLine.matches("(?i)^(ano\\s*/\\s*ne)$")) {
                                 index++;
                             } else {
@@ -195,24 +202,27 @@ public class AIValidatorService extends AIService {
                     index++;
                 }
             } else if (inAnswers) {
+                // Pattern example: "1. Odpověď"
                 if (line.matches("^\\d+\\.\\s+.*")) {
+                    index++;
                     answerCount++;
                     int answerNumber = answerCount;
-                    index++;
 
-                    boolean foundVysvetleni = false;
+                    boolean foundExplanation = false;
 
-                    // Read lines until 'Vysvětlení:' is found or next answer starts
+                    // Read lines until explanation is found or next answer starts
                     while (index < lines.length) {
                         String currentLine = lines[index].trim();
 
                         if (currentLine.startsWith("Vysvětlení:")) {
-                            foundVysvetleni = true;
+                            foundExplanation = true;
                             index++;
+
                             // Read explanation lines until next answer or end of answers
                             while (index < lines.length) {
                                 String explanationLine = lines[index].trim();
 
+                                // Does the explanation end
                                 if (explanationLine.matches("^\\d+\\.\\s+.*") || explanationLine.startsWith("Maximální počet bodů:")) {
                                     // Reached next answer or end of answers
                                     break;
@@ -222,14 +232,15 @@ public class AIValidatorService extends AIService {
                             }
                             break;
                         } else if (currentLine.matches("^\\d+\\.\\s+.*") || currentLine.startsWith("Maximální počet bodů:")) {
-                            // No 'Vysvětlení:' provided before next answer or end
+                            // No explanation provided before next answer or end
                             break;
                         } else {
                             index++;
                         }
                     }
 
-                    if (!foundVysvetleni && test.getQuestionType() != QuestionTypeEnum.OPEN_ENDED) {
+                    // Add issue only if question type is not open-ended
+                    if (!foundExplanation && test.getQuestionType() != QuestionTypeEnum.OPEN_ENDED) {
                         issues.add("Odpověď " + answerNumber + " nemá 'Vysvětlení:'.");
                     }
                 } else {
@@ -260,7 +271,7 @@ public class AIValidatorService extends AIService {
             issues.add("Chybí 'Maximální počet bodů:'.");
         }
 
-        // Check for incomplete content
+        // Locale.ROOT ensures lower case conversion independent to the language rules
         String responseLowerCase = response.toLowerCase(Locale.ROOT);
         if (responseLowerCase.contains("a tak dále") || responseLowerCase.contains("...") ||
                 responseLowerCase.contains("a podobně") || responseLowerCase.contains("atd")) {
@@ -287,18 +298,18 @@ public class AIValidatorService extends AIService {
 
         if (assistantResponse == null || assistantResponse.isEmpty()) {
             System.err.println("[ERROR] - Failed to get a response from the assistant during fact-checking.");
-            return false; // Assume test has errors if AI does not respond
+            return false;
         }
 
         System.out.println("[INFO] - Assistant response during fact-checking: " + assistantResponse);
 
-        // Parse the assistant's response
-        String responseLower = assistantResponse.trim().toLowerCase(Locale.ROOT);
-        if (responseLower.startsWith("ne")) {
+        // Locale.ROOT ensures lower case conversion independent to the language rules
+        String responseLowerCase = assistantResponse.trim().toLowerCase(Locale.ROOT);
+        if (responseLowerCase.startsWith("ne")) {
             // Assistant indicates no factual errors
             System.out.println("[INFO] - Test fact-checked successfully with no errors.");
             return true;
-        } else if (responseLower.startsWith("ano")) {
+        } else if (responseLowerCase.startsWith("ano")) {
             // Assistant indicates there are factual errors
             System.out.println("[INFO] - Test contains factual errors.");
             return false;
@@ -317,7 +328,6 @@ public class AIValidatorService extends AIService {
         // Remove any leading empty lines
         int startIndex = 0;
         while (startIndex < lines.length && (lines[startIndex].trim().isEmpty() || lines[startIndex].contains("Název testu:"))) {
-            //System.out.println("Start index line " + startIndex + ": " + lines[startIndex]);
             startIndex++;
         }
 
@@ -326,7 +336,6 @@ public class AIValidatorService extends AIService {
         // Remove any trailing empty lines
         int endIndex = lines.length - 1;
         while (endIndex >= 0 && (lines[startIndex].trim().isEmpty() || lines[startIndex].contains("Maximální počet bodů:"))) {
-            //System.out.println("End index line " + endIndex + ": " + lines[endIndex]);
             endIndex--;
         }
 
