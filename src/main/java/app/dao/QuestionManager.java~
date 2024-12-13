@@ -98,7 +98,7 @@ public class QuestionManager {
 
                     System.out.println("[INFO] - Question " + question + " inserted into database.");
                 } catch (SQLException e) {
-                    System.err.println("[ERROR] - Failed to save question " + question + " into database.");
+                    System.err.println("[ERROR] - Failed to insert question " + question + " into database.");
                     e.printStackTrace();
                     return false;
                 }

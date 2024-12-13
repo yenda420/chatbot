@@ -1,7 +1,7 @@
 package app.enums;
 
 public enum DifficultyEnum {
-    EASY("Lehká"), MEDIUM("Těžká"), HARD("Střední");
+    EASY("Lehká"), MEDIUM("Střední"), HARD("Těžká");
 
     private final String name;
 
@@ -14,6 +14,7 @@ public enum DifficultyEnum {
         return name;
     }
 
+    // Returns the difficulty enum by name
     public static DifficultyEnum fromString(String name) {
         for (DifficultyEnum difficulty : DifficultyEnum.values()) {
             if (difficulty.name.equalsIgnoreCase(name)) {

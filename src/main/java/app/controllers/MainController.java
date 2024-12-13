@@ -4,14 +4,13 @@ import app.dao.PromptManager;
 import app.dao.QuestionManager;
 import app.dao.TestManager;
 import app.dao.TopicManager;
-
 import app.enums.DifficultyEnum;
 import app.enums.QuestionTypeEnum;
 import app.models.Prompt;
 import app.models.Test;
 import app.models.Topic;
 import app.services.AITestGeneratorService;
-import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -19,6 +18,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.stage.FileChooser;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
@@ -48,7 +48,7 @@ public class MainController {
 
     private File fileAttached;
 
-    ArrayList<Topic> checkedTopics;
+    private ArrayList<Topic> checkedTopics;
 
     @FXML
     private void initialize() {
@@ -73,28 +73,13 @@ public class MainController {
     }
 
     @FXML
-    public void handleCreateTest(ActionEvent actionEvent) throws SQLException {
+    public void handleCreateTest() throws SQLException, FileNotFoundException {
         if (validateInputs()) {
             AITestGeneratorService aiTestGeneratorService = new AITestGeneratorService();
 
-            Prompt prompt;
-            Test test;
+            Prompt prompt = new Prompt(message.getText(), fileAttached, checkedTopics);
 
-            boolean isFileAttached = fileAttached != null;
-            boolean isMessage = !message.getText().isEmpty() && !message.getText().isBlank();
-            int promptId;
-
-            if (isFileAttached && isMessage) {
-                prompt = new Prompt(message.getText(), fileAttached, checkedTopics, "test");
-            } else if (isFileAttached) {
-                prompt = new Prompt(fileAttached, checkedTopics, "test");
-            } else if (isMessage) {
-                prompt = new Prompt(message.getText(), checkedTopics, "test");
-            } else {
-                prompt = new Prompt(checkedTopics, "test");
-            }
-
-            test = new Test(
+            Test test = new Test(
                     testName.getText(),
                     Integer.parseInt(questionCount.getText()),
                     Integer.parseInt(timeLimit.getText()),
@@ -103,34 +88,53 @@ public class MainController {
                     prompt
             );
 
-            if ((promptId = PromptManager.insert(prompt)) != -1) {
-                if (TestManager.insert(test, promptId)) {
-                    try {
-                        // Generate the test
-                        String testContent = aiTestGeneratorService.generateTest(test);
+            String error = handleTestProcessing(test, prompt, aiTestGeneratorService);
 
-                        // Check if the test was generated successfully
-                        if (testContent != null) {
-                            // Specify the output file path
-                            String outputFilePath = testName.getText() + ".txt";
-
-                            // Write the test to a file
-                            writeTestToFile(testContent, outputFilePath);
-                        } else {
-                            String errorMessage = "AI z vašeho zadání nebylo schopné vygenerovat test. Zkuste to, prosím, znovu.";
-                            showErrorAlert(testName, errorMessage);
-                        }
-                    } catch (SQLException e) {
-                        System.err.println("[ERROR] - An error occurred while working with the database.");
-                        e.printStackTrace();
-                    }
-
-                } else {
-                    System.err.println("[ERROR] - Failed to insert test " + test + "  into database.");
-                }
+            if (error == null) {
+                // Saving the test to the downloads folder + other actions will go here
+                System.out.println("Success!");
             } else {
-                System.err.println("[ERROR] - Failed to insert prompt " + prompt + " into database.");
+                showErrorAlert(testName, error);
             }
+        }
+    }
+
+    private String handleTestProcessing(Test test, Prompt prompt, AITestGeneratorService ai) throws SQLException, FileNotFoundException {
+        // Using early return
+
+        String technicalError = "Test se nepodařilo vygenerovat z technických důvodů. Zkuste to, prosím později.";
+        String fileError = "Test se nepodařilo zapsat do souboru z technických důvodů. Zkuste to, prosím později.";
+
+        int promptId = PromptManager.save(prompt);
+
+        if (promptId == -1) {
+            System.err.println("[ERROR] - Failed to save prompt " + prompt + " into database.");
+            return technicalError;
+        }
+
+        if (!TestManager.save(test, promptId)) {
+            System.err.println("[ERROR] - Failed to save test " + test + "  into database.");
+            return technicalError;
+        }
+
+        try {
+            String testContent = ai.generateTest(test);
+
+            // Check if the test was generated successfully
+            if (testContent == null)
+                return "AI z vašeho zadání nebylo schopné vygenerovat test. Zkuste to, prosím, znovu.";
+
+            if (!TestManager.insertTestData(testContent, test, promptId))
+                return technicalError;
+
+            if (!writeTestToFile(testContent, testName.getText() + ".txt"))
+                return fileError;
+
+            return null;
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - An error occurred while working with the database.");
+            e.printStackTrace();
+            return technicalError;
         }
     }
 

@@ -1,9 +1,11 @@
 package app.services;
 
+import app.dao.TestManager;
 import app.enums.QuestionTypeEnum;
 import app.models.Test;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class AIValidatorService extends AIService {
     private static final int MAX_ATTEMPTS = 5;
@@ -15,6 +17,11 @@ public class AIValidatorService extends AIService {
 
         while (attempts < MAX_ATTEMPTS) {
             List<String> issues = checkFormatIssues(assistantResponse, test);
+
+            if (issues == null) {
+                System.err.println("[ERROR] - Failed to check format issues.");
+                return null;
+            }
 
             if (issues.isEmpty()) {
                 AIValidatorService validator = new AIValidatorService();
@@ -40,7 +47,8 @@ public class AIValidatorService extends AIService {
 
             correctionPrompt
                     .append("Prosím, oprav tyto problémy a znovu vytvoř celý test ve správném formátu. ")
-                    .append("Ujisti se, že test obsahuje všech ").append(test.getNumberOfQuestions()).append(" kompletních otázek, každá s jednou správnou odpovědí a vysvětlením. ")
+                    .append("Ujisti se, že test obsahuje všech ").append(test.getNumberOfQuestions())
+                    .append(" kompletních otázek, každá s jednou správnou odpovědí a vysvětlením. ")
                     .append("Nepoužívej placeholdery ani zkratky. ")
                     .append("Dodrž přesně formátování uvedené v původním zadání.");
 
@@ -65,7 +73,14 @@ public class AIValidatorService extends AIService {
 
         QuestionTypeEnum questionType = test.getQuestionType();
         List<String> issues = new ArrayList<>();
-        String[] lines = response.split("\n");
+        String[] lines;
+
+        try {
+            lines = response.split("\n");
+        } catch (Exception e) {
+            System.err.println("[ERROR] - Failed to split response into lines.");
+            return null;
+        }
 
         // Remove any leading empty lines
         int startIndex = 0;
@@ -87,13 +102,7 @@ public class AIValidatorService extends AIService {
         lines = Arrays.copyOfRange(lines, startIndex, endIndex + 1);
 
         // Required sections
-        String[] requiredSections = {
-                "Název testu:",
-                "Předmět:",
-                "Témata:",
-                "Obtížnost:",
-                "Časový limit:"
-        };
+        String[] requiredSections = TestManager.requiredSections;
 
         // Using HashSet for effective lookup
         Set<String> requiredSectionsSet = new HashSet<>(Arrays.asList(requiredSections));
@@ -128,6 +137,8 @@ public class AIValidatorService extends AIService {
         int index = 0;
 
         while (index < lines.length) {
+            Pattern questionPattern = Pattern.compile("^\\d+\\.\\s+.*");
+
             String line = lines[index].trim();
 
             // Does line match a question or answer placeholder
@@ -149,6 +160,7 @@ public class AIValidatorService extends AIService {
                 continue;
             }
 
+            // Skip required sections
             if (requiredSectionsSet.contains(line.split(":")[0] + ":")) {
                 index++;
                 continue;
@@ -156,7 +168,7 @@ public class AIValidatorService extends AIService {
 
             // Before questions
             if (!inQuestions && !inAnswers) {
-                if (line.matches("^\\d+\\.\\s+.*")) {
+                if (questionPattern.matcher(line).matches()) {
                     // First questions line, do not increment index here
                     inQuestions = true;
                     continue;
@@ -169,7 +181,7 @@ public class AIValidatorService extends AIService {
 
             if (inQuestions) {
                 // Pattern example: "1. Otazka"
-                if (line.matches("^\\d+\\.\\s+.*")) {
+                if (questionPattern.matcher(line).matches()) {
                     index++;
                     questionCount++;
                     int questionNumber = questionCount;
@@ -203,7 +215,7 @@ public class AIValidatorService extends AIService {
                 }
             } else if (inAnswers) {
                 // Pattern example: "1. Odpověď"
-                if (line.matches("^\\d+\\.\\s+.*")) {
+                if (questionPattern.matcher(line).matches()) {
                     index++;
                     answerCount++;
                     int answerNumber = answerCount;
@@ -223,7 +235,7 @@ public class AIValidatorService extends AIService {
                                 String explanationLine = lines[index].trim();
 
                                 // Does the explanation end
-                                if (explanationLine.matches("^\\d+\\.\\s+.*") || explanationLine.startsWith("Maximální počet bodů:")) {
+                                if (questionPattern.matcher(explanationLine).matches() || explanationLine.startsWith("Maximální počet bodů:")) {
                                     // Reached next answer or end of answers
                                     break;
                                 }
@@ -231,7 +243,7 @@ public class AIValidatorService extends AIService {
                                 index++;
                             }
                             break;
-                        } else if (currentLine.matches("^\\d+\\.\\s+.*") || currentLine.startsWith("Maximální počet bodů:")) {
+                        } else if (questionPattern.matcher(currentLine).matches() || currentLine.startsWith("Maximální počet bodů:")) {
                             // No explanation provided before next answer or end
                             break;
                         } else {
@@ -273,8 +285,7 @@ public class AIValidatorService extends AIService {
 
         // Locale.ROOT ensures lower case conversion independent to the language rules
         String responseLowerCase = response.toLowerCase(Locale.ROOT);
-        if (responseLowerCase.contains("a tak dále") || responseLowerCase.contains("...") ||
-                responseLowerCase.contains("a podobně") || responseLowerCase.contains("atd")) {
+        if (responseLowerCase.contains("a tak dále") || responseLowerCase.contains("...")) {
             issues.add("Zdá se, že test není kompletní. Prosím, vypiš všechny otázky a odpovědi v plném znění, " +
                     "bez použití zkratek jako '... a tak dále ...', nebo '...' a podobně. " +
                     "Ke každé otázce **musí** být právě jedna správná odpověď níže v sekci 'Správné odpovědi'.");
@@ -286,7 +297,7 @@ public class AIValidatorService extends AIService {
     public boolean isFactuallyCorrect(String testContent) {
         AIService ai = new AIService();
 
-        System.out.println("[INFO] - Fact-checking the test.");
+        System.out.println("[INFO] - Fact-checking the test...");
 
         String factCheckPrompt = "Prosím, proveď kontrolu faktických chyb v následujícím testu. "
                 + "Jsou v testu nějaké faktické chyby v odpovědích nebo vysvětleních? "
@@ -301,8 +312,6 @@ public class AIValidatorService extends AIService {
             return false;
         }
 
-        System.out.println("[INFO] - Assistant response during fact-checking: " + assistantResponse);
-
         // Locale.ROOT ensures lower case conversion independent to the language rules
         String responseLowerCase = assistantResponse.trim().toLowerCase(Locale.ROOT);
         if (responseLowerCase.startsWith("ne")) {
@@ -311,11 +320,11 @@ public class AIValidatorService extends AIService {
             return true;
         } else if (responseLowerCase.startsWith("ano")) {
             // Assistant indicates there are factual errors
-            System.out.println("[INFO] - Test contains factual errors.");
+            System.err.println("[WARNING] - Test contains factual errors.");
             return false;
         } else {
             // Unclear response, defaulting to false
-            System.out.println("[WARNING] - Assistant response unclear. Assuming test has factual errors.");
+            System.err.println("[WARNING] - Assistant response unclear. Assuming test has factual errors.");
             return false;
         }
     }
@@ -323,30 +332,35 @@ public class AIValidatorService extends AIService {
     // This method assumes the test is already correctly formatted
     // The testContent parameter has to contain "Název testu:" and "Maximální počet bodů:"
     private String removeUnwantedLines(String testContent) {
-        String[] lines = testContent.split("\n");
+        try {
+            String[] lines = testContent.split("\n");
 
-        // Remove any leading empty lines
-        int startIndex = 0;
-        while (startIndex < lines.length && (lines[startIndex].trim().isEmpty() || lines[startIndex].contains("Název testu:"))) {
-            startIndex++;
-        }
+            // Remove any leading empty lines
+            int startIndex = 0;
+            while (startIndex < lines.length && (lines[startIndex].trim().isEmpty() || lines[startIndex].contains("Název testu:"))) {
+                startIndex++;
+            }
 
-        startIndex--;
+            startIndex--;
 
-        // Remove any trailing empty lines
-        int endIndex = lines.length - 1;
-        while (endIndex >= 0 && (lines[startIndex].trim().isEmpty() || lines[startIndex].contains("Maximální počet bodů:"))) {
-            endIndex--;
-        }
+            // Remove any trailing empty lines
+            int endIndex = lines.length - 1;
+            while (endIndex >= 0 && (lines[startIndex].trim().isEmpty() || TestManager.lineContainsAnyOf(TestManager.requiredSections, lines[endIndex]))) {
+                endIndex--;
+            }
 
-        if (startIndex > endIndex) {
-            System.err.println("[ERROR] - The testContent parametr wasnt formatted correctly.");
+            if (startIndex > endIndex) {
+                System.err.println("[ERROR] - The testContent parametr wasnt formatted correctly.");
+                return null;
+            }
+
+            // Remove all lines except the ones between startIndex and endIndex
+            lines = Arrays.copyOfRange(lines, startIndex, endIndex + 1);
+
+            return String.join("\n", lines);
+        } catch (Exception e) {
+            System.err.println("[ERROR] - Failed to remove unwanted lines from the testContent: " + e.getMessage());
             return null;
         }
-
-        // Remove all lines except the ones between startIndex and endIndex
-        lines = Arrays.copyOfRange(lines, startIndex, endIndex + 1);
-
-        return String.join("\n", lines);
     }
 }

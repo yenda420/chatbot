@@ -16,6 +16,7 @@ public enum QuestionTypeEnum {
         return name;
     }
 
+    // Returns the question type enum by name
     public static QuestionTypeEnum fromString(String name) {
         for (QuestionTypeEnum questionType : QuestionTypeEnum.values()) {
             if (questionType.name.equalsIgnoreCase(name)) {

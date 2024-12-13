@@ -1,7 +1,6 @@
 package app.enums;
 
 import app.models.Topic;
-import app.enums.SubjectEnum;
 
 public enum TopicEnum {
     // Topics for Český jazyk

@@ -25,7 +25,7 @@ public class FileService {
         } catch (IOException e) {
             System.err.println("[ERROR] - Failed to write test to file.");
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 }

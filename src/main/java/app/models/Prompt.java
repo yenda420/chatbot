@@ -9,32 +9,10 @@ public class Prompt {
     private ArrayList<Topic> topics;
     private String tags;
 
-    public Prompt(String message, File attachedFile, ArrayList<Topic> topics, String tags) {
+    public Prompt(String message, File attachedFile, ArrayList<Topic> topics) {
         this.message = message;
         this.attachedFile = attachedFile;
         this.topics = topics;
-        this.tags = tags;
-    }
-
-    public Prompt(File attachedFile, ArrayList<Topic> topics, String tags) {
-        this.attachedFile = attachedFile;
-        this.topics = topics;
-        this.tags = tags;
-    }
-
-    public Prompt(String message, ArrayList<Topic> topics, String tags) {
-        this.message = message;
-        this.topics = topics;
-        this.tags = tags;
-    }
-
-    public Prompt(ArrayList<Topic> topics, String tags) {
-        this.topics = topics;
-        this.tags = tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
     }
 
     public String getMessage() {

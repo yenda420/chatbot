@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public class SubjectManager {
     private static DatabaseService db;
-    private static ArrayList<Subject> defaultSubjects = new ArrayList<>();
+    private static final ArrayList<Subject> defaultSubjects = new ArrayList<>();
 
     public SubjectManager() {
         db = new DatabaseService();
@@ -21,60 +21,43 @@ public class SubjectManager {
         }
     }
 
-    public static DatabaseService getDb() {
-        return db;
-    }
-
-    public static ArrayList<Subject> getDefaultSubjects() {
-        return defaultSubjects;
-    }
-
-    public static boolean insert(Subject subject) throws SQLException {
+    public static boolean save(Subject subject) throws SQLException {
         if (db.getConn() != null) {
             if (!DatabaseService.instanceInDatabase("subjects", "shortage", subject.getShortage())) {
-                if (subject.getDescription() != null) {
-                    String sql = "INSERT INTO subjects (name, shortage, description) VALUES (?, ?, ?)";
+                boolean descriptionExists = subject.getDescription() != null;
 
-                    try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
-                        pstmt.setString(1, subject.getName());
-                        pstmt.setString(2, subject.getShortage());
-                        pstmt.setString(3, subject.getDescription());
-                        pstmt.executeUpdate();
-                        System.out.println("[INFO] - Subject " + subject.getName() + " inserted into database.");
-                        return true;
-                    } catch (SQLException e) {
-                        System.err.println("[ERROR] - Failed to insert subject " + subject.getName() + "  into database.");
-                        e.printStackTrace();
-                    }
-                } else {
-                    String sql = "INSERT INTO subjects (name, shortage) VALUES (?, ?)";
+                String sql = descriptionExists ?
+                        "INSERT INTO subjects (name, shortage, description) VALUES (?, ?, ?)" :
+                        "INSERT INTO subjects (name, shortage) VALUES (?, ?)";
 
-                    try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
-                        pstmt.setString(1, subject.getName());
-                        pstmt.setString(2, subject.getShortage());
-                        pstmt.executeUpdate();
-                        System.out.println("[INFO] - Subject " + subject.getName() + "  inserted into database.");
-                        return true;
-                    } catch (SQLException e) {
-                        System.err.println("[ERROR] - Failed to insert subject " + subject.getName() + "  into database.");
-                        e.printStackTrace();
-                    }
+                try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                    pstmt.setString(1, subject.getName());
+                    pstmt.setString(2, subject.getShortage());
+                    if (descriptionExists) pstmt.setString(3, subject.getDescription());
+
+                    pstmt.executeUpdate();
+
+                    System.out.println("[INFO] - Subject " + subject.getName() + " inserted into database.");
+                    return true;
+                } catch (SQLException e) {
+                    System.err.println("[ERROR] - Failed to save subject " + subject.getName() + "  into database.");
+                    e.printStackTrace();
+                    return false;
                 }
             }
         }
         return false;
     }
 
-    public static boolean insertDefaultSubjects() {
+    public static void insertDefaultSubjects() {
         for (Subject subject : defaultSubjects) {
             try {
-                insert(subject);
+                save(subject);
             } catch (SQLException e) {
                 e.printStackTrace();
-                return false;
+                return;
             }
         }
-        return true;
     }
 
     public static int getSubjectId(Subject subject) throws SQLException {

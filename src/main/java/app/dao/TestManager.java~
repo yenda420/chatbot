@@ -90,7 +90,6 @@ public class TestManager {
             // Remove any unwanted lines
             lines = Arrays.copyOfRange(lines, startIndex, endIndex);
 
-            // Current state variables
             boolean inAnswers;
             boolean inQuestions;
 
@@ -112,7 +111,6 @@ public class TestManager {
                 String line = lines[index].trim();
 
                 if (line.equalsIgnoreCase("Správné odpovědi:")) {
-                    // Switch to answers
                     inQuestions = false;
                     inAnswers = true;
                     index++;
@@ -120,16 +118,16 @@ public class TestManager {
                 }
 
                 if (line.startsWith("Maximální počet bodů:")) {
-                    // End of test
                     break;
                 }
 
                 if (inQuestions) {
+                    // Process Questions
                     if (questionPattern.matcher(line).matches()) {
                         // Get the text after the question number
                         String questionText = line.substring(line.indexOf('.') + 1).trim();
 
-                        // Check if next line exists
+                        // Check if index + 1 is within bounds
                         if (index + 1 >= lines.length) {
                             System.err.println("[ERROR] - Unexpected end of content when reading points for question " + (questionCount + 1));
                             return false;
@@ -141,7 +139,6 @@ public class TestManager {
                             System.err.println("[ERROR] - Invalid format for points on line " + (index + 2));
                             return false;
                         }
-
                         String pointsString = pointParts[1].trim().split(" ")[0]; // Handle cases like '5 bodů'
                         int points = Integer.parseInt(pointsString);
 
@@ -152,6 +149,7 @@ public class TestManager {
                         List<Answer> answersForQuestion = new ArrayList<>();
 
                         if (questionType == QuestionTypeEnum.MULTIPLE_CHOICE) {
+                            // Handle multiple-choice options
                             if (index + 2 >= lines.length) {
                                 System.err.println("[ERROR] - Not enough lines for answers for question " + (questionCount + 1));
                                 return false;
@@ -164,20 +162,23 @@ public class TestManager {
                             index += 3; // Move index past the options
 
                         } else if (questionType == QuestionTypeEnum.YES_NO) {
+                            // Handle 'Ano / Ne' option
                             if (index >= lines.length) {
                                 System.err.println("[ERROR] - Missing 'Ano / Ne' line for question " + (questionCount + 1));
                                 return false;
                             }
 
                             String optionLine = lines[index].trim();
-
                             if (!optionLine.equalsIgnoreCase("Ano / Ne")) {
                                 System.err.println("[ERROR] - Expected 'Ano / Ne' line for question " + (questionCount + 1) + ", but got: '" + optionLine + "'");
                                 return false;
                             }
 
-                            answersForQuestion.add(new Answer("Ano"));
-                            answersForQuestion.add(new Answer("Ne"));
+                            Answer answerYes = new Answer("Ano");
+                            Answer answerNo = new Answer("Ne");
+
+                            answersForQuestion.add(answerYes);
+                            answersForQuestion.add(answerNo);
 
                             index += 1; // Move index past 'Ano / Ne' line
 
@@ -194,10 +195,12 @@ public class TestManager {
 
                             answersForQuestion.add(correctAnswer);
                         } else {
+                            // Unknown question type
                             System.err.println("[ERROR] - Unknown question type for question " + (questionCount + 1));
                             return false;
                         }
 
+                        // Set answers to the question
                         question.setAnswers(answersForQuestion);
                         questions.add(question);
                         questionCount++;
@@ -236,7 +239,6 @@ public class TestManager {
                         String explanation = explanationBuilder.toString().trim();
 
                         if (questionType == QuestionTypeEnum.MULTIPLE_CHOICE) {
-                            // For multiple-choice questions, find the correct option and explanation and set it
                             char correctOptionLetter = correctAnswerText.charAt(0); // 'a', 'b', or 'c'
 
                             // Set the correct answer and explanation
@@ -258,10 +260,8 @@ public class TestManager {
                                     return false;
                             }
                         } else if (questionType == QuestionTypeEnum.YES_NO) {
-                            // For Yes / No questions set the correct option and explanation
+                            // Set the correct answer
                             boolean found = false;
-
-                            // Set isCorrect and explanation if the correct answer is found
                             for (Answer answer : answersForQuestion) {
                                 if (answer.getText().equalsIgnoreCase(correctAnswerText)) {
                                     answer.setCorrect(true);
@@ -270,7 +270,6 @@ public class TestManager {
                                     break;
                                 }
                             }
-
                             if (!found) {
                                 System.err.println("[ERROR] - Correct answer '" + correctAnswerText + "' not found for question " + questionNumber);
                                 return false;
@@ -310,8 +309,7 @@ public class TestManager {
                                 System.err.println("[ERROR] - Failed to save answer: " + answer);
                                 return false;
                             }
-
-                            // Relate answer with the question
+                            // Relate answer with question
                             if (!answer.relate(question)) {
                                 System.err.println("[ERROR] - Failed to relate answer with question: " + answer);
                                 return false;
@@ -322,7 +320,7 @@ public class TestManager {
                         return false;
                     }
 
-                    // Relate question with the test
+                    // Relate question with test
                     if (!question.relate(testId)) {
                         System.err.println("[ERROR] - Failed to relate question with test: " + question);
                         return false;
