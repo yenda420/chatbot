@@ -23,16 +23,16 @@ public class SubjectManager {
 
     public static boolean save(Subject subject) throws SQLException {
         if (db.getConn() != null) {
-            if (!DatabaseService.instanceInDatabase("subjects", "shortage", subject.getShortage())) {
+            if (!DatabaseService.instanceInDatabase("subjects", "abbreviation", subject.getAbbreviation())) {
                 boolean descriptionExists = subject.getDescription() != null;
 
                 String sql = descriptionExists ?
-                        "INSERT INTO subjects (name, shortage, description) VALUES (?, ?, ?)" :
-                        "INSERT INTO subjects (name, shortage) VALUES (?, ?)";
+                        "INSERT INTO subjects (name, abbreviation, description) VALUES (?, ?, ?)" :
+                        "INSERT INTO subjects (name, abbreviation) VALUES (?, ?)";
 
                 try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
                     pstmt.setString(1, subject.getName());
-                    pstmt.setString(2, subject.getShortage());
+                    pstmt.setString(2, subject.getAbbreviation());
                     if (descriptionExists) pstmt.setString(3, subject.getDescription());
 
                     pstmt.executeUpdate();
@@ -61,10 +61,10 @@ public class SubjectManager {
     }
 
     public static int getSubjectId(Subject subject) throws SQLException {
-        String sql = "SELECT subjectId FROM subjects WHERE name = ? AND shortage = ?";
+        String sql = "SELECT subjectId FROM subjects WHERE name = ? AND abbreviation = ?";
         try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
             pstmt.setString(1, subject.getName());
-            pstmt.setString(2, subject.getShortage());
+            pstmt.setString(2, subject.getAbbreviation());
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return rs.getInt("subjectId");
@@ -84,7 +84,7 @@ public class SubjectManager {
                 if (rs.next()) {
                     return new Subject(
                             rs.getString("name"),
-                            rs.getString("shortage"),
+                            rs.getString("abbreviation"),
                             rs.getString("description")
                     );
                 }
@@ -109,7 +109,7 @@ public class SubjectManager {
                             if (rs2.next()) {
                                 return new Subject(
                                         rs2.getString("name"),
-                                        rs2.getString("shortage"),
+                                        rs2.getString("abbreviation"),
                                         rs2.getString("description")
                                 );
                             }

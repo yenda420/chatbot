@@ -20,13 +20,14 @@ public class DatabaseService {
         try {
             if (conn == null || conn.isClosed()) {
                 conn = DriverManager.getConnection(URL, USER, PASSWORD);
+
                 if (!conn.isClosed()) {
                     System.out.println("[INFO] - Database connected.");
                 }
             } else {
                 System.out.println("[INFO] - Using existing database connection.");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.err.println("[ERROR] - Failed to connect to the database.");
             e.printStackTrace();
         }
@@ -37,11 +38,11 @@ public class DatabaseService {
     }
 
     private void createDatabase() {
-        String sql = "CREATE DATABASE IF NOT EXISTS " + DB_NAME + " " +
-                "CHARACTER SET UTF8 COLLATE UTF8_CZECH_CI";
+        String sql = "CREATE DATABASE IF NOT EXISTS " + DB_NAME +
+                " CHARACTER SET UTF8 COLLATE UTF8_CZECH_CI";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.execute();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
             System.out.println("[INFO] - Database '" + DB_NAME + "' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create database '" + DB_NAME + "'.");
@@ -52,8 +53,8 @@ public class DatabaseService {
     private void useDatabase() {
         String sql = "USE " + DB_NAME;
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.execute();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
             System.out.println("[INFO] - Now using database '" + DB_NAME + "'.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to switch to database '" + DB_NAME + "'.");
@@ -65,11 +66,11 @@ public class DatabaseService {
         String sql = "CREATE TABLE IF NOT EXISTS subjects (" +
                 "subjectId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "name VARCHAR(50) UNIQUE NOT NULL, " +
-                "shortage VARCHAR(10) UNIQUE NOT NULL, " +
+                "abbreviation VARCHAR(10) UNIQUE NOT NULL, " +
                 "description LONGTEXT)";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.execute();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
             System.out.println("[INFO] - Table 'subjects' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create table 'subjects'.");
@@ -85,8 +86,8 @@ public class DatabaseService {
                 "description LONGTEXT, " +
                 "FOREIGN KEY (subjectId) REFERENCES subjects(subjectId))";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.execute();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
             System.out.println("[INFO] - Table 'topics' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create table 'topics'.");
@@ -101,8 +102,8 @@ public class DatabaseService {
                 "attachedFile LONGBLOB, " +
                 "tags VARCHAR(255))";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.execute();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
             System.out.println("[INFO] - Table 'prompts' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create table 'prompts'.");
@@ -118,8 +119,8 @@ public class DatabaseService {
                 "FOREIGN KEY (topicId) REFERENCES topics(topicId), " +
                 "FOREIGN KEY (promptId) REFERENCES prompts(promptId))";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.execute();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
             System.out.println("[INFO] - Table 'topics_prompts' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create table 'topics_prompts'.");
@@ -131,12 +132,12 @@ public class DatabaseService {
         String sql = "CREATE TABLE IF NOT EXISTS questions (" +
                 "questionId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "text LONGTEXT UNIQUE NOT NULL, " +
-                "type ENUM('Ano / Ne', 'Výběr z odpověí', 'Otevřená otázka') NOT NULL, " +
+                "type ENUM('Ano / Ne', 'Výběr z odpovědí', 'Otevřená otázka') NOT NULL, " +
                 "difficulty ENUM('Lehká', 'Těžká', 'Střední') NOT NULL, " +
-                "points INT)";
+                "points INT NOT NULL)";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.execute();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
             System.out.println("[INFO] - Table 'questions' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create table 'questions'.");
@@ -144,20 +145,53 @@ public class DatabaseService {
         }
     }
 
-    // This should enforce a One-to-One relationship between Tests and Prompts
+    private void createTableUsers() {
+        String sql = "CREATE TABLE IF NOT EXISTS users (" +
+                "userId INT PRIMARY KEY AUTO_INCREMENT, " +
+                "username VARCHAR(100) UNIQUE NOT NULL, " +
+                "email VARCHAR(100) UNIQUE NOT NULL, " +
+                "passwordHash VARCHAR(255) NOT NULL, " +
+                "role ENUM('Admin', 'User') NOT NULL)";
+
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+            System.out.println("[INFO] - Table 'users' created.");
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - Failed to create table 'users'.");
+            e.printStackTrace();
+        }
+    }
+
+    private void createTableUsersSubjects() {
+        String sql = "CREATE TABLE IF NOT EXISTS users_subjects (" +
+                "userId INT NOT NULL, " +
+                "subjectId INT NOT NULL, " +
+                "PRIMARY KEY (userId, subjectId), " +
+                "FOREIGN KEY (userId) REFERENCES users(userId), " +
+                "FOREIGN KEY (subjectId) REFERENCES subjects(subjectId))";
+
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+            System.out.println("[INFO] - Table 'users_subjects' created.");
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - Failed to create table 'users_subjects'.");
+            e.printStackTrace();
+        }
+    }
+
     private void createTableTests() {
         String sql = "CREATE TABLE IF NOT EXISTS tests (" +
                 "testId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "name VARCHAR(100) NOT NULL, " +
                 "difficulty ENUM('Lehká', 'Těžká', 'Střední') NOT NULL, " +
-                "numberOfQuestions INT, " +
-                "timeLimit INT, " +
-                "promptId INT UNIQUE, " +
+                "numberOfQuestions INT NOT NULL, " +
+                "timeLimit INT NOT NULL, " +
+                "promptId INT UNIQUE NOT NULL, " + 
                 "FOREIGN KEY (promptId) REFERENCES prompts(promptId) " +
                 "ON DELETE CASCADE ON UPDATE CASCADE)";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.execute();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
             System.out.println("[INFO] - Table 'tests' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create table 'tests'.");
@@ -173,8 +207,8 @@ public class DatabaseService {
                 "FOREIGN KEY (questionId) REFERENCES questions(questionId), " +
                 "FOREIGN KEY (testId) REFERENCES tests(testId))";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.execute();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
             System.out.println("[INFO] - Table 'questions_tests' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create table 'questions_tests'.");
@@ -185,10 +219,10 @@ public class DatabaseService {
     private void createTableAnswers() {
         String sql = "CREATE TABLE IF NOT EXISTS answers (" +
                 "answerId INT PRIMARY KEY AUTO_INCREMENT, " +
-                "text LONGTEXT NOT NULL)";
+                "text LONGTEXT UNIQUE NOT NULL)";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.execute();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
             System.out.println("[INFO] - Table 'answers' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create table 'answers'.");
@@ -206,8 +240,8 @@ public class DatabaseService {
                 "FOREIGN KEY (questionId) REFERENCES questions(questionId), " +
                 "FOREIGN KEY (answerId) REFERENCES answers(answerId))";
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.execute();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
             System.out.println("[INFO] - Table 'questions_answers' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create table 'questions_answers'.");
@@ -217,22 +251,24 @@ public class DatabaseService {
 
     public static boolean instanceInDatabase(String table, String column, String instance) throws SQLException {
         String sql = "SELECT * FROM " + table + " WHERE " + column + " = ?";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setString(1, instance);
-        ResultSet resultSet = pstmt.executeQuery();
-
-        return resultSet.next();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, instance);
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                return resultSet.next();
+            }
+        }
     }
 
-    // Specifically for many-to-many relationships
+    // Specifically for Many-to-Many relationships
     public static boolean instanceInDatabase(String table, int firstId, int secondId, String firstColumn, String secondColumn) throws SQLException {
         String sql = "SELECT * FROM " + table + " WHERE " + firstColumn + " = ? AND " + secondColumn + " = ?";
-        PreparedStatement pstmt = conn.prepareStatement(sql);
-        pstmt.setInt(1, firstId);
-        pstmt.setInt(2, secondId);
-        ResultSet resultSet = pstmt.executeQuery();
-
-        return resultSet.next();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, firstId);
+            pstmt.setInt(2, secondId);
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                return resultSet.next();
+            }
+        }
     }
 
     private void insertDefaultData() {
@@ -254,21 +290,23 @@ public class DatabaseService {
         DatabaseService dbService = new DatabaseService();
 
         if (dbService.getConn() != null) {
-            // dbService.dropDatabase(); // Only for testing
+            dbService.dropDatabase(); // Only for testing
             dbService.createDatabase();
             dbService.useDatabase();
+
             dbService.createTableSubjects();
             dbService.createTableTopics();
             dbService.createTablePrompts();
             dbService.createTableTopicsPrompts();
             dbService.createTableQuestions();
+            dbService.createTableUsers();
+            dbService.createTableUsersSubjects();
             dbService.createTableTests();
             dbService.createTableQuestionsTests();
             dbService.createTableAnswers();
             dbService.createTableQuestionsAnswers();
 
             dbService.createAllManagers();
-
             dbService.insertDefaultData();
         } else {
             System.err.println("[ERROR] - Database initialization failed due to connection issues.");
@@ -279,8 +317,8 @@ public class DatabaseService {
     // DELETE THIS METHOD LATER //
     // ======================== //
     private void dropDatabase() {
-        try {
-            conn.createStatement().execute("DROP DATABASE IF EXISTS " + DB_NAME);
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("DROP DATABASE IF EXISTS " + DB_NAME);
             System.out.println("[INFO] - Database '" + DB_NAME + "' dropped.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to drop database '" + DB_NAME + "'.");

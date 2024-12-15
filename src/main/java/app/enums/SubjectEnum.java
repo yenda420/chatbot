@@ -10,8 +10,8 @@ public enum SubjectEnum {
     private final Subject subject;
 
     // Enum constructor
-    SubjectEnum(String name, String shortage) {
-        this.subject = new Subject(name, shortage);
+    SubjectEnum(String name, String abbreviation) {
+        this.subject = new Subject(name, abbreviation);
     }
 
     // Getter to return the Subject instance

@@ -2,26 +2,26 @@ package app.models;
 
 public class Subject {
     private String name;
-    private String shortage;
+    private String abbreviation;
     private String description;
 
-    public Subject(String name, String shortage, String description) {
+    public Subject(String name, String abbreviation, String description) {
         this.name = name;
-        this.shortage = shortage;
+        this.abbreviation = abbreviation;
         this.description = description;
     }
 
-    public Subject(String name, String shortage) {
+    public Subject(String name, String abbreviation) {
         this.name = name;
-        this.shortage = shortage;
+        this.abbreviation = abbreviation;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getShortage() {
-        return shortage;
+    public String getAbbreviation() {
+        return abbreviation;
     }
 
     public String getDescription() {
@@ -32,7 +32,7 @@ public class Subject {
     public String toString() {
         return "Subject{" +
                 "name='" + name + '\'' +
-                ", shortage='" + shortage + '\'' +
+                ", abbreviation='" + abbreviation + '\'' +
                 ", description='" + description + '\'' +
                 '}';
     }
