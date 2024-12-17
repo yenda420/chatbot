@@ -12,9 +12,9 @@ import java.io.IOException;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        // DatabaseService.initialize();
+        DatabaseService.initialize();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/app/fxml/main.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/app/fxml/register-view.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
 
@@ -22,7 +22,7 @@ public class App extends Application {
 
         stage.setTitle("Generátor testů");
         stage.setScene(scene);
-        // stage.setFullScreen(true);
+        stage.setFullScreen(true);
         stage.show();
     }
 

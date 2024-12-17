@@ -84,7 +84,7 @@ public class DatabaseService {
                 "subjectId INT NOT NULL, " +
                 "name VARCHAR(100) UNIQUE NOT NULL, " +
                 "description LONGTEXT, " +
-                "FOREIGN KEY (subjectId) REFERENCES subjects(subjectId))";
+                "CONSTRAINT FK_TOPICS_SUBJECTS FOREIGN KEY (subjectId) REFERENCES subjects (subjectId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -116,8 +116,8 @@ public class DatabaseService {
                 "topicId INT NOT NULL, " +
                 "promptId INT NOT NULL, " +
                 "PRIMARY KEY (topicId, promptId), " +
-                "FOREIGN KEY (topicId) REFERENCES topics(topicId), " +
-                "FOREIGN KEY (promptId) REFERENCES prompts(promptId))";
+                "CONSTRAINT FK_TOPICS_PROMPTS_TOPICS FOREIGN KEY (topicId) REFERENCES topics (topicId) ON DELETE CASCADE ON UPDATE CASCADE, " +
+                "CONSTRAINT FK_TOPICS_PROMPTS_PROMPTS FOREIGN KEY (promptId) REFERENCES prompts (promptId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -167,8 +167,8 @@ public class DatabaseService {
                 "userId INT NOT NULL, " +
                 "subjectId INT NOT NULL, " +
                 "PRIMARY KEY (userId, subjectId), " +
-                "FOREIGN KEY (userId) REFERENCES users(userId), " +
-                "FOREIGN KEY (subjectId) REFERENCES subjects(subjectId))";
+                "CONSTRAINT FK_USERS_SUBJECTS_USERS FOREIGN KEY (userId) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE, " +
+                "CONSTRAINT FK_USERS_SUBJECTS_SUBJECTS FOREIGN KEY (subjectId) REFERENCES subjects (subjectId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -187,8 +187,9 @@ public class DatabaseService {
                 "numberOfQuestions INT NOT NULL, " +
                 "timeLimit INT NOT NULL, " +
                 "promptId INT UNIQUE NOT NULL, " +
-                "FOREIGN KEY (promptId) REFERENCES prompts(promptId) " +
-                "ON DELETE CASCADE ON UPDATE CASCADE)";
+                "fromUser INT NOT NULL, " +
+                "CONSTRAINT FK_TESTS_PROMPTS FOREIGN KEY (promptId) REFERENCES prompts (promptId) ON DELETE CASCADE ON UPDATE CASCADE, " +
+                "CONSTRAINT FK_TESTS_USERS FOREIGN KEY (fromUser) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -204,8 +205,8 @@ public class DatabaseService {
                 "questionId INT NOT NULL, " +
                 "testId INT NOT NULL, " +
                 "PRIMARY KEY (questionId, testId), " +
-                "FOREIGN KEY (questionId) REFERENCES questions(questionId), " +
-                "FOREIGN KEY (testId) REFERENCES tests(testId))";
+                "CONSTRAINT FK_QUESTIONS_TESTS_QUESTIONS FOREIGN KEY (questionId) REFERENCES questions (questionId) ON DELETE CASCADE ON UPDATE CASCADE, " +
+                "CONSTRAINT FK_QUESTIONS_TESTS_TESTS FOREIGN KEY (testId) REFERENCES tests (testId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -237,8 +238,8 @@ public class DatabaseService {
                 "isCorrect BOOLEAN NOT NULL, " +
                 "explanation LONGTEXT, " +
                 "PRIMARY KEY (questionId, answerId), " +
-                "FOREIGN KEY (questionId) REFERENCES questions(questionId), " +
-                "FOREIGN KEY (answerId) REFERENCES answers(answerId))";
+                "CONSTRAINT FK_QUESTIONS_ANSWERS_QUESTIONS FOREIGN KEY (questionId) REFERENCES questions (questionId) ON DELETE CASCADE ON UPDATE CASCADE, " +
+                "CONSTRAINT FK_QUESTIONS_ANSWERS_ANSWERS FOREIGN KEY (answerId) REFERENCES answers (answerId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -271,9 +272,9 @@ public class DatabaseService {
         }
     }
 
-    private void insertDefaultData() {
-        SubjectManager.insertDefaultSubjects();
-        TopicManager.insertDefaultTopics();
+    private void saveDefaultData() {
+        SubjectManager.saveDefaultSubjects();
+        TopicManager.saveDefaultTopics();
     }
 
     // This will force to create connections to all the managers
@@ -307,7 +308,7 @@ public class DatabaseService {
             dbService.createTableQuestionsAnswers();
 
             dbService.createAllManagers();
-            dbService.insertDefaultData();
+            dbService.saveDefaultData();
         } else {
             System.err.println("[ERROR] - Database initialization failed due to connection issues.");
         }

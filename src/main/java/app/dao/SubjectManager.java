@@ -49,7 +49,7 @@ public class SubjectManager {
         return false;
     }
 
-    public static void insertDefaultSubjects() {
+    public static void saveDefaultSubjects() {
         for (Subject subject : defaultSubjects) {
             try {
                 save(subject);

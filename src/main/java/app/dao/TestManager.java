@@ -70,7 +70,7 @@ public class TestManager {
         return false;
     }
 
-    public static boolean insertTestData(String testContent, Test test, int promptId) {
+    public static boolean saveTestData(String testContent, Test test, int promptId) {
         try {
             Pattern questionPattern = Pattern.compile("^\\d+\\.\\s+.*");
 

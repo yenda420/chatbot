@@ -124,7 +124,7 @@ public class MainController {
             if (testContent == null)
                 return "AI z vašeho zadání nebylo schopné vygenerovat test. Zkuste to, prosím, znovu.";
 
-            if (!TestManager.insertTestData(testContent, test, promptId))
+            if (!TestManager.saveTestData(testContent, test, promptId))
                 return technicalError;
 
             if (!writeTestToFile(testContent, testName.getText() + ".txt"))

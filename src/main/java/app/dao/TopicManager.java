@@ -2,7 +2,6 @@ package app.dao;
 
 import app.enums.TopicEnum;
 import app.models.Topic;
-import app.models.Subject;
 import app.services.DatabaseService;
 
 import java.sql.*;
@@ -58,7 +57,7 @@ public class TopicManager {
         return false;
     }
 
-    public static void insertDefaultTopics() {
+    public static void saveDefaultTopics() {
         for (Topic topic : defaultTopics) {
             try {
                 save(topic);
