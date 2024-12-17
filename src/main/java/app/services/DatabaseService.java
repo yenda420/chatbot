@@ -148,7 +148,8 @@ public class DatabaseService {
     private void createTableUsers() {
         String sql = "CREATE TABLE IF NOT EXISTS users (" +
                 "userId INT PRIMARY KEY AUTO_INCREMENT, " +
-                "username VARCHAR(100) UNIQUE NOT NULL, " +
+                "firstName VARCHAR(50) NOT NULL, " +
+                "lastName VARCHAR(50) NOT NULL, " +
                 "email VARCHAR(100) UNIQUE NOT NULL, " +
                 "passwordHash VARCHAR(255) NOT NULL, " +
                 "role ENUM('Admin', 'User') NOT NULL)";

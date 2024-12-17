@@ -75,6 +75,22 @@ public class SubjectManager {
         }
     }
 
+    public static ArrayList<String> getSubjects() {
+        ArrayList<String> subjects = new ArrayList<>();
+        String sql = "SELECT name FROM subjects";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                subjects.add(rs.getString("name"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return subjects;
+    }
+
     public static Subject getSubject(int subjectId) throws SQLException {
         String sql = "SELECT * FROM subjects WHERE subjectId = ?";
 

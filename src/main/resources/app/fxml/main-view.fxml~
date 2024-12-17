@@ -3,7 +3,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<?import javafx.scene.text.Text?>
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.MainController" styleClass="background">
     <VBox spacing="10" alignment="CENTER" maxWidth="400" styleClass="form-container">
       <Text text="Generátor Testů" styleClass="heading"/>

@@ -77,7 +77,7 @@
 }
 
 .input-list-view .list-cell:selected {
-    -fx-background-color: darkred;
+    -fx-background-color: darkred; /* Adjust to indicate selection */
     -fx-text-fill: white;
 }
 

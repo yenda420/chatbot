@@ -7,7 +7,7 @@
     -fx-padding: 20;
 }
 
-.input, .combobox, .textarea, .button, .submit {
+.input, .button, .submit {
     -fx-background-color: maroon;
     -fx-text-fill: white;
     -fx-background-radius: 20;
@@ -15,6 +15,32 @@
     -fx-font-size: 16px;
     -fx-padding: 8;
     -fx-cursor: hand;
+}
+
+.list-view {
+    -fx-background-color: maroon;
+    -fx-background-radius: 20;
+    -fx-padding: 8;
+    -fx-font-size: 16px;
+}
+
+.list-view .list-cell {
+    -fx-background-color: transparent;  /* Ensures visual consistency */
+    -fx-text-fill: white;
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: darkred;
+    -fx-text-fill: white;
+}
+
+.submit {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.textarea {
+    -fx-control-inner-background: maroon;
 }
 
 .combo-box .list-view {
@@ -38,51 +64,4 @@
     -fx-text-fill: white;
     -fx-font-size: 16px;
     -fx-cursor: hand;
-}
-
-.submit {
-    -fx-background-color: white;
-    -fx-text-fill: black;
-}
-
-.textarea {
-    -fx-control-inner-background: maroon;
-}
-
-.input-list-view {
-    -fx-background-color: maroon;
-    -fx-text-fill: white;
-    -fx-background-radius: 20;
-    -fx-padding: 8;
-    -fx-cursor: hand;
-    -fx-font-size: 16px;
-}
-
-.input-list-view .list-cell {
-    -fx-background-color: maroon;
-    -fx-text-fill: white;
-    -fx-background-radius: 20;
-    -fx-padding: 5;
-}
-
-.input-list-view .list-cell:hover {
-    -fx-background-color: darkred;
-}
-
-.heading {
-    -fx-font-size: 24px;
-    -fx-fill: white;
-    -fx-padding: 10;
-    -fx-font-weight: bold;
-}
-
-.input-list-view .list-cell:selected {
-    -fx-background-color: darkred;
-    -fx-text-fill: white;
-}
-
-.label {
-    -fx-font-size: 16px;
-    -fx-fill: white;
-    -fx-font-weight: bold;
 }
