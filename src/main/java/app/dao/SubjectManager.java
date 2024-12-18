@@ -91,6 +91,23 @@ public class SubjectManager {
         return subjects;
     }
 
+    public static int getId(String name) throws SQLException {
+        String sql = "SELECT subjectId FROM subjects WHERE name = ?";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt("subjectId");
+            }
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - Failed to get the user ID.");
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     public static Subject getSubject(int subjectId) throws SQLException {
         String sql = "SELECT * FROM subjects WHERE subjectId = ?";
 

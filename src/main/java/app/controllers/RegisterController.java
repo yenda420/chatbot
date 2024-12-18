@@ -1,6 +1,9 @@
     package app.controllers;
 
     import app.dao.SubjectManager;
+    import app.dao.UserManager;
+    import app.enums.UserRoleEnum;
+    import app.models.User;
     import javafx.collections.FXCollections;
     import javafx.collections.ObservableList;
     import javafx.fxml.FXML;
@@ -11,6 +14,7 @@
     import javafx.stage.Stage;
 
     import java.io.IOException;
+    import java.sql.SQLException;
 
     public class RegisterController {
         private static final double CELL_HEIGHT_SMALLER = 36.7;
@@ -54,29 +58,33 @@
         }
 
         @FXML
-        private void handleRegister() {
+        private void handleRegister() throws SQLException {
             if (validateInputs()) {
-                // Insert user
+                User user = new User(firstName.getText(), lastName.getText(), email.getText(), password.getText(), UserRoleEnum.ADMIN);
 
-                // Then redirect
-                try {
-                    // Load the Main View FXML
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/app/fxml/main-view.fxml"));
-                    Parent root = loader.load();
+                if (UserManager.save(user)) {
+                    if (UserManager.save(subjectsListView.getSelectionModel().getSelectedItems(), user.getEmail())) {
+                        // Then redirect
+                        try {
+                            // Load the Main View FXML
+                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/app/fxml/main-view.fxml"));
+                            Parent root = loader.load();
 
-                    // Get the current stage
-                    Stage stage = (Stage) firstName.getScene().getWindow();
+                            // Get the current stage
+                            Stage stage = (Stage) firstName.getScene().getWindow();
 
-                    // Set the scene to the main view
-                    Scene scene = new Scene(root);
-                    scene.getStylesheets().add(getClass().getResource("/app/style/style.css").toExternalForm());
-                    stage.setScene(scene);
-                    stage.setTitle("Generátor Testů");
+                            // Set the scene to the main view
+                            Scene scene = new Scene(root);
+                            scene.getStylesheets().add(getClass().getResource("/app/style/style.css").toExternalForm());
+                            stage.setScene(scene);
+                            stage.setTitle("Generátor Testů");
 
-                } catch (IOException e) {
-                    System.err.println("[ERROR] - Failed to load main-view.fxml.");
-                    e.printStackTrace();
-                    showErrorAlert(firstName, "Nastala chyba při načítání hlavní stránky.");
+                        } catch (IOException e) {
+                            System.err.println("[ERROR] - Failed to load main-view.fxml.");
+                            e.printStackTrace();
+                            showErrorAlert(firstName, "Nastala chyba při načítání hlavní stránky.");
+                        }
+                    }
                 }
             }
         }
