@@ -4,6 +4,7 @@
     import app.dao.UserManager;
     import app.enums.UserRoleEnum;
     import app.models.User;
+    import com.google.common.hash.Hashing;
     import javafx.collections.FXCollections;
     import javafx.collections.ObservableList;
     import javafx.fxml.FXML;
@@ -16,7 +17,6 @@
     import java.io.IOException;
     import java.nio.charset.StandardCharsets;
     import java.sql.SQLException;
-    import com.google.common.hash.Hashing;
 
     public class RegisterController {
         private static final double CELL_HEIGHT_SMALLER = 36.7;

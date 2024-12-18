@@ -7,7 +7,7 @@ target/
 notes
 
 ### App configuration ###
-.env
+## .env
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

@@ -9,6 +9,7 @@ import app.enums.QuestionTypeEnum;
 import app.models.Prompt;
 import app.models.Test;
 import app.models.Topic;
+import app.models.User;
 import app.services.AITestGeneratorService;
 
 import javafx.fxml.FXML;
@@ -50,6 +51,13 @@ public class MainController {
 
     private ArrayList<Topic> checkedTopics;
 
+    private User currentUser;
+
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+        System.out.println("[INFO] - Current user: " + user.getFirstName() + " " + user.getLastName());
+    }
+
     @FXML
     private void initialize() {
         difficulty.getItems().addAll(QuestionManager.getQuestionDifficulties());
@@ -85,7 +93,8 @@ public class MainController {
                     Integer.parseInt(timeLimit.getText()),
                     DifficultyEnum.fromString(difficulty.getValue()),
                     QuestionTypeEnum.fromString(questionType.getValue()),
-                    prompt
+                    prompt,
+                    currentUser
             );
 
             String error = handleTestProcessing(test, prompt, aiTestGeneratorService);
@@ -112,7 +121,7 @@ public class MainController {
             return technicalError;
         }
 
-        if (!TestManager.save(test, promptId)) {
+        if (!TestManager.save(test, currentUser, promptId)) {
             System.err.println("[ERROR] - Failed to save test " + test + "  into database.");
             return technicalError;
         }

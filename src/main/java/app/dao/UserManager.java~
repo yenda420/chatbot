@@ -73,14 +73,17 @@ public class UserManager {
                     int subjectId = SubjectManager.getId(subject);
                     int userId = UserManager.getId(user.getEmail());
 
+                    System.out.println("subjectId: " + subjectId + ", userId: " + userId);
+
                     pstmt.setInt(1, userId);
                     pstmt.setInt(2, subjectId);
 
-                    pstmt.executeUpdate();
+                    System.out.println(pstmt);
 
-                    System.out.println("[INFO] - User with ID " + userId + " linked to subject with ID " + subjectId + ".");
+                    pstmt.executeUpdate();
                 }
 
+                System.out.println("[INFO] - Subjects inserted into database.");
                 return true;
             } catch (SQLException e) {
                 System.err.println("[ERROR] - Failed to save subjects into database.");

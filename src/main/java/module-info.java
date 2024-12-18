@@ -8,6 +8,7 @@ module com.example.chatbot {
     requires java.sql;
     requires com.google.gson;
     requires io.github.cdimascio.dotenv.java;
+    requires com.google.common;
 
     opens app to javafx.fxml;
     exports app;

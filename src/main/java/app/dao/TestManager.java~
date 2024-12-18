@@ -48,7 +48,7 @@ public class TestManager {
     public static boolean save(Test test, User user, int promptId) {
         if (db.getConn() != null) {
             if (promptId > 0) {
-                String sql = "INSERT INTO tests (name, difficulty, numberOfQuestions, timeLimit, promptId, userId) VALUES (?, ?, ?, ?, ?, ?)";
+                String sql = "INSERT INTO tests (name, difficulty, numberOfQuestions, timeLimit, promptId, userId) VALUES (?, ?, ?, ?, ?)";
 
                 try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
                     pstmt.setString(1, test.getName());

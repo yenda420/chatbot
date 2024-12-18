@@ -1,8 +1,11 @@
 package app.models;
 
+import app.dao.UserManager;
 import app.enums.UserRoleEnum;
+import javafx.collections.ObservableList;
 
 public class User {
+    private int id;
     private String firstName;
     private String lastName;
     private String email;
@@ -37,6 +40,14 @@ public class User {
         return role;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -46,5 +57,9 @@ public class User {
                 ", passwordHash='" + passwordHash + '\'' +
                 ", role=" + role +
                 '}';
+    }
+
+    public boolean relate(ObservableList<String> subjects) {
+        return UserManager.linkUserToSubjects(subjects, this);
     }
 }

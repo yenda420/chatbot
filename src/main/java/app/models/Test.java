@@ -10,14 +10,16 @@ public class Test {
     private DifficultyEnum difficulty;
     private QuestionTypeEnum questionType;
     private Prompt fromPrompt;
+    private User fromUser;
 
-    public Test(String name, int numberOfQuestions, int timeLimitInMinutes, DifficultyEnum difficulty, QuestionTypeEnum questionType, Prompt fromPrompt) {
+    public Test(String name, int numberOfQuestions, int timeLimitInMinutes, DifficultyEnum difficulty, QuestionTypeEnum questionType, Prompt fromPrompt, User fromUser) {
         this.name = name;
         this.numberOfQuestions = numberOfQuestions;
         this.timeLimitInMinutes = timeLimitInMinutes;
         this.difficulty = difficulty;
         this.questionType = questionType;
         this.fromPrompt = fromPrompt;
+        this.fromUser = fromUser;
     }
 
     public String getName() {
@@ -53,6 +55,7 @@ public class Test {
                 ", difficulty=" + difficulty +
                 ", questionType=" + questionType +
                 ", fromPrompt=" + fromPrompt +
+                ", fromUser=" + fromUser +
                 '}';
     }
 }

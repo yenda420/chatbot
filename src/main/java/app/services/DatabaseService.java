@@ -188,9 +188,9 @@ public class DatabaseService {
                 "numberOfQuestions INT NOT NULL, " +
                 "timeLimit INT NOT NULL, " +
                 "promptId INT UNIQUE NOT NULL, " +
-                "fromUser INT NOT NULL, " +
+                "userId INT NOT NULL, " +
                 "CONSTRAINT FK_TESTS_PROMPTS FOREIGN KEY (promptId) REFERENCES prompts (promptId) ON DELETE CASCADE ON UPDATE CASCADE, " +
-                "CONSTRAINT FK_TESTS_USERS FOREIGN KEY (fromUser) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE)";
+                "CONSTRAINT FK_TESTS_USERS FOREIGN KEY (userId) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -286,6 +286,7 @@ public class DatabaseService {
         SubjectManager subjectManager = new SubjectManager();
         TestManager testManager = new TestManager();
         TopicManager topicManager = new TopicManager();
+        UserManager userManager = new UserManager();
     }
 
     public static void initialize() {
