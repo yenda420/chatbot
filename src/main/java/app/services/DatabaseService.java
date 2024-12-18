@@ -152,7 +152,7 @@ public class DatabaseService {
                 "lastName VARCHAR(50) NOT NULL, " +
                 "email VARCHAR(100) UNIQUE NOT NULL, " +
                 "passwordHash VARCHAR(255) NOT NULL, " +
-                "role ENUM('Admin', 'User') NOT NULL)";
+                "role ENUM('Administrátor', 'Učitel') NOT NULL)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -188,9 +188,9 @@ public class DatabaseService {
                 "numberOfQuestions INT NOT NULL, " +
                 "timeLimit INT NOT NULL, " +
                 "promptId INT UNIQUE NOT NULL, " +
-                "fromUser INT NOT NULL, " +
-                "CONSTRAINT FK_TESTS_PROMPTS FOREIGN KEY (promptId) REFERENCES prompts (promptId) ON DELETE CASCADE ON UPDATE CASCADE, " +
-                "CONSTRAINT FK_TESTS_USERS FOREIGN KEY (fromUser) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE)";
+               // "fromUser INT NOT NULL, " +
+                "CONSTRAINT FK_TESTS_PROMPTS FOREIGN KEY (promptId) REFERENCES prompts (promptId) ON DELETE CASCADE ON UPDATE CASCADE)";
+                //"CONSTRAINT FK_TESTS_USERS FOREIGN KEY (fromUser) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
