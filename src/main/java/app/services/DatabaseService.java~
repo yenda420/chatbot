@@ -188,7 +188,7 @@ public class DatabaseService {
                 "numberOfQuestions INT NOT NULL, " +
                 "timeLimit INT NOT NULL, " +
                 "promptId INT UNIQUE NOT NULL, " +
-                "fromUser INT NOT NULL, " +
+                "userId INT NOT NULL, " +
                 "CONSTRAINT FK_TESTS_PROMPTS FOREIGN KEY (promptId) REFERENCES prompts (promptId) ON DELETE CASCADE ON UPDATE CASCADE, " +
                 "CONSTRAINT FK_TESTS_USERS FOREIGN KEY (userId) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE)";
 

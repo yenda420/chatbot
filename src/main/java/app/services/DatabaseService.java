@@ -293,7 +293,7 @@ public class DatabaseService {
         DatabaseService dbService = new DatabaseService();
 
         if (dbService.getConn() != null) {
-            dbService.dropDatabase(); // Only for testing
+            // dbService.dropDatabase(); // Only for testing
             dbService.createDatabase();
             dbService.useDatabase();
 

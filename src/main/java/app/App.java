@@ -14,7 +14,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         DatabaseService.initialize();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/app/fxml/register-view.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/app/fxml/login-view.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root);
 

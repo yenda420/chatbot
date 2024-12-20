@@ -1,5 +1,6 @@
 package app.dao;
 
+import app.enums.UserRoleEnum;
 import app.models.User;
 import app.services.DatabaseService;
 import javafx.collections.ObservableList;
@@ -89,5 +90,53 @@ public class UserManager {
             }
         }
         return false;
+    }
+
+    public static String getPasswordHash(String email) throws SQLException {
+        if (db.getConn() != null) {
+            String sql = "SELECT passwordHash FROM users WHERE email = ?";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                pstmt.setString(1, email);
+
+                ResultSet rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    return rs.getString("passwordHash");
+                }
+            } catch (SQLException e) {
+                System.err.println("[ERROR] - Failed to get password hash.");
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    public static User getUser(String email) throws SQLException {
+        if (db.getConn() != null) {
+            String sql = "SELECT * FROM users WHERE email = ?";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                pstmt.setString(1, email);
+
+                ResultSet rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    return new User(
+                            rs.getString("firstName"),
+                            rs.getString("lastName"),
+                            rs.getString("email"),
+                            rs.getString("passwordHash"),
+                            UserRoleEnum.fromString(rs.getString("role"))
+                    );
+                }
+            } catch (SQLException e) {
+                System.err.println("[ERROR] - Failed to get the user.");
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 }

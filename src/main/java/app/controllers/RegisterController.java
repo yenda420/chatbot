@@ -4,6 +4,7 @@
     import app.dao.UserManager;
     import app.enums.UserRoleEnum;
     import app.models.User;
+    import app.services.DatabaseService;
     import javafx.collections.FXCollections;
     import javafx.collections.ObservableList;
     import javafx.fxml.FXML;
@@ -98,14 +99,14 @@
             }
         }
 
-        private boolean validateInputs() {
+        private boolean validateInputs() throws SQLException {
             // Using early return
-            if (firstName.getText().isBlank()) {
+            if (firstName.getText().isBlank() || firstName.getText().isEmpty()) {
                 showErrorAlert(firstName, "Vyplňte, prosím, pole pro jméno.");
                 return false;
             }
 
-            if (lastName.getText().isBlank()) {
+            if (lastName.getText().isBlank() || lastName.getText().isEmpty()) {
                 showErrorAlert(lastName, "Vyplňte, prosím, pole pro příjmení.");
                 return false;
             }
@@ -115,7 +116,12 @@
                 return false;
             }
 
-            if (password.getText().isBlank()) {
+            if (DatabaseService.instanceInDatabase("users", "email", email.getText())) {
+                showErrorAlert(email, "Uživatel s touto emailovou adresou již existuje.");
+                return false;
+            }
+
+            if (password.getText().isBlank() || password.getText().isEmpty()) {
                 showErrorAlert(password, "Vyplňte, prosím, pole pro heslo.");
                 return false;
             }

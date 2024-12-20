@@ -1,5 +1,6 @@
 package app.dao;
 
+import app.enums.UserRoleEnum;
 import app.models.User;
 import app.services.DatabaseService;
 import javafx.collections.ObservableList;
@@ -73,17 +74,14 @@ public class UserManager {
                     int subjectId = SubjectManager.getId(subject);
                     int userId = UserManager.getId(user.getEmail());
 
-                    System.out.println("subjectId: " + subjectId + ", userId: " + userId);
-
                     pstmt.setInt(1, userId);
                     pstmt.setInt(2, subjectId);
 
-                    System.out.println(pstmt);
-
                     pstmt.executeUpdate();
+
+                    System.out.println("[INFO] - User with ID " + userId + " linked to subject with ID " + subjectId + ".");
                 }
 
-                System.out.println("[INFO] - Subjects inserted into database.");
                 return true;
             } catch (SQLException e) {
                 System.err.println("[ERROR] - Failed to save subjects into database.");
@@ -92,5 +90,53 @@ public class UserManager {
             }
         }
         return false;
+    }
+
+    public static String getPasswordHash(String email) throws SQLException {
+        if (db.getConn() != null) {
+            String sql = "SELECT passwordHash FROM users WHERE email = ?";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                pstmt.setString(1, email);
+
+                ResultSet rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    return rs.getString("passwordHash");
+                }
+            } catch (SQLException e) {
+                System.err.println("[ERROR] - Failed to get password hash.");
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
+    public static User getUser(String email) throws SQLException {
+        if (db.getConn() != null) {
+            String sql = "SELECT * FROM users WHERE email = ?";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                pstmt.setString(1, email);
+
+                ResultSet rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    return new User(
+                            rs.getString("firstName"),
+                            rs.getString("lastName"),
+                            rs.getString("email"),
+                            rs.getString("passwordHash"),
+                            UserRoleEnum.valueOf(rs.getString("role"))
+                    );
+                }
+            } catch (SQLException e) {
+                System.err.println("[ERROR] - Failed to get the user.");
+                e.printStackTrace();
+            }
+        }
+
+        return null;
     }
 }
