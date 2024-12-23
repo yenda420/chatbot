@@ -82,22 +82,34 @@ public class MainController {
         subject.setItems(subjectsObservable);
     }
 
+
     @FXML
-    private void initialize() {
+    private void initialize() throws SQLException {
         difficulty.getItems().addAll(QuestionManager.getQuestionDifficulties());
         questionType.getItems().addAll(QuestionManager.getQuestionTypes());
+
+        ArrayList<String> subjects = SubjectManager.getSubjects(currentUser);
+        ObservableList<String> subjectsObservable = FXCollections.observableArrayList();
+        subjectsObservable.addAll(subjects);
+
+        subject.setItems(subjectsObservable);
+
         topics.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         if (topics.getItems().isEmpty()) {
             topics.setPrefHeight(CELL_HEIGHT_SMALLER * 4);
         }
 
+        // Set a custom cell factory to enable text wrapping in ListView cells
         topics.setCellFactory(param -> new ListCell<>() {
             private final Label label = new Label();
+
             {
                 label.setWrapText(true);
                 label.setStyle("-fx-font-weight: normal; -fx-text-fill: white;");
             }
+
+            // Update the display of each cell based on its data
             @Override
             protected void updateItem(String item, boolean empty) {
                 super.updateItem(item, empty);
@@ -107,7 +119,7 @@ public class MainController {
                 } else {
                     label.setText(item);
                     setGraphic(label);
-                    setPrefWidth(0);
+                    setPrefWidth(0); // Allows wrapping within the available width
                 }
             }
         });

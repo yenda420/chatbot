@@ -8,6 +8,8 @@
     <VBox spacing="10" alignment="CENTER" minWidth="400" styleClass="form-container">
         <Text text="Registrace" styleClass="heading"/>
 
+        <Hyperlink text="Máte již účet? Přihlašte se." onAction="#handleLoginLink" styleClass="register-link"/>
+
         <TextField fx:id="firstName" promptText="Jméno" styleClass="input" maxWidth="350"/>
         <TextField fx:id="lastName" promptText="Příjmení" styleClass="input" maxWidth="350"/>
         <TextField fx:id="email" promptText="Email" styleClass="input" maxWidth="350"/>
@@ -16,7 +18,7 @@
 
         <Text text="Vyberte vyučované předměty:" styleClass="label"/>
 
-        <ListView fx:id="subjectsListView" maxWidth="350" styleClass="input-list-view"/>
+        <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view"/>
 
         <Button text="Registrovat" onAction="#handleRegister" styleClass="submit" maxWidth="350"/>
     </VBox>

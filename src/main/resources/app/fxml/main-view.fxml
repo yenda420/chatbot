@@ -18,7 +18,11 @@
 
       <ComboBox fx:id="questionType" promptText="--- Vyberte typ otázek ---" styleClass="combobox" maxWidth="350"></ComboBox>
 
-      <FlowPane fx:id="topicsPane" alignment="CENTER" hgap="10" vgap="10" maxWidth="350"></FlowPane>
+      <ComboBox fx:id="subject" onAction="#handleChosenSubject" promptText="--- Vyberte předmět ---" styleClass="combobox" maxWidth="350"></ComboBox>
+
+      <Text fx:id="hint" text="Vyberte předmět než vyberete témata" styleClass="label"/>
+
+      <ListView fx:id="topics" maxWidth="350" styleClass="input-list-view"/>
 
       <TextArea fx:id="message" promptText="Další specifikace testu" styleClass="textarea" maxWidth="350" prefHeight="150"/>
 

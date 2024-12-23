@@ -276,6 +276,7 @@ public class DatabaseService {
     private void saveDefaultData() {
         SubjectManager.saveDefaultSubjects();
         TopicManager.saveDefaultTopics();
+        UserManager.saveDefaultUsers();
     }
 
     // This will force to create connections to all the managers
@@ -293,7 +294,7 @@ public class DatabaseService {
         DatabaseService dbService = new DatabaseService();
 
         if (dbService.getConn() != null) {
-            // dbService.dropDatabase(); // Only for testing
+            dbService.dropDatabase(); // Only for testing
             dbService.createDatabase();
             dbService.useDatabase();
 

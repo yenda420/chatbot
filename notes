@@ -1,0 +1,22 @@
+** Co je nového **
+-- Použití vlastního API klíče
+-- Použití dotenv-java knihovny pro .env proměnné
+-- One-to-One vztah v aplikaci pravděpodobně funguje, co nefunguje je spíše Reverse engineer funkce v MySQL Workbench
+-- Přidal jsem E-R Model (nově i s tabulkou users)
+-- Opravily se errory při generování testů (conversationHistory)
+-- Úspěšně se vkládají a linkují všechna data z vytvořeného testu
+-- Přidávání uživatelů
+-- Úprava UI
+
+** Momentálně rozpracováno **
+-- Zobrazení informace o nahraném souboru
+-- CRUD operace pro admina
+
+** Na později **
+-- Přidat checkbox "Přečetl(a) jsem manuál aplikace" (odkaz, který stáhne manuál aplikace)
+-- Přidat loader
+-- Přidat možnost stáhnutí souboru po vygenerování
+-- Pokusit se vygenerovat docx (případně pdf) soubor
+-- Možnost generování více otázek
+
+-- Abstrakce pro volání dotazů

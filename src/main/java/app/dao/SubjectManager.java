@@ -2,6 +2,7 @@ package app.dao;
 
 import app.enums.SubjectEnum;
 import app.models.Subject;
+import app.models.User;
 import app.services.DatabaseService;
 
 import java.sql.PreparedStatement;
@@ -91,6 +92,29 @@ public class SubjectManager {
         return subjects;
     }
 
+    public static ArrayList<String> getSubjects(User user) throws SQLException {
+        int userId = UserManager.getId(user.getEmail());
+
+        ArrayList<String> subjects = new ArrayList<>();
+        String sql = "SELECT s.name " +
+                    "FROM subjects s " +
+                    "JOIN users_subjects us USING (subjectId) " +
+                    "JOIN users u USING (userId) " +
+                    "WHERE u.userId = ?";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setInt(1, userId);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                subjects.add(rs.getString("name"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return subjects;
+    }
+
     public static int getId(String name) throws SQLException {
         String sql = "SELECT subjectId FROM subjects WHERE name = ?";
 
@@ -126,7 +150,7 @@ public class SubjectManager {
         return null;
     }
 
-    public static Subject getTopicSubject(String topicName) throws SQLException {
+    public static Subject getTopicsSubject(String topicName) throws SQLException {
         String sql = "SELECT subjectId FROM topics WHERE name = ?";
 
         try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {

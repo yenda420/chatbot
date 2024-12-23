@@ -86,3 +86,23 @@
     -fx-fill: white;
     -fx-font-weight: bold;
 }
+
+.register-link {
+    -fx-text-fill: white;
+    -fx-underline: false;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+}
+
+.input-list-view .list-cell {
+    -fx-padding: 5;
+    -fx-background-color: maroon;
+    -fx-text-fill: white;
+}
+
+.input-list-view .list-cell:selected {
+    -fx-background-color: darkred;
+}

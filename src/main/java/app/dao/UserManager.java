@@ -3,8 +3,11 @@ package app.dao;
 import app.enums.UserRoleEnum;
 import app.models.User;
 import app.services.DatabaseService;
+import com.google.common.hash.Hashing;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -138,5 +141,29 @@ public class UserManager {
         }
 
         return null;
+    }
+
+    public static void saveDefaultUsers() {
+        String userPassword = Hashing.sha256()
+                .hashString("user", StandardCharsets.UTF_8)
+                .toString();
+
+        String adminPassword = Hashing.sha256()
+                .hashString("admin", StandardCharsets.UTF_8)
+                .toString();
+
+        User user = new User("user", "user", "user@user.com", userPassword, UserRoleEnum.TEACHER);
+        User admin = new User("admin", "admin", "admin@admin.com", adminPassword, UserRoleEnum.ADMIN);
+
+        try {
+            UserManager.save(user);
+            UserManager.save(admin);
+
+            ObservableList<String> subjects = FXCollections.observableArrayList("Programování", "Anglický jazyk");
+            user.relate(subjects);
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - Failed to save default users.");
+            e.printStackTrace();
+        }
     }
 }

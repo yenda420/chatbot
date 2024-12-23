@@ -29,6 +29,7 @@ public class LoginController {
     @FXML
     private void handleLogin() throws SQLException {
         if (validateInputs()) {
+            System.out.println(UserManager.getUser(email.getText()));
             LoaderService.load(ViewEnum.MAIN, getClass(), email, UserManager.getUser(email.getText()));
         }
     }

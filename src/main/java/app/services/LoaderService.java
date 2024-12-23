@@ -1,0 +1,55 @@
+package app.services;
+
+import app.controllers.MainController;
+import app.enums.ViewEnum;
+
+import app.models.User;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+public class LoaderService {
+    public static void load(ViewEnum view, Class<?> clazz, TextField someStageInput, User user) {
+        load(view, clazz, (Stage) someStageInput.getScene().getWindow(), user);
+    }
+
+    public static void load(ViewEnum view, Class<?> clazz, Stage stage, User user) {
+        try {
+            FXMLLoader loader = new FXMLLoader(clazz.getResource("/app/fxml/" + view.getName() + "-view.fxml"));
+            Parent root = loader.load(); // Load first
+
+            if (view == ViewEnum.MAIN) {
+                MainController mainController = loader.getController();
+                mainController.setCurrentUser(user); // Ensures proper user setup
+                mainController.initializeUserData(); // Initialize user data here
+            }
+
+            // Set and show scene
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(clazz.getResource("/app/style/style.css").toExternalForm());
+            stage.setScene(scene);
+            stage.setTitle(getTitle(view));
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("[ERROR] - Failed to load " + view.getName() + "-view.fxml.");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    // Utility to get title based on view
+    private static String getTitle(ViewEnum view) {
+        switch (view) {
+            case REGISTER: return "Registrace";
+            case LOGIN: return "Přihlášení";
+            case MAIN: return "Generátor Testů";
+            default: return "Neznámá stránka";
+        }
+    }
+}

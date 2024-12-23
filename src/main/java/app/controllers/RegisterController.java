@@ -3,18 +3,15 @@
     import app.dao.SubjectManager;
     import app.dao.UserManager;
     import app.enums.UserRoleEnum;
+    import app.enums.ViewEnum;
     import app.models.User;
     import app.services.DatabaseService;
+    import app.services.LoaderService;
     import javafx.collections.FXCollections;
     import javafx.collections.ObservableList;
     import javafx.fxml.FXML;
-    import javafx.fxml.FXMLLoader;
-    import javafx.scene.Parent;
-    import javafx.scene.Scene;
     import javafx.scene.control.*;
-    import javafx.stage.Stage;
 
-    import java.io.IOException;
     import java.nio.charset.StandardCharsets;
     import java.sql.SQLException;
     import com.google.common.hash.Hashing;
@@ -23,7 +20,8 @@
         private static final double CELL_HEIGHT_SMALLER = 36.7;
         private static final double CELL_HEIGHT_BIGGER = 39.9;
         private static final int MAX_CELLS_TO_SHOW = 11;
-        private final ObservableList<String> listViewList =
+
+        private final ObservableList<String> subjectList =
                 FXCollections.observableArrayList(SubjectManager.getSubjects());
 
         @FXML
@@ -42,22 +40,26 @@
         private PasswordField confirmPassword;
 
         @FXML
-        private ListView<String> subjectsListView;
+        private ListView<String> subjects;
 
         @FXML
         private void initialize() {
-            subjectsListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-            subjectsListView.setItems(listViewList);
+            subjects.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+            subjects.setItems(subjectList);
 
-            int numberOfCells = listViewList.size();
+            int numberOfCells = subjectList.size();
 
             if (numberOfCells > MAX_CELLS_TO_SHOW) {
-                subjectsListView.setPrefHeight(MAX_CELLS_TO_SHOW * CELL_HEIGHT_SMALLER);
+                subjects.setPrefHeight(MAX_CELLS_TO_SHOW * CELL_HEIGHT_SMALLER);
             } else if (numberOfCells < 5) {
-                subjectsListView.setPrefHeight(numberOfCells * CELL_HEIGHT_BIGGER);
+                subjects.setPrefHeight(numberOfCells * CELL_HEIGHT_BIGGER);
             } else {
-                subjectsListView.setPrefHeight(numberOfCells * CELL_HEIGHT_SMALLER);
+                subjects.setPrefHeight(numberOfCells * CELL_HEIGHT_SMALLER);
             }
+        }
+
+        public void handleLoginLink() {
+            LoaderService.load(ViewEnum.LOGIN, getClass(), firstName, null);
         }
 
         @FXML
@@ -72,28 +74,8 @@
                 if (UserManager.save(user)) {
                     user.setId(UserManager.getId(user.getEmail()));
 
-                    if (user.relate(subjectsListView.getSelectionModel().getSelectedItems())) {
-                        try {
-                            // Load the Main View FXML
-                            FXMLLoader loader = new FXMLLoader(getClass().getResource("/app/fxml/main-view.fxml"));
-                            Parent root = loader.load();
-
-                            MainController mainController = loader.getController();
-                            mainController.setCurrentUser(user);
-
-                            // Get the current stage
-                            Stage stage = (Stage) firstName.getScene().getWindow();
-
-                            // Set the scene to the main view
-                            Scene scene = new Scene(root);
-                            scene.getStylesheets().add(getClass().getResource("/app/style/style.css").toExternalForm());
-                            stage.setScene(scene);
-                            stage.setTitle("Generátor Testů");
-                        } catch (IOException e) {
-                            System.err.println("[ERROR] - Failed to load main-view.fxml.");
-                            e.printStackTrace();
-                            showErrorAlert(firstName, "Nastala chyba při načítání hlavní stránky.");
-                        }
+                    if (user.relate(subjects.getSelectionModel().getSelectedItems())) {
+                        LoaderService.load(ViewEnum.MAIN, getClass(), firstName, user);
                     }
                 }
             }
@@ -136,7 +118,7 @@
                 return false;
             }
 
-            if (subjectsListView.getSelectionModel().getSelectedItems().isEmpty()) {
+            if (subjects.getSelectionModel().getSelectedItems().isEmpty()) {
                 showErrorAlert("Vyberte, prosím, vyučované předměty.");
                 return false;
             }

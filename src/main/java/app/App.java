@@ -1,29 +1,17 @@
 package app;
 
+import app.enums.ViewEnum;
 import app.services.DatabaseService;
+import app.services.LoaderService;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.scene.Parent;
-
-import java.io.IOException;
 
 public class App extends Application {
     @Override
-    public void start(Stage stage) throws IOException {
+    public void start(Stage stage) {
         DatabaseService.initialize();
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/app/fxml/login-view.fxml"));
-        Parent root = loader.load();
-        Scene scene = new Scene(root);
-
-        scene.getStylesheets().add(getClass().getResource("/app/style/style.css").toExternalForm());
-
-        stage.setTitle("Generátor testů");
-        stage.setScene(scene);
-        // stage.setFullScreen(true);
-        stage.show();
+        LoaderService.load(ViewEnum.LOGIN, getClass(), stage, null);
     }
 
     @Override

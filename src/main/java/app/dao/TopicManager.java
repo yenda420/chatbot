@@ -69,9 +69,13 @@ public class TopicManager {
         }
     }
 
-    public static ArrayList<String> getTopics() {
+
+
+    public static ArrayList<String> getTopics(String fromSubjects) throws SQLException {
+        int id = SubjectManager.getId(fromSubjects);
         ArrayList<String> topics = new ArrayList<>();
-        String sql = "SELECT name FROM topics";
+
+        String sql = "SELECT name FROM topics WHERE subjectId = " + id;
 
         try (PreparedStatement pstmt = db.getConn().prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery(sql)) {

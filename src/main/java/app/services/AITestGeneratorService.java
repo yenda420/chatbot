@@ -144,7 +144,7 @@ public class AITestGeneratorService extends AIService {
         }
 
         String firstTopicName = topicsList.get(0).getName();
-        Subject subject = SubjectManager.getTopicSubject(firstTopicName);
+        Subject subject = SubjectManager.getTopicsSubject(firstTopicName);
 
         if (subject == null) {
             System.err.println("[ERROR] - Subject not found for topic: " + firstTopicName);

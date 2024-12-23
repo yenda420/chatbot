@@ -56,7 +56,7 @@ public class TestManager {
                     pstmt.setInt(3, test.getNumberOfQuestions());
                     pstmt.setInt(4, test.getTimeLimitInMinutes());
                     pstmt.setInt(5, promptId);
-                    pstmt.setInt(6, user.getId());
+                    pstmt.setInt(6, UserManager.getId(user.getEmail()));
                     pstmt.executeUpdate();
 
                     System.out.println("[INFO] - Test " + test + " inserted into database.");
