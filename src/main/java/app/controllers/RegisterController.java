@@ -43,7 +43,13 @@
         private ListView<String> subjects;
 
         @FXML
+        private Button registerButton;
+
+        @FXML
         private void initialize() {
+            registerButton.setDefaultButton(true);
+            firstName.requestFocus();
+
             subjects.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             subjects.setItems(subjectList);
 
@@ -83,16 +89,6 @@
 
         private boolean validateInputs() throws SQLException {
             // Using early return
-            if (firstName.getText().isBlank() || firstName.getText().isEmpty()) {
-                showErrorAlert(firstName, "Vyplňte, prosím, pole pro jméno.");
-                return false;
-            }
-
-            if (lastName.getText().isBlank() || lastName.getText().isEmpty()) {
-                showErrorAlert(lastName, "Vyplňte, prosím, pole pro příjmení.");
-                return false;
-            }
-
             if (!emailIsValid(email.getText())) {
                 showErrorAlert(email, "Zadejte, prosím, platnou emailovou adresu.");
                 return false;
@@ -119,7 +115,7 @@
             }
 
             if (subjects.getSelectionModel().getSelectedItems().isEmpty()) {
-                showErrorAlert("Vyberte, prosím, vyučované předměty.");
+                showErrorAlert("Vyberte, prosím, alespoň jeden předmět.");
                 return false;
             }
 

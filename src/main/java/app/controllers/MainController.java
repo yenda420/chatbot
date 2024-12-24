@@ -9,6 +9,7 @@ import app.models.Topic;
 import app.models.User;
 import app.services.AITestGeneratorService;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -66,24 +67,17 @@ public class MainController {
     @FXML
     private Text hint;
 
-    public void setCurrentUser(User user) {
-        this.currentUser = user;
-        System.out.println("[INFO] - Current user: " + user.getFirstName() + " " + user.getLastName());
-    }
+    @FXML
+    private Button createTestButton;
 
-    public void initializeUserData() throws SQLException {
-        if (currentUser == null) {
-            System.err.println("[ERROR] - User is not set.");
-            return;
-        }
-
-        ArrayList<String> subjects = SubjectManager.getSubjects(currentUser);
-        ObservableList<String> subjectsObservable = FXCollections.observableArrayList(subjects);
-        subject.setItems(subjectsObservable);
-    }
+    @FXML
+    private Text fileLabel;
 
     @FXML
     private void initialize() {
+        createTestButton.setDefaultButton(true);
+        testName.requestFocus();
+
         difficulty.getItems().addAll(QuestionManager.getQuestionDifficulties());
         questionType.getItems().addAll(QuestionManager.getQuestionTypes());
         topics.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -113,6 +107,22 @@ public class MainController {
         });
     }
 
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+        System.out.println("[INFO] - Current user: " + user.getEmail());
+    }
+
+    public void initializeUserData() throws SQLException {
+        if (currentUser != null) {
+            ArrayList<String> subjects = SubjectManager.getSubjects(currentUser);
+            ObservableList<String> subjectsObservable = FXCollections.observableArrayList(subjects);
+
+            subject.setItems(subjectsObservable);
+        } else {
+            System.err.println("[ERROR] - User is not set.");
+        }
+    }
+
     @FXML
     public void handleChosenSubject() throws SQLException {
         if (subject.getValue() != null) {
@@ -133,7 +143,7 @@ public class MainController {
                     topics.setPrefHeight(numberOfCells * CELL_HEIGHT_SMALLER);
                 }
 
-                hint.setText("Vyberte témata (Ctrl + Klik):");
+                hint.setText("Vyberte témata * (Ctrl + Klik):");
             }
         }
     }
@@ -142,8 +152,13 @@ public class MainController {
     private void handleFileUpload() {
         FileChooser fileChooser = new FileChooser();
         fileAttached = fileChooser.showOpenDialog(null);
+
         if (fileAttached != null) {
+            fileLabel.setText("Přiložený soubor: " + fileAttached.getName());
             System.out.println("[INFO] - File selected: " + fileAttached.getAbsolutePath());
+        } else {
+            fileChooser.setTitle("Přiložený soubor nejde otevřít.");
+            System.err.println("[ERROR] - File could not be opened.");
         }
     }
 
@@ -257,8 +272,15 @@ public class MainController {
             questionCountInt = Integer.parseInt(questionCount.getText());
 
             if (questionCountInt <= 0) throw new NumberFormatException();
+
+            final int MAX_QUESTIONS = Integer.parseInt(Dotenv.load().get("MAX_QUESTIONS"));
+
+            if (questionCountInt > MAX_QUESTIONS) {
+                showErrorAlert(questionCount, "Počet otázek je omezen na " + MAX_QUESTIONS + ".");
+                return false;
+            }
         } catch (NumberFormatException e) {
-            showErrorAlert(questionCount, "Počet otázek musí být celé, kladné číslo.");
+            showErrorAlert(questionCount, "Počet otázek musí přirozené číslo.");
             return false;
         }
 
@@ -267,7 +289,7 @@ public class MainController {
 
             if (timeLimitInt <= 0) throw new NumberFormatException();
         } catch (NumberFormatException e) {
-            showErrorAlert(timeLimit, "Časový limit musí být celé, kladné číslo.");
+            showErrorAlert(timeLimit, "Časový limit musí být přirozené číslo.");
             return false;
         }
 

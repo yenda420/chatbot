@@ -22,7 +22,7 @@ public class AITestGeneratorService extends AIService {
         messages = new ArrayList<>();
     }
 
-    // Set initial context for the AI Test Generator
+    // Gets the initial context for the AI Test Generator
     public static String getContextFor(Test test) {
         StringBuilder setContextPrompt = new StringBuilder();
 
@@ -33,7 +33,8 @@ public class AITestGeneratorService extends AIService {
                 .append(" Ujisti se také, že vždy zahrneš vysvětlení každé správné odpovědi.")
                 .append(" Důkladně ověř fakta a informace, které uvádíš, aby byla zajištěna jejich správnost.")
                 .append(" Pokud si nejsi jistý některými informacemi, raději je neuváděj.")
-                .append(" Testy jsou pro žáky středních škol, ujisti se tedy, že tomu odpovídá obtížnost testů.");
+                .append(" Testy jsou pro žáky středních škol, ujisti se tedy, že tomu odpovídá obtížnost testů.")
+                .append(" Pokud je test z cizího jazyka (například z angličtiny), ujisti se, že otázky i odpovědi jsou právě v tomto cizím jazyce.");
 
         // Add specific instructions based on the question type
         if (test.getQuestionType() == QuestionTypeEnum.YES_NO) {

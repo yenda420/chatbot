@@ -26,10 +26,6 @@ public class Topic {
         return subject;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public String toString() {
         return "Topic{" +

@@ -108,8 +108,10 @@ public class QuestionManager {
 
             String sql = "INSERT INTO questions_tests (testId, questionId) VALUES (?, ?)";
             try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
-                pstmt.setInt(1, testId);
-                pstmt.setInt(2, questionId);
+                if (!DatabaseService.instanceInDatabase("questions_tests", testId, questionId, "testId", "questionId")) {
+                    pstmt.setInt(1, testId);
+                    pstmt.setInt(2, questionId);
+                }
 
                 pstmt.executeUpdate();
 
@@ -150,10 +152,12 @@ public class QuestionManager {
                 String sql = "INSERT INTO questions_tests (questionId, testId) VALUES (?, ?)";
 
                 try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
-                    pstmt.setInt(1, question.getId());
-                    pstmt.setInt(2, testId);
+                    if (!DatabaseService.instanceInDatabase("questions_tests", testId, question.getId(), "testId", "questionId")) {
+                        pstmt.setInt(1, question.getId());
+                        pstmt.setInt(2, testId);
 
-                    pstmt.executeUpdate();
+                        pstmt.executeUpdate();
+                    }
 
                     System.out.println("[INFO] - Question " + question + " linked to test with id " + testId + ".");
                     return true;

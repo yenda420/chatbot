@@ -2,7 +2,6 @@ package app.controllers;
 
 import app.dao.UserManager;
 import app.enums.ViewEnum;
-import app.models.User;
 import app.services.LoaderService;
 
 import javafx.fxml.FXML;
@@ -22,6 +21,14 @@ public class LoginController {
     private PasswordField password;
 
     @FXML
+    private Button loginButton;
+
+    @FXML
+    private void initialize() {
+        loginButton.setDefaultButton(true);
+    }
+
+    @FXML
     private void handleRegisterLink() {
         LoaderService.load(ViewEnum.REGISTER, getClass(), email, null);
     }
@@ -29,7 +36,6 @@ public class LoginController {
     @FXML
     private void handleLogin() throws SQLException {
         if (validateInputs()) {
-            System.out.println(UserManager.getUser(email.getText()));
             LoaderService.load(ViewEnum.MAIN, getClass(), email, UserManager.getUser(email.getText()));
         }
     }

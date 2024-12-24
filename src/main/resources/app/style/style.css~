@@ -96,3 +96,29 @@
     -fx-border-color: transparent;
     -fx-border-width: 0;
 }
+
+.input-list-view .list-cell {
+    -fx-padding: 5;
+    -fx-background-color: maroon;
+    -fx-text-fill: white;
+}
+
+.input-list-view .list-cell:selected {
+    -fx-background-color: darkred;
+}
+
+.explanation {
+    -fx-font-size: 14px;
+    -fx-fill: white;
+}
+
+.explanation-container {
+    -fx-padding: 0 15 0 0;
+}
+
+.fileLabel {
+    -fx-font-size: 14px;
+    -fx-fill: white;
+    -fx-padding: 10;
+    -fx-font-weight: bold;
+}

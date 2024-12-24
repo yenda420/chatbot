@@ -73,9 +73,11 @@ public class PromptManager {
                 for (Topic topic : prompt.getTopics()) {
                     int topicId = TopicManager.getId(topic.getName());
 
-                    linkStmt.setInt(1, topicId);
-                    linkStmt.setInt(2, promptId);
-                    linkStmt.addBatch();
+                    if (!DatabaseService.instanceInDatabase("topics_prompts", topicId, promptId, "topicId", "promptId")) {
+                        linkStmt.setInt(1, topicId);
+                        linkStmt.setInt(2, promptId);
+                        linkStmt.addBatch();
+                    }
                 }
 
                 linkStmt.executeBatch();

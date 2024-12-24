@@ -8,17 +8,22 @@
     <VBox spacing="10" alignment="CENTER" maxWidth="400" styleClass="form-container">
       <Text text="Generátor Testů" styleClass="heading"/>
 
-      <TextField fx:id="testName" promptText="Název testu" styleClass="input" maxWidth="350"/>
-      <TextField fx:id="questionCount" promptText="Počet otázek" styleClass="input" maxWidth="350"/>
-      <TextField fx:id="timeLimit" promptText="Časový limit v minutách" styleClass="input" maxWidth="350"/>
+      <HBox alignment="CENTER_RIGHT" maxWidth="350" style="-fx-padding: 0 17 0 0;">
+        <Text text="* povinné pole" styleClass="explanation"/>
+      </HBox>
+
+      <TextField fx:id="testName" promptText="Název testu *" styleClass="input" maxWidth="350"/>
+      <TextField fx:id="questionCount" promptText="Počet otázek *" styleClass="input" maxWidth="350"/>
+      <TextField fx:id="timeLimit" promptText="Časový limit v minutách *" styleClass="input" maxWidth="350"/>
 
       <Button text="Připojte soubor" onAction="#handleFileUpload" styleClass="button" maxWidth="350"/>
+      <Text fx:id="fileLabel" styleClass="fileLabel"/>
 
-      <ComboBox fx:id="difficulty" promptText="--- Vyberte obtížnost ---" styleClass="combobox" maxWidth="350"></ComboBox>
+      <ComboBox fx:id="difficulty" promptText="Vyberte obtížnost *" styleClass="combobox" maxWidth="350"></ComboBox>
+      <ComboBox fx:id="questionType" promptText="Vyberte typ otázek *" styleClass="combobox" maxWidth="350"></ComboBox>
+      <ComboBox fx:id="subject" onAction="#handleChosenSubject" promptText="Vyberte předmět *" styleClass="combobox" maxWidth="350"></ComboBox>
 
-      <ComboBox fx:id="questionType" promptText="--- Vyberte typ otázek ---" styleClass="combobox" maxWidth="350"></ComboBox>
-
-      <ComboBox fx:id="subject" onAction="#handleChosenSubject" promptText="--- Vyberte předmět ---" styleClass="combobox" maxWidth="350"></ComboBox>
+      <Region prefHeight="10"/>
 
       <Text fx:id="hint" text="Vyberte předmět než vyberete témata" styleClass="label"/>
 
@@ -26,6 +31,6 @@
 
       <TextArea fx:id="message" promptText="Další specifikace testu" styleClass="textarea" maxWidth="350" prefHeight="150"/>
 
-      <Button onAction="#handleCreateTest" text="Vygeneruj test" styleClass="submit" maxWidth="350"/>
+      <Button fx:id="createTestButton" onAction="#handleCreateTest" text="Vygeneruj test" styleClass="submit" maxWidth="350"/>
     </VBox>
 </StackPane>

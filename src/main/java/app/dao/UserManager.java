@@ -4,12 +4,14 @@ import app.enums.UserRoleEnum;
 import app.models.User;
 import app.services.DatabaseService;
 import com.google.common.hash.Hashing;
+import io.github.cdimascio.dotenv.Dotenv;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
-import java.util.ArrayList;
+
+import static app.services.DatabaseService.instanceInDatabase;
 
 public class UserManager {
     private static DatabaseService db;
@@ -20,7 +22,7 @@ public class UserManager {
 
     public static boolean save(User user) throws SQLException {
         if (db.getConn() != null) {
-            if (!DatabaseService.instanceInDatabase("users", "email", user.getEmail())) {
+            if (!instanceInDatabase("users", "email", user.getEmail())) {
                 String sql = "INSERT INTO users(firstName, lastName, email, passwordHash, role) " +
                             "VALUES (?, ?, ?, ?, ?)";
 
@@ -33,10 +35,10 @@ public class UserManager {
 
                     pstmt.executeUpdate();
 
-                    System.out.println("[INFO] - User " + user.getFirstName() + " " + user.getLastName() + " inserted into database.");
+                    System.out.println("[INFO] - User " + user.getEmail() + " inserted into database.");
                     return true;
                 } catch (SQLException e) {
-                    System.err.println("[ERROR] - Failed to save user " + user.getFirstName() + " " + user.getLastName() + " into database.");
+                    System.err.println("[ERROR] - Failed to save user " + user.getEmail() + " into database.");
                     e.printStackTrace();
                     return false;
                 }
@@ -95,7 +97,7 @@ public class UserManager {
         return false;
     }
 
-    public static String getPasswordHash(String email) throws SQLException {
+    public static String getPasswordHash(String email) {
         if (db.getConn() != null) {
             String sql = "SELECT passwordHash FROM users WHERE email = ?";
 
@@ -116,7 +118,7 @@ public class UserManager {
         return null;
     }
 
-    public static User getUser(String email) throws SQLException {
+    public static User getUser(String email) {
         if (db.getConn() != null) {
             String sql = "SELECT * FROM users WHERE email = ?";
 
@@ -144,23 +146,36 @@ public class UserManager {
     }
 
     public static void saveDefaultUsers() {
-        String userPassword = Hashing.sha256()
+        Dotenv dotenv = Dotenv.load();
+
+        String adminEmail = dotenv.get("ADMIN_EMAIL");
+        String adminPassword = dotenv.get("ADMIN_PASSWORD");
+
+        String userPasswordHash = Hashing.sha256()
                 .hashString("user", StandardCharsets.UTF_8)
                 .toString();
 
-        String adminPassword = Hashing.sha256()
-                .hashString("admin", StandardCharsets.UTF_8)
+        String adminPasswordHash = Hashing.sha256()
+                .hashString(adminPassword, StandardCharsets.UTF_8)
                 .toString();
 
-        User user = new User("user", "user", "user@user.com", userPassword, UserRoleEnum.TEACHER);
-        User admin = new User("admin", "admin", "admin@admin.com", adminPassword, UserRoleEnum.ADMIN);
+        // Test user
+        User user = new User("user", "user", "user@user.com", userPasswordHash, UserRoleEnum.TEACHER);
+        // Default admin
+        User admin = new User("admin", "admin", adminEmail, adminPasswordHash, UserRoleEnum.ADMIN);
 
         try {
-            UserManager.save(user);
-            UserManager.save(admin);
+            if (!instanceInDatabase("users", "email", "user@user.com")) {
+                UserManager.save(user);
 
-            ObservableList<String> subjects = FXCollections.observableArrayList("Programování", "Anglický jazyk");
-            user.relate(subjects);
+                // Test subjects
+                ObservableList<String> subjects = FXCollections.observableArrayList("Programování", "Anglický jazyk");
+                user.relate(subjects);
+            }
+
+            if (!instanceInDatabase("users", "email", adminEmail)) {
+                UserManager.save(admin);
+            }
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to save default users.");
             e.printStackTrace();

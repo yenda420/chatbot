@@ -10,16 +10,20 @@
 
         <Hyperlink text="Máte již účet? Přihlašte se." onAction="#handleLoginLink" styleClass="register-link"/>
 
+        <HBox alignment="CENTER_RIGHT" maxWidth="350" styleClass="explanation-container">
+            <Text text="* povinné pole" styleClass="explanation"/>
+        </HBox>
+
         <TextField fx:id="firstName" promptText="Jméno" styleClass="input" maxWidth="350"/>
         <TextField fx:id="lastName" promptText="Příjmení" styleClass="input" maxWidth="350"/>
-        <TextField fx:id="email" promptText="Email" styleClass="input" maxWidth="350"/>
-        <PasswordField fx:id="password" promptText="Heslo" styleClass="input" maxWidth="350"/>
-        <PasswordField fx:id="confirmPassword" promptText="Heslo znovu" styleClass="input" maxWidth="350"/>
+        <TextField fx:id="email" promptText="Email *" styleClass="input" maxWidth="350"/>
+        <PasswordField fx:id="password" promptText="Heslo *" styleClass="input" maxWidth="350"/>
+        <PasswordField fx:id="confirmPassword" promptText="Heslo znovu *" styleClass="input" maxWidth="350"/>
 
-        <Text text="Vyberte vyučované předměty:" styleClass="label"/>
+        <Text text="Vyberte vyučované předměty *" styleClass="label"/>
 
         <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view"/>
 
-        <Button text="Registrovat" onAction="#handleRegister" styleClass="submit" maxWidth="350"/>
+        <Button fx:id="registerButton" text="Registrovat" onAction="#handleRegister" styleClass="submit" maxWidth="350"/>
     </VBox>
 </StackPane>

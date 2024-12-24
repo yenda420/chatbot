@@ -43,6 +43,7 @@ public class LoaderService {
         }
     }
 
+    // Utility to get title based on view
     private static String getTitle(ViewEnum view) {
         switch (view) {
             case REGISTER: return "Registrace";

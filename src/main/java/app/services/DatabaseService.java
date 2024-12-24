@@ -148,8 +148,8 @@ public class DatabaseService {
     private void createTableUsers() {
         String sql = "CREATE TABLE IF NOT EXISTS users (" +
                 "userId INT PRIMARY KEY AUTO_INCREMENT, " +
-                "firstName VARCHAR(50) NOT NULL, " +
-                "lastName VARCHAR(50) NOT NULL, " +
+                "firstName VARCHAR(50), " +
+                "lastName VARCHAR(50), " +
                 "email VARCHAR(100) UNIQUE NOT NULL, " +
                 "passwordHash VARCHAR(255) NOT NULL, " +
                 "role ENUM('Administrátor', 'Učitel') NOT NULL)";
@@ -294,7 +294,7 @@ public class DatabaseService {
         DatabaseService dbService = new DatabaseService();
 
         if (dbService.getConn() != null) {
-            dbService.dropDatabase(); // Only for testing
+            // dbService.dropDatabase(); // Only for testing
             dbService.createDatabase();
             dbService.useDatabase();
 

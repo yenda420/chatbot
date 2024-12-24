@@ -132,24 +132,6 @@ public class SubjectManager {
         return -1;
     }
 
-    public static Subject getSubject(int subjectId) throws SQLException {
-        String sql = "SELECT * FROM subjects WHERE subjectId = ?";
-
-        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
-            pstmt.setInt(1, subjectId);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return new Subject(
-                            rs.getString("name"),
-                            rs.getString("abbreviation"),
-                            rs.getString("description")
-                    );
-                }
-            }
-        }
-        return null;
-    }
-
     public static Subject getTopicsSubject(String topicName) throws SQLException {
         String sql = "SELECT subjectId FROM topics WHERE name = ?";
 

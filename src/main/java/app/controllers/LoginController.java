@@ -2,7 +2,6 @@ package app.controllers;
 
 import app.dao.UserManager;
 import app.enums.ViewEnum;
-import app.models.User;
 import app.services.LoaderService;
 
 import javafx.fxml.FXML;
@@ -20,6 +19,15 @@ public class LoginController {
 
     @FXML
     private PasswordField password;
+
+    @FXML
+    private Button loginButton;
+
+    @FXML
+    private void initialize() {
+        loginButton.setDefaultButton(true);
+        email.requestFocus();
+    }
 
     @FXML
     private void handleRegisterLink() {

@@ -12,6 +12,6 @@
         <TextField fx:id="email" promptText="Email" styleClass="input" maxWidth="350"/>
         <PasswordField fx:id="password" promptText="Heslo" styleClass="input" maxWidth="350"/>
 
-        <Button text="Přihlásit" onAction="#handleLogin" styleClass="submit" maxWidth="350"/>
+        <Button fx:id="loginButton" text="Přihlásit" onAction="#handleLogin" styleClass="submit" maxWidth="350"/>
     </VBox>
 </StackPane>
