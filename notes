@@ -7,15 +7,15 @@
 -- Úspěšně se vkládají a linkují všechna data z vytvořeného testu
 -- Přidávání uživatelů
 -- Úprava UI
+-- Zobrazení informace o nahraném souboru
 
 ** Momentálně rozpracováno **
--- Zobrazení informace o nahraném souboru
+-- Přidat loader
+-- Přidat možnost stáhnutí souboru po vygenerování
 -- CRUD operace pro admina
 
 ** Na později **
 -- Přidat checkbox "Přečetl(a) jsem manuál aplikace" (odkaz, který stáhne manuál aplikace)
--- Přidat loader
--- Přidat možnost stáhnutí souboru po vygenerování
 -- Pokusit se vygenerovat docx (případně pdf) soubor
 -- Možnost generování více otázek
 
