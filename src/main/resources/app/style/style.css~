@@ -120,5 +120,11 @@
     -fx-font-size: 14px;
     -fx-fill: white;
     -fx-padding: 10;
-    -fx-font-weight: bold;
+    -fx-font-weight: normal;
+}
+
+.custom-progress {
+    -fx-progress-color: maroon; /* Set progress color to maroon */
+    -fx-scale-x: 2.0;  /* Adjust scale as needed */
+    -fx-scale-y: 2.0;  /* Adjust as needed */
 }

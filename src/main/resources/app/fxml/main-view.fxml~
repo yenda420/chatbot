@@ -35,6 +35,6 @@
 
   <!-- Overlay with a loader -->
   <VBox fx:id="overlay" style="-fx-background-color: rgba(0, 0, 0, 0.5);" alignment="CENTER" visible="false">
-    <ProgressIndicator fx:id="progressIndicator" styleClass="custom-progress"/>
+    <ProgressIndicator fx:id="progressIndicator" prefWidth="400" prefHeight="400" styleClass="custom-progress"/>
   </VBox>
 </StackPane>

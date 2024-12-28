@@ -160,9 +160,9 @@ public class UserManager {
                 .toString();
 
         // Test user
-        User user = new User("user", userPasswordHash, UserRoleEnum.TEACHER);
+        User user = new User("user", "user", "user@user.com", userPasswordHash, UserRoleEnum.TEACHER);
         // Default admin
-        User admin = new User(adminEmail, adminPasswordHash, UserRoleEnum.ADMIN);
+        User admin = new User("admin", "admin", adminEmail, adminPasswordHash, UserRoleEnum.ADMIN);
 
         try {
             if (!instanceInDatabase("users", "email", "user@user.com")) {

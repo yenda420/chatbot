@@ -20,6 +20,12 @@ public class User {
         this.role = role;
     }
 
+    public User(String email, String passwordHash, UserRoleEnum role) {
+        this.email = email;
+        this.passwordHash = passwordHash;
+        this.role = role;
+    }
+
     public String getFirstName() {
         return firstName;
     }

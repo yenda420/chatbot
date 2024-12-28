@@ -122,3 +122,9 @@
     -fx-padding: 10;
     -fx-font-weight: normal;
 }
+
+.custom-progress {
+    -fx-progress-color: maroon;
+    -fx-scale-x: 2.0;
+    -fx-scale-y: 2.0;
+}

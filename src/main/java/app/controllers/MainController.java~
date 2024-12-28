@@ -12,8 +12,10 @@ import app.services.AITestGeneratorService;
 import io.github.cdimascio.dotenv.Dotenv;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
@@ -72,6 +74,82 @@ public class MainController {
 
     @FXML
     private Text fileLabel;
+
+    @FXML
+    private Button fileButton;
+
+    @FXML
+    private ProgressIndicator progressIndicator;
+
+    @FXML
+    private Pane overlay;
+
+    @FXML
+    public void handleCreateTest() {
+        if (validateInputs()) {
+            showLoader(true); 
+
+            // Define a Task to run in the background
+            Task<Void> task = new Task<>() {
+                @Override
+                protected Void call() throws SQLException, FileNotFoundException {
+                    AITestGeneratorService aiTestGeneratorService = new AITestGeneratorService();
+
+                    Prompt prompt = new Prompt(message.getText(), fileAttached, chosenTopics);
+                    Test test = new Test(
+                            testName.getText(),
+                            Integer.parseInt(questionCount.getText()),
+                            Integer.parseInt(timeLimit.getText()),
+                            DifficultyEnum.fromString(difficulty.getValue()),
+                            QuestionTypeEnum.fromString(questionType.getValue()),
+                            prompt,
+                            currentUser
+                    );
+
+                    String error = handleTestProcessing(test, prompt, aiTestGeneratorService);
+
+                    if (error == null) {
+                        // Saving the test to the downloads folder + other actions will go here
+                        System.out.println("[INFO] - Success! (more will be implemented)");
+                    } else {
+                        showErrorAlert(testName, error);
+                    }
+                    return null;
+                }
+            };
+
+            task.setOnSucceeded(event -> showLoader(false));
+
+            task.setOnFailed(event -> {
+                showLoader(false);
+                showErrorAlert("Test se nepodařilo vygenerovat z technických důvodů. Zkuste to, prosím později.");
+            });
+
+            // Start the task in a new thread to keep UI responsive
+            new Thread(task).start();
+        }
+    }
+
+    @FXML
+    private void showLoader(boolean show) {
+        overlay.setVisible(show);
+        progressIndicator.setVisible(show);
+        setInputsDisabled(show);
+    }
+
+    private void setInputsDisabled(boolean disable) {
+        testName.setDisable(disable);
+        questionCount.setDisable(disable);
+        timeLimit.setDisable(disable);
+        difficulty.setDisable(disable);
+        questionType.setDisable(disable);
+        subject.setDisable(disable);
+        topics.setDisable(disable);
+        message.setDisable(disable);
+        createTestButton.setDisable(disable);
+        fileButton.setDisable(disable);
+        hint.setDisable(disable);
+    }
 
     @FXML
     private void initialize() {
@@ -154,39 +232,11 @@ public class MainController {
         fileAttached = fileChooser.showOpenDialog(null);
 
         if (fileAttached != null) {
-            fileChooser.setTitle("Přiložený soubor: " + fileAttached.getName());
+            fileLabel.setText("Přiložený soubor: " + fileAttached.getName());
             System.out.println("[INFO] - File selected: " + fileAttached.getAbsolutePath());
         } else {
             fileChooser.setTitle("Přiložený soubor nejde otevřít.");
             System.err.println("[ERROR] - File could not be opened.");
-        }
-    }
-
-    @FXML
-    public void handleCreateTest() throws SQLException, FileNotFoundException {
-        if (validateInputs()) {
-            AITestGeneratorService aiTestGeneratorService = new AITestGeneratorService();
-
-            Prompt prompt = new Prompt(message.getText(), fileAttached, chosenTopics);
-
-            Test test = new Test(
-                    testName.getText(),
-                    Integer.parseInt(questionCount.getText()),
-                    Integer.parseInt(timeLimit.getText()),
-                    DifficultyEnum.fromString(difficulty.getValue()),
-                    QuestionTypeEnum.fromString(questionType.getValue()),
-                    prompt,
-                    currentUser
-            );
-
-            String error = handleTestProcessing(test, prompt, aiTestGeneratorService);
-
-            if (error == null) {
-                // Saving the test to the downloads folder + other actions will go here
-                System.out.println("[INFO] - Success! (more will be implemented)");
-            } else {
-                showErrorAlert(testName, error);
-            }
         }
     }
 
