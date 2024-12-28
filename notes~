@@ -1,4 +1,4 @@
-** Již 
+** Již probráno **
 -- Použití vlastního API klíče
 -- Použití dotenv-java knihovny pro .env proměnné
 -- One-to-One vztah v aplikaci pravděpodobně funguje, co nefunguje je spíše Reverse engineer funkce v MySQL Workbench
@@ -19,6 +19,7 @@
 ** Na později **
 -- Přidat checkbox "Přečetl(a) jsem manuál aplikace" (odkaz, který stáhne manuál aplikace)
 -- Pokusit se vygenerovat docx (případně pdf) soubor
+-- Rozpoznat, že uživatel není připojen k Wi-Fi
 -- Zlepšit vzhled alertů
 -- Implementovat logger
 -- Možnost generování více otázek
