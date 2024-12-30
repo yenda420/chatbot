@@ -364,7 +364,7 @@ public class AIValidatorService extends AIService {
             }
 
             if (startIndex > endIndex) {
-                System.err.println("[ERROR] - The testContent parameter wasnt formatted correctly.");
+                System.err.println("[ERROR] - The testContent parametr wasnt formatted correctly.");
                 return null;
             }
 

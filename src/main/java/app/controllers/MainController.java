@@ -3,12 +3,14 @@ package app.controllers;
 import app.dao.*;
 import app.enums.DifficultyEnum;
 import app.enums.QuestionTypeEnum;
+import app.enums.ViewEnum;
 import app.models.Prompt;
 import app.models.Test;
 import app.models.Topic;
 import app.models.User;
 import app.services.AITestGeneratorService;
 
+import app.services.LoaderService;
 import io.github.cdimascio.dotenv.Dotenv;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -93,8 +95,7 @@ public class MainController {
             Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() throws SQLException, FileNotFoundException {
-                    AITestGeneratorService aiTestGeneratorService = new AITestGeneratorService();
-
+                    AITestGeneratorService ai = new AITestGeneratorService();
                     Prompt prompt = new Prompt(message.getText(), fileAttached, chosenTopics);
                     Test test = new Test(
                             testName.getText(),
@@ -106,23 +107,32 @@ public class MainController {
                             currentUser
                     );
 
-                    String error = handleTestProcessing(test, prompt, aiTestGeneratorService);
+                    String error = handleTestProcessing(test, prompt, ai);
 
-                    if (error == null) {
-                        // Saving the test to the downloads folder + other actions will go here
-                        System.out.println("[INFO] - Success! (more will be implemented)");
-                    } else {
+                    if (error != null) {
                         showErrorAlert(testName, error);
                     }
                     return null;
                 }
             };
 
-            task.setOnSucceeded(event -> showLoader(false));
+            task.setOnSucceeded(event -> {
+                showLoader(false);
+                System.out.println("[INFO] - Task processed successfully.");
+                showSuccessAlert();
+                LoaderService.load(ViewEnum.MAIN, getClass(), testName, currentUser);
+            });
 
             task.setOnFailed(event -> {
                 showLoader(false);
+                Throwable exception = task.getException();
+
+                if (exception != null) {
+                    System.out.println("[ERROR] - An exception occurred: " + exception.getMessage());
+                }
+
                 showErrorAlert("Test se nepodařilo vygenerovat z technických důvodů. Zkuste to, prosím později.");
+                LoaderService.load(ViewEnum.MAIN, getClass(), testName, currentUser);
             });
 
             // Start the task in a new thread to keep UI responsive
@@ -354,6 +364,11 @@ public class MainController {
 
     private void showErrorAlert(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message);
+        alert.showAndWait();
+    }
+
+    private void showSuccessAlert() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, "Test byl uložen do Stažených souborů (Downloads).");
         alert.showAndWait();
     }
 }

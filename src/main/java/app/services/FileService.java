@@ -17,10 +17,17 @@ public class FileService {
         return contentBuilder.toString();
     }
 
-    public static boolean writeTestToFile(String content, String filePath) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, StandardCharsets.UTF_8))) {
+    public static boolean writeTestToFile(String content, String fileName) {
+        // Get the Downloads directory
+        String userHome = System.getProperty("user.home");
+        File downloadsDir = new File(userHome, "Downloads");
+
+        // Create the target file in Downloads
+        File file = new File(downloadsDir, fileName);
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(file, StandardCharsets.UTF_8))) {
             writer.write(content);
-            System.out.println("[INFO] - Test written to file: " + filePath);
+            System.out.println("[INFO] - Test written to file: " + file.getAbsolutePath());
             return true;
         } catch (IOException e) {
             System.err.println("[ERROR] - Failed to write test to file.");
@@ -28,4 +35,5 @@ public class FileService {
             return false;
         }
     }
+
 }

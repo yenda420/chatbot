@@ -23,5 +23,4 @@
 -- Zlepšit vzhled alertů
 -- Implementovat logger
 -- Možnost generování více otázek
-
 -- Abstrakce pro volání dotazů

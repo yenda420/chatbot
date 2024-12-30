@@ -10,10 +10,10 @@
 -- Přidávání uživatelů
 -- Úprava UI
 -- Zobrazení informace o nahraném souboru
+-- Přidat loader
 
 ** Momentálně rozpracováno **
--- Přidat loader
--- Přidat možnost stáhnutí souboru po vygenerování
+-- Přidat automatické stáhnutí souboru po vygenerování
 -- CRUD operace a prohlížení pro admina
 
 ** Na později **
