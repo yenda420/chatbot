@@ -132,7 +132,7 @@ public class AITestGeneratorService extends AIService {
 
     public String generateTest(Test test) throws SQLException {
         // Extract attributes from the Test object
-        Prompt prompt = test.getFromPrompt();
+        Prompt prompt = test.getPrompt();
         if (prompt == null) {
             System.err.println("[ERROR] - Missing prompt information in the test.");
             return null;

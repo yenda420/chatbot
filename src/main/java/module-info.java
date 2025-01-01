@@ -9,6 +9,7 @@ module com.example.chatbot {
     requires com.google.gson;
     requires io.github.cdimascio.dotenv.java;
     requires com.google.common;
+    requires org.apache.poi.ooxml;
 
     opens app to javafx.fxml;
     exports app;

@@ -57,7 +57,6 @@ public class TestManager {
                     pstmt.setInt(4, test.getTimeLimitInMinutes());
                     pstmt.setInt(5, promptId);
                     pstmt.setInt(6, UserManager.getId(user.getEmail()));
-                    System.out.println("skibidi" + pstmt);
                     pstmt.executeUpdate();
 
                     System.out.println("[INFO] - Test " + test + " inserted into database.");
@@ -139,11 +138,13 @@ public class TestManager {
                         }
 
                         // Get the number of points
-                        String[] pointParts = lines[index + 1].split(":");
+                        String pointsLine = lines[index + 1].trim(); // Ensure all leading/trailing spaces are gone
+                        String[] pointParts = pointsLine.split(":");
                         if (pointParts.length < 2) {
                             System.err.println("[ERROR] - Invalid format for points on line " + (index + 2));
                             return false;
                         }
+
 
                         String pointsString = pointParts[1].trim().split(" ")[0]; // Handle cases like '5 bodů'
                         int points = Integer.parseInt(pointsString);

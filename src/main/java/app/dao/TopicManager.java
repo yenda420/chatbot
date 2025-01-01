@@ -21,7 +21,7 @@ public class TopicManager {
 
     public static boolean save(Topic topic) throws SQLException {
         if (db.getConn() != null) {
-            int subjectId = SubjectManager.getSubjectId(topic.getSubject());
+            int subjectId = SubjectManager.getId(topic.getSubject());
 
             if (subjectId == -1) {
                 System.err.println("[ERROR] - Subject " + topic.getSubject() + " not found in database.");
@@ -68,8 +68,6 @@ public class TopicManager {
             }
         }
     }
-
-
 
     public static ArrayList<String> getTopics(String fromSubjects) throws SQLException {
         int id = SubjectManager.getId(fromSubjects);

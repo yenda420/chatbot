@@ -128,7 +128,7 @@ public class MainController {
                 Throwable exception = task.getException();
 
                 if (exception != null) {
-                    System.out.println("[ERROR] - An exception occurred: " + exception.getMessage());
+                    System.err.println("[ERROR] - An exception occurred: " + exception.getMessage());
                 }
 
                 showErrorAlert("Test se nepodařilo vygenerovat z technických důvodů. Zkuste to, prosím později.");
@@ -277,7 +277,7 @@ public class MainController {
             if (!TestManager.saveTestData(testContent, test, promptId))
                 return technicalError;
 
-            if (!writeTestToFile(testContent, testName.getText() + ".txt"))
+            if (!writeTestToFile(testContent, test))
                 return fileError;
 
             return null;

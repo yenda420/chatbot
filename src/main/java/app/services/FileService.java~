@@ -141,6 +141,8 @@ public class FileService {
             }
         }
 
+        System.out.println("first line: " + firstQuestionLine);
+
         for (String line : lines) {
             line = line.trim();
 

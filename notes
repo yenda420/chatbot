@@ -10,17 +10,18 @@
 -- Přidávání uživatelů
 -- Úprava UI
 -- Zobrazení informace o nahraném souboru
--- Přidat loader
+-- Loader
+-- Automatické stáhnutí souboru po vygenerování
+-- Generování docx soubor
 
 ** Momentálně rozpracováno **
--- Přidat automatické stáhnutí souboru po vygenerování
--- CRUD operace a prohlížení pro admina
+-- Ukládat vygenerovaný docx soubor do databáze (tabulka tests)
 
 ** Na později **
--- Přidat checkbox "Přečetl(a) jsem manuál aplikace" (odkaz, který stáhne manuál aplikace)
--- Pokusit se vygenerovat docx (případně pdf) soubor
--- Rozpoznat, že uživatel není připojen k Wi-Fi
 -- Zlepšit vzhled alertů
+-- Přidat checkbox "Přečetl(a) jsem manuál aplikace" (odkaz, který stáhne manuál aplikace)
+-- Rozpoznat, že uživatel není připojen k Wi-Fi
+-- CRUD operace a prohlížení pro admina
 -- Implementovat logger
 -- Možnost generování více otázek
 -- Abstrakce pro volání dotazů

@@ -42,7 +42,7 @@ public class Test {
         return questionType;
     }
 
-    public Prompt getFromPrompt() {
+    public Prompt getPrompt() {
         return fromPrompt;
     }
 

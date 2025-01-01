@@ -138,13 +138,14 @@ public class TestManager {
                         }
 
                         // Get the number of points
-                        String[] pointParts = lines[index + 1].split(":");
+                        String pointsLine = lines[index + 1].trim();
+                        String[] pointParts = pointsLine.split(":");
                         if (pointParts.length < 2) {
                             System.err.println("[ERROR] - Invalid format for points on line " + (index + 2));
                             return false;
                         }
 
-                        String pointsString = pointParts[1].trim().split(" ")[0]; // Handle cases like '5 bodů'
+                        String pointsString = pointParts[1].trim().split(" ")[0];
                         int points = Integer.parseInt(pointsString);
 
                         Question question = new Question(questionText, questionType, difficulty, points);
