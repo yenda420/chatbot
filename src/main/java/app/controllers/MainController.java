@@ -87,6 +87,12 @@ public class MainController {
     private Pane overlay;
 
     @FXML
+    private Text heading;
+
+    @FXML
+    private Text explanation;
+
+    @FXML
     public void handleCreateTest() {
         if (validateInputs()) {
             showLoader(true);
@@ -144,21 +150,23 @@ public class MainController {
     private void showLoader(boolean show) {
         overlay.setVisible(show);
         progressIndicator.setVisible(show);
-        setInputsDisabled(show);
+        shadeBackground(show);
     }
 
-    private void setInputsDisabled(boolean disable) {
-        testName.setDisable(disable);
-        questionCount.setDisable(disable);
-        timeLimit.setDisable(disable);
-        difficulty.setDisable(disable);
-        questionType.setDisable(disable);
-        subject.setDisable(disable);
-        topics.setDisable(disable);
-        message.setDisable(disable);
-        createTestButton.setDisable(disable);
-        fileButton.setDisable(disable);
-        hint.setDisable(disable);
+    private void shadeBackground(boolean shade) {
+        testName.setDisable(shade);
+        questionCount.setDisable(shade);
+        timeLimit.setDisable(shade);
+        difficulty.setDisable(shade);
+        questionType.setDisable(shade);
+        subject.setDisable(shade);
+        topics.setDisable(shade);
+        message.setDisable(shade);
+        createTestButton.setDisable(shade);
+        fileButton.setDisable(shade);
+        hint.setDisable(shade);
+        heading.setDisable(shade);
+        explanation.setDisable(shade);
     }
 
     @FXML

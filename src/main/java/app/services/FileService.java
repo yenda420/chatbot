@@ -116,6 +116,7 @@ public class FileService {
         maxPoints.setAlignment(ParagraphAlignment.RIGHT);
 
         String maxPointsLine = content.split("\n")[content.split("\n").length - 1];
+        maxPointsLine = maxPointsLine.replace("\n", "");
 
         XWPFRun maxPointsRun = maxPoints.createRun();
         maxPointsRun.setText(maxPointsLine);
@@ -127,45 +128,49 @@ public class FileService {
         content = content.substring(0, content.lastIndexOf("\n"));
 
         Pattern questionPattern = Pattern.compile("^\\d+\\.\\s+.*");
-        String[] lines = content.split("\n");
-        String firstQuestionLine = "";
+        boolean inAnswers = false;
+        boolean isFirstPage = true;
 
-        for (String line : lines) {
-            if (TestManager.lineContainsAnyOf(TestManager.requiredSections, line) || line.isEmpty() || line.isBlank() || line.equals("\n")) {
-                continue; // Skip empty lines or lines matching headers
-            }
-
-            if (questionPattern.matcher(line).matches()) {
-                firstQuestionLine = line;
-                break;
-            }
-        }
-
-        for (String line : lines) {
+        for (String line : content.split("\n")) {
             line = line.trim();
 
-            if (TestManager.lineContainsAnyOf(TestManager.requiredSections, line) || line.isEmpty() || line.isBlank() || line.equals("\n")) {
-                continue; // Skip empty lines or lines matching headers
-            }
-
-            if (questionPattern.matcher(line).matches() || line.startsWith("Správné odpovědi:")) {
-                // Add an empty paragraph for extra spacing before each question
-                if (!line.equals(firstQuestionLine)) {
-                    document.createParagraph();
-                }
+            if (TestManager.lineContainsAnyOf(TestManager.requiredSections, line) || line.isEmpty()) {
+                continue; // Skip unnecessary lines
             }
 
             XWPFParagraph paragraph = document.createParagraph();
             paragraph.setAlignment(line.startsWith("Body:") ? ParagraphAlignment.RIGHT : ParagraphAlignment.LEFT);
 
             XWPFRun run = paragraph.createRun();
+
+            if (line.startsWith("Správné odpovědi:")) {
+                inAnswers = true;
+                line = line.trim();
+
+                run.setFontSize(13);
+                run.setColor("0F4761");
+                run.setFontFamily("Aptos Display");
+
+                if (!isFirstPage) {
+                    paragraph.setPageBreak(true);
+                }
+            }
+
             run.setFontSize(11);
             run.setFontFamily("Aptos");
             run.setText(line);
 
-            if (line.startsWith("Správné odpovědi:")) {
+            // Bold questions and answers
+            if (questionPattern.matcher(line).matches() || (inAnswers && !line.startsWith("Vysvětlení:") && !line.startsWith("Správné odpovědi:") && !line.isEmpty())) {
                 run.setBold(true);
             }
+
+            // Italic poins and explanations
+            if (line.startsWith("Body:") || (inAnswers && line.startsWith("Vysvětlení:"))) {
+                run.setItalic(true);
+            }
+
+            isFirstPage = false;
         }
 
         return document;

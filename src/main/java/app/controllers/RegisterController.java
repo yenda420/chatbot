@@ -43,6 +43,9 @@
         private ListView<String> subjects;
 
         @FXML
+        private CheckBox confirmationCheckbox;
+
+        @FXML
         private Button registerButton;
 
         @FXML
@@ -116,6 +119,11 @@
 
             if (subjects.getSelectionModel().getSelectedItems().isEmpty()) {
                 showErrorAlert("Vyberte, prosím, alespoň jeden předmět.");
+                return false;
+            }
+
+            if (!confirmationCheckbox.isSelected()) {
+                showErrorAlert("Potvrďte, prosím, přečtení Manuálu aplikace.");
                 return false;
             }
 

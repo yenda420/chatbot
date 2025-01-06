@@ -141,7 +141,7 @@ public class TestManager {
                         String pointsLine = lines[index + 1].trim();
                         String[] pointParts = pointsLine.split(":");
                         if (pointParts.length < 2) {
-                            System.err.println("[ERROR] - Invalid format for points on line " + (index + 2));
+                            System.err.println("[ERROR] - Invalid format for points on line " + (index + 2) + ". Line content: " + pointParts[0]);
                             return false;
                         }
 

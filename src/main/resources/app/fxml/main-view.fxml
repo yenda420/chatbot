@@ -6,10 +6,10 @@
 <?import javafx.scene.text.Text?>
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.MainController" styleClass="background">
   <VBox spacing="10" alignment="CENTER" maxWidth="400" styleClass="form-container">
-    <Text text="Generátor Testů" styleClass="heading"/>
+    <Text fx:id="heading" text="Generátor Testů" styleClass="heading"/>
 
     <HBox alignment="CENTER_RIGHT" maxWidth="350" style="-fx-padding: 0 17 0 0;">
-      <Text text="* povinné pole" styleClass="explanation"/>
+      <Text fx:id="explanation" text="* povinné pole" styleClass="explanation"/>
     </HBox>
 
     <TextField fx:id="testName" promptText="Název testu *" styleClass="input" maxWidth="350"/>

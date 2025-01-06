@@ -17,7 +17,6 @@
 
 ** Momentálně rozpracováno **
 -- Ukládat vygenerovaný docx soubor do databáze (tabulka tests)
--- Vyřešit problém s kódem uvnitř testu
 
 ** Na později **
 -- Zlepšit vzhled alertů

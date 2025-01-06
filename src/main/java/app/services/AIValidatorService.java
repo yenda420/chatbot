@@ -25,7 +25,6 @@ public class AIValidatorService extends AIService {
 
             if (issues.isEmpty()) {
                 AIValidatorService validator = new AIValidatorService();
-                assistantResponse = removeUnwantedLines(assistantResponse);
 
                 if (validator.isFactuallyCorrect(assistantResponse)) {
                     return assistantResponse;
@@ -340,41 +339,6 @@ public class AIValidatorService extends AIService {
             // Unclear response, defaulting to false
             System.err.println("[WARNING] - Assistant response unclear. Assuming test has factual errors.");
             return false;
-        }
-    }
-
-    // This method assumes the test is already correctly formatted
-    // The testContent parameter has to contain "Název testu:" and "Maximální počet bodů:"
-    private String removeUnwantedLines(String testContent) {
-        try {
-            String[] lines = testContent.split("\n");
-
-            // Remove any leading empty lines
-            int startIndex = 0;
-            while (startIndex < lines.length && (lines[startIndex].trim().isEmpty() || lines[startIndex].contains("Název testu:"))) {
-                startIndex++;
-            }
-
-            startIndex--;
-
-            // Remove any trailing empty lines
-            int endIndex = lines.length - 1;
-            while (endIndex >= 0 && (lines[startIndex].trim().isEmpty() || TestManager.lineContainsAnyOf(TestManager.requiredSections, lines[endIndex]))) {
-                endIndex--;
-            }
-
-            if (startIndex > endIndex) {
-                System.err.println("[ERROR] - The testContent parameter wasnt formatted correctly.");
-                return null;
-            }
-
-            // Remove all lines except the ones between startIndex and endIndex
-            lines = Arrays.copyOfRange(lines, startIndex, endIndex + 1);
-
-            return String.join("\n", lines);
-        } catch (Exception e) {
-            System.err.println("[ERROR] - Failed to remove unwanted lines from the testContent: " + e.getMessage());
-            return null;
         }
     }
 }

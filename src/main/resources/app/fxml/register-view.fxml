@@ -24,6 +24,8 @@
 
         <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view"/>
 
+        <CheckBox fx:id="confirmationCheckbox" text="Četl(a) jsem Manuál aplikace *" styleClass="checkbox" maxWidth="350"/>
+
         <Button fx:id="registerButton" text="Registrovat" onAction="#handleRegister" styleClass="submit" maxWidth="350"/>
     </VBox>
 </StackPane>
