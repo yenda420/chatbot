@@ -13,11 +13,11 @@
 -- Loader
 -- Automatické stáhnutí souboru po vygenerování
 -- Generování docx soubor
--- Přidat checkbox "Četl(a) jsem Manuál aplikace"
+-- Checkbox "Četl(a) jsem Manuál aplikace"
 
 ** Momentálně rozpracováno **
--- Ukládat vygenerovaný docx soubor do databáze (tabulka tests)
--- Vyřešit problém s kódem uvnitř testu
+-- Uklání vygenerovaného docx souboru do databáze (tabulka tests)
+-- Problém s kódem uvnitř testu
 
 ** Na později **
 -- Zlepšit vzhled alertů

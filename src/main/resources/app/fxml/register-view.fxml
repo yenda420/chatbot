@@ -5,7 +5,7 @@
 <?import javafx.scene.text.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.RegisterController" styleClass="background">
-    <VBox spacing="10" alignment="CENTER" minWidth="400" styleClass="form-container">
+    <VBox spacing="10" alignment="CENTER" maxWidth="350" styleClass="form-container">
         <Text text="Registrace" styleClass="heading"/>
 
         <Hyperlink text="Máte již účet? Přihlašte se." onAction="#handleLoginLink" styleClass="register-link"/>
@@ -19,8 +19,9 @@
         <TextField fx:id="email" promptText="Email *" styleClass="input" maxWidth="350"/>
         <PasswordField fx:id="password" promptText="Heslo *" styleClass="input" maxWidth="350"/>
         <PasswordField fx:id="confirmPassword" promptText="Heslo znovu *" styleClass="input" maxWidth="350"/>
-
-        <Text text="Vyberte vyučované předměty *" styleClass="label"/>
+        <Text text="Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak."
+              styleClass="explanation" wrappingWidth="350" textAlignment="CENTER"/>
+        <Text text="Vyberte vyučované předměty (Ctrl + Klik) *" styleClass="label"/>
 
         <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view"/>
 

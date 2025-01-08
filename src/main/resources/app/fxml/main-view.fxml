@@ -16,7 +16,7 @@
     <TextField fx:id="questionCount" promptText="Počet otázek *" styleClass="input" maxWidth="350"/>
     <TextField fx:id="timeLimit" promptText="Časový limit v minutách *" styleClass="input" maxWidth="350"/>
 
-    <Button fx:id="fileButton" text="Připojte soubor" onAction="#handleFileUpload" styleClass="button" maxWidth="350"/>
+    <Button fx:id="fileButton" text="Soubor pro specifikaci kontextu" onAction="#handleFileUpload" styleClass="button" maxWidth="350"/>
     <Text fx:id="fileLabel" styleClass="fileLabel"/>
 
     <ComboBox fx:id="difficulty" promptText="Vyberte obtížnost *" styleClass="combobox" maxWidth="350"/>
