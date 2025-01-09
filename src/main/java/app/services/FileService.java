@@ -134,7 +134,7 @@ public class FileService {
         for (String line : content.split("\n")) {
             line = line.trim();
 
-            if (TestManager.lineContainsAnyOf(TestManager.requiredSections, line) || line.isEmpty()) {
+            if (TestManager.lineContainsAnyOf(TestManager.requiredSections, line) || line.isEmpty() || line.contains("```")) {
                 continue; // Skip unnecessary lines
             }
 

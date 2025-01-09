@@ -5,8 +5,6 @@
 -- Přidal jsem E-R Model (nově i s tabulkou users)
 -- Opravily se errory při generování testů (conversationHistory)
 -- Úspěšně se vkládají a linkují všechna data z vytvořeného testu
-
-** Co je nového **
 -- Přidávání uživatelů
 -- Úprava UI
 -- Zobrazení informace o nahraném souboru
@@ -15,9 +13,14 @@
 -- Generování docx soubor
 -- Checkbox "Četl(a) jsem Manuál aplikace"
 
-** Momentálně rozpracováno **
--- Uklání vygenerovaného docx souboru do databáze (tabulka tests)
+** Co je nového **
 -- Problém s kódem uvnitř testu
+-- Text wrap u TextArea
+-- Problém po přesměrování na stránku
+
+** Momentálně rozpracováno **
+-- Přidání taggů do databáze
+-- Testovat příponu souborů a jejich velikost
 
 ** Na později **
 -- Zlepšit vzhled alertů

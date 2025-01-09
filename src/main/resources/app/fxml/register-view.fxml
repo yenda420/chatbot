@@ -21,7 +21,7 @@
         <PasswordField fx:id="confirmPassword" promptText="Heslo znovu *" styleClass="input" maxWidth="350"/>
         <Text text="Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak."
               styleClass="explanation" wrappingWidth="350" textAlignment="CENTER"/>
-        <Text text="Vyberte vyučované předměty (Ctrl + Klik) *" styleClass="label"/>
+        <Text text="Vyberte vyučované předměty * (Ctrl + Klik)" styleClass="label"/>
 
         <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view"/>
 

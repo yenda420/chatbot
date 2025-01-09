@@ -78,8 +78,6 @@ public class TestManager {
 
             String[] lines = testContent.split("\n");
 
-            System.out.println("[DEBUG] - Number of lines: " + lines.length);
-
             QuestionTypeEnum questionType = test.getQuestionType();
             DifficultyEnum difficulty = test.getDifficulty();
 

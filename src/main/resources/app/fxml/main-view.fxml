@@ -28,7 +28,7 @@
     <Text fx:id="hint" text="Vyberte předmět než vyberete témata" styleClass="label"/>
     <ListView fx:id="topics" maxWidth="350" styleClass="input-list-view"/>
 
-    <TextArea fx:id="message" promptText="Další specifikace testu" styleClass="textarea" maxWidth="350" prefHeight="150"/>
+    <TextArea fx:id="message" promptText="Další specifikace testu" styleClass="textarea" maxWidth="350" prefHeight="150" wrapText="true"/>
 
     <Button fx:id="createTestButton" onAction="#handleCreateTest" text="Vygeneruj test" styleClass="submit" maxWidth="350"/>
   </VBox>

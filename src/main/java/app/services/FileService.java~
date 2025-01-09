@@ -161,7 +161,7 @@ public class FileService {
             run.setText(line);
 
             // Bold questions and answers
-            if (questionPattern.matcher(line).matches() || (inAnswers && !line.startsWith("Vysvětlení:") && !line.isEmpty())) {
+            if (questionPattern.matcher(line).matches() || (inAnswers && !line.startsWith("Vysvětlení:") && !line.startsWith("Správné odpovědi:") && !line.isEmpty())) {
                 run.setBold(true);
             }
 

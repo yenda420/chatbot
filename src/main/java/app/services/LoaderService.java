@@ -35,6 +35,7 @@ public class LoaderService {
             stage.setScene(scene);
             stage.setTitle(getTitle(view));
             stage.show();
+            stage.centerOnScreen();
         } catch (IOException e) {
             System.err.println("[ERROR] - Failed to load " + view.getName() + "-view.fxml.");
             e.printStackTrace();
