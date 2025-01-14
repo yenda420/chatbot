@@ -62,6 +62,19 @@ public class DatabaseService {
         }
     }
 
+    private void createTableTags() {
+        String sql = "CREATE TABLE IF NOT EXISTS tags (" +
+                "tagId INT PRIMARY KEY AUTO_INCREMENT, " +
+                "tag VARCHAR(50) UNIQUE NOT NULL)";
+
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+            System.out.println("[INFO] - Table 'tags' created.");
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - Failed to create table 'tags': " + e.getMessage());
+        }
+    }
+
     private void createTableSubjects() {
         String sql = "CREATE TABLE IF NOT EXISTS subjects (" +
                 "subjectId INT PRIMARY KEY AUTO_INCREMENT, " +
@@ -99,8 +112,7 @@ public class DatabaseService {
         String sql = "CREATE TABLE IF NOT EXISTS prompts (" +
                 "promptId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "message LONGTEXT, " +
-                "attachedFile LONGBLOB, " +
-                "tags VARCHAR(255))";
+                "attachedFile LONGBLOB)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -189,8 +201,10 @@ public class DatabaseService {
                 "timeLimit INT NOT NULL, " +
                 "promptId INT UNIQUE NOT NULL, " +
                 "userId INT NOT NULL, " +
+                "tagId INT NOT NULL, " +
                 "CONSTRAINT FK_TESTS_PROMPTS FOREIGN KEY (promptId) REFERENCES prompts (promptId) ON DELETE CASCADE ON UPDATE CASCADE, " +
-                "CONSTRAINT FK_TESTS_USERS FOREIGN KEY (userId) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE)";
+                "CONSTRAINT FK_TESTS_USERS FOREIGN KEY (userId) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE, " +
+                "CONSTRAINT FK_TESTS_TAGS FOREIGN KEY (tagId) REFERENCES tags (tagId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -298,6 +312,7 @@ public class DatabaseService {
             dbService.createDatabase();
             dbService.useDatabase();
 
+            dbService.createTableTags();
             dbService.createTableSubjects();
             dbService.createTableTopics();
             dbService.createTablePrompts();
