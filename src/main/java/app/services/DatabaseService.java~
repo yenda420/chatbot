@@ -215,6 +215,23 @@ public class DatabaseService {
         }
     }
 
+    private void createTableTagsTests() {
+        String sql = "CREATE TABLE IF NOT EXISTS tags_tests (" +
+                "tagId INT NOT NULL, " +
+                "testId INT NOT NULL, " +
+                "PRIMARY KEY (tagId, testId), " +
+                "CONSTRAINT FK_TAGS_TESTS_TAGS FOREIGN KEY (tagId) REFERENCES tags (tagId) ON DELETE CASCADE ON UPDATE CASCADE, " +
+                "CONSTRAINT FK_TAGS_TESTS_TESTS FOREIGN KEY (testId) REFERENCES tests (testId) ON DELETE CASCADE ON UPDATE CASCADE)";
+
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute(sql);
+            System.out.println("[INFO] - Table 'tags_tests' created.");
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - Failed to create table 'tags_tests'.");
+            e.printStackTrace();
+        }
+    }
+
     private void createTableQuestionsTests() {
         String sql = "CREATE TABLE IF NOT EXISTS questions_tests (" +
                 "questionId INT NOT NULL, " +
@@ -302,6 +319,7 @@ public class DatabaseService {
         TestManager testManager = new TestManager();
         TopicManager topicManager = new TopicManager();
         UserManager userManager = new UserManager();
+        TagManager tagManager = new TagManager();
     }
 
     public static void initialize() {
@@ -312,6 +330,7 @@ public class DatabaseService {
             dbService.createDatabase();
             dbService.useDatabase();
 
+            dbService.createTableTags();
             dbService.createTableSubjects();
             dbService.createTableTopics();
             dbService.createTablePrompts();
@@ -320,6 +339,7 @@ public class DatabaseService {
             dbService.createTableUsers();
             dbService.createTableUsersSubjects();
             dbService.createTableTests();
+            dbService.createTableTagsTests();       
             dbService.createTableQuestionsTests();
             dbService.createTableAnswers();
             dbService.createTableQuestionsAnswers();
