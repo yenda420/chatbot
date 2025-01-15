@@ -25,14 +25,13 @@ public class PromptManager {
             PreparedStatement pstmt = null;
 
             String message = prompt.getMessage();
-            String tags = prompt.getTags();
 
             File file = prompt.getAttachedFile();
             FileInputStream fis = file == null ? null : new FileInputStream(file);
 
             // Insert the prompt
             try {
-                sql = "INSERT INTO prompts (message, attachedFile, tags) VALUES (?, ?, ?)";
+                sql = "INSERT INTO prompts (message, attachedFile) VALUES (?, ?)";
                 pstmt = db.getConn().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
                 if (message != null) {
@@ -47,12 +46,6 @@ public class PromptManager {
                     pstmt.setNull(2, Types.BLOB);
                 }
                 pstmt.setString(1, prompt.getMessage());
-
-                if (tags != null) {
-                    pstmt.setString(3, tags);
-                } else {
-                    pstmt.setNull(3, Types.VARCHAR);
-                }
 
                 pstmt.executeUpdate();
 

@@ -7,7 +7,6 @@ public class Prompt {
     private String message;
     private File attachedFile;
     private ArrayList<Topic> topics;
-    private String tags;
 
     public Prompt(String message, File attachedFile, ArrayList<Topic> topics) {
         this.message = message;
@@ -27,17 +26,12 @@ public class Prompt {
         return topics;
     }
 
-    public String getTags() {
-        return tags;
-    }
-
     @Override
     public String toString() {
         return "Prompt{" +
                 "message='" + message + '\'' +
                 ", attachedFile=" + attachedFile +
                 ", topics=" + topics +
-                ", tags='" + tags + '\'' +
                 '}';
     }
 }

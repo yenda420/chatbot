@@ -19,15 +19,13 @@
 -- Problém po přesměrování na stránku
 
 ** Momentálně rozpracováno **
--- Přidání taggů do databáze
+-- CRUD operace a prohlížení pro admina
 -- Testovat příponu souborů a jejich velikost
+-- Tagy v databázi jsou redundantní data => zmiňovaná funkcionalita bude, ne však pomocí tags tabulky
 
 ** Na později **
 -- Zlepšit vzhled alertů
 -- Přidat odkaz na Manuál aplikace
--- Kontrolovat velikost přiloženého souboru
 -- Rozpoznat, že uživatel není připojen k Wi-Fi
--- CRUD operace a prohlížení pro admina
 -- Implementovat logger
--- Možnost generování více otázek
 -- Abstrakce pro volání dotazů

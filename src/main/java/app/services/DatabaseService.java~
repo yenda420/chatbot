@@ -339,7 +339,7 @@ public class DatabaseService {
             dbService.createTableUsers();
             dbService.createTableUsersSubjects();
             dbService.createTableTests();
-            dbService.createTableTagsTests();       
+            dbService.createTableTagsTests();
             dbService.createTableQuestionsTests();
             dbService.createTableAnswers();
             dbService.createTableQuestionsAnswers();
