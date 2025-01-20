@@ -74,7 +74,7 @@
 .heading {
     -fx-font-size: 24px;
     -fx-fill: white;
-    -fx-padding: 10;
+    -fx-padding: 0 10 10 10;
     -fx-font-weight: bold;
 }
 
@@ -125,4 +125,39 @@
     -fx-progress-color: maroon;
     -fx-scale-x: 2.0;
     -fx-scale-y: 2.0;
+}
+
+.horizontal-menu {
+    -fx-padding: 10;
+    -fx-background-color: black;
+    -fx-alignment: center;
+}
+
+.menu-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-border-width: 0 0 2;
+    -fx-border-color: transparent;
+    -fx-border-style: solid;
+    -fx-transition: all 0.2s;
+}
+
+.menu-button:hover {
+    -fx-text-fill: maroon;
+    -fx-border-color: maroon;
+}
+
+.menu-button-active {
+    -fx-background-color: transparent;
+    -fx-font-size: 18px;
+    -fx-padding: 10 20;
+    -fx-cursor: hand;
+    -fx-border-width: 0 0 2;
+    -fx-border-style: solid;
+    -fx-transition: all 0.2s;
+    -fx-text-fill: maroon;
+    -fx-border-color: maroon;
 }
