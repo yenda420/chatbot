@@ -6,15 +6,17 @@
 <?import javafx.scene.text.Text?>
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.MainController" styleClass="background">
   <!-- Horizontal Navigation -->
-  <VBox>
-    <HBox spacing="10" alignment="CENTER" styleClass="horizontal-menu">
-      <Button text="Generovat" styleClass="menu-button-active"/>
-      <Button text="Témata" styleClass="menu-button"/>
-      <Button text="Můj účet" styleClass="menu-button"/>
-    </HBox>
+  <VBox prefWidth="550" prefHeight="950" alignment="CENTER">
+    <VBox spacing="10">
+      <HBox spacing="10" styleClass="horizontal-menu">
+        <Button text="Generátor" styleClass="menu-button-active"/>
+        <Button text="Správce témat" styleClass="menu-button"/>
+        <Button text="Můj účet" styleClass="menu-button"/>
+      </HBox>
+    </VBox>
 
     <!-- Main content -->
-    <VBox spacing="10" alignment="CENTER" maxWidth="400" styleClass="form-container">
+    <VBox spacing="10" styleClass="form-container">
       <Text fx:id="heading" text="Generátor Testů" styleClass="heading"/>
 
       <HBox alignment="CENTER_RIGHT" maxWidth="350" style="-fx-padding: 0 17 0 0;">
