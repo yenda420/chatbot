@@ -91,6 +91,26 @@ public class SubjectManager {
         }
     }
 
+    public static String getAbbreviation(String subjectName) {
+        String sql = "SELECT abbreviation FROM subjects WHERE name = ?";
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setString(1, subjectName);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("abbreviation");
+            } else {
+                System.err.println("[ERROR] - Failed to get subject abbreviation.");
+                return null;
+            }
+        } catch (Exception e) {
+            System.err.println("[ERROR] - Failed to get subject abbreviation.");
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public static Subject getSubject(Topic topic) throws SQLException {
         int topicId = TopicManager.getId(topic.getName());
         int subjectId = getId(topicId);

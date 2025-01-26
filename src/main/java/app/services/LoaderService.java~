@@ -31,7 +31,7 @@ public class LoaderService {
             } else if (view.equals(ViewEnum.ADD_TOPIC)) {
                 AddTopicController addTopicController = loader.getController();
                 addTopicController.setCurrentUser(user);
-                addTopicController.initializeUserData();
+                System.out.println(addTopicController.currentUser);
             }
 
             Scene scene = new Scene(root);

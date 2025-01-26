@@ -2,7 +2,9 @@ package app.controllers;
 
 import app.dao.UserManager;
 import app.enums.ViewEnum;
+
 import app.services.LoaderService;
+import app.services.AlertService;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -44,17 +46,17 @@ public class LoginController {
     private boolean validateInputs() throws SQLException {
         // Using early return
         if (email.getText().isBlank() || email.getText().isEmpty()) {
-            showErrorAlert(email, "Zadejte, prosím, emailovou adresu.");
+            AlertService.showErrorAlert(email, "Zadejte, prosím, emailovou adresu.");
             return false;
         }
 
         if (password.getText().isBlank() || password.getText().isEmpty()) {
-            showErrorAlert(password, "Vyplňte, prosím, pole pro heslo.");
+            AlertService.showErrorAlert(password, "Vyplňte, prosím, pole pro heslo.");
             return false;
         }
 
         if (!instanceInDatabase("users", "email", email.getText())) {
-            showErrorAlert(email, "Účet s tímto emailem neexistuje.");
+            AlertService.showErrorAlert(email, "Účet s tímto emailem neexistuje.");
             return false;
         }
 
@@ -64,16 +66,10 @@ public class LoginController {
                 .toString();
 
         if (usersPasswordHash == null || !usersPasswordHash.equals(enteredPasswordHash)) {
-            showErrorAlert(password, "Chybné heslo.");
+            AlertService.showErrorAlert(password, "Chybné heslo.");
             return false;
         }
 
         return true;
-    }
-
-    private void showErrorAlert(Control control, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR, message);
-        alert.showAndWait();
-        control.requestFocus();
     }
 }

@@ -62,19 +62,6 @@ public class DatabaseService {
         }
     }
 
-    private void createTableTags() {
-        String sql = "CREATE TABLE IF NOT EXISTS tags (" +
-                "tagId INT PRIMARY KEY AUTO_INCREMENT, " +
-                "tag VARCHAR(50) UNIQUE NOT NULL)";
-
-        try (Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-            System.out.println("[INFO] - Table 'tags' created.");
-        } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'tags': " + e.getMessage());
-        }
-    }
-
     private void createTableSubjects() {
         String sql = "CREATE TABLE IF NOT EXISTS subjects (" +
                 "subjectId INT PRIMARY KEY AUTO_INCREMENT, " +
@@ -95,7 +82,7 @@ public class DatabaseService {
         String sql = "CREATE TABLE IF NOT EXISTS topics (" +
                 "topicId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "subjectId INT NOT NULL, " +
-                "name VARCHAR(100) UNIQUE NOT NULL, " +
+                "name VARCHAR(100) NOT NULL, " +
                 "description LONGTEXT, " +
                 "CONSTRAINT FK_TOPICS_SUBJECTS FOREIGN KEY (subjectId) REFERENCES subjects (subjectId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
@@ -201,33 +188,14 @@ public class DatabaseService {
                 "timeLimit INT NOT NULL, " +
                 "promptId INT UNIQUE NOT NULL, " +
                 "userId INT NOT NULL, " +
-                "tagId INT NOT NULL, " +
                 "CONSTRAINT FK_TESTS_PROMPTS FOREIGN KEY (promptId) REFERENCES prompts (promptId) ON DELETE CASCADE ON UPDATE CASCADE, " +
-                "CONSTRAINT FK_TESTS_USERS FOREIGN KEY (userId) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE, " +
-                "CONSTRAINT FK_TESTS_TAGS FOREIGN KEY (tagId) REFERENCES tags (tagId) ON DELETE CASCADE ON UPDATE CASCADE)";
+                "CONSTRAINT FK_TESTS_USERS FOREIGN KEY (userId) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
             System.out.println("[INFO] - Table 'tests' created.");
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to create table 'tests'.");
-            e.printStackTrace();
-        }
-    }
-
-    private void createTableTagsTests() {
-        String sql = "CREATE TABLE IF NOT EXISTS tags_tests (" +
-                "tagId INT NOT NULL, " +
-                "testId INT NOT NULL, " +
-                "PRIMARY KEY (tagId, testId), " +
-                "CONSTRAINT FK_TAGS_TESTS_TAGS FOREIGN KEY (tagId) REFERENCES tags (tagId) ON DELETE CASCADE ON UPDATE CASCADE, " +
-                "CONSTRAINT FK_TAGS_TESTS_TESTS FOREIGN KEY (testId) REFERENCES tests (testId) ON DELETE CASCADE ON UPDATE CASCADE)";
-
-        try (Statement stmt = conn.createStatement()) {
-            stmt.execute(sql);
-            System.out.println("[INFO] - Table 'tags_tests' created.");
-        } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'tags_tests'.");
             e.printStackTrace();
         }
     }
@@ -282,10 +250,23 @@ public class DatabaseService {
         }
     }
 
+    // Specifically for simple tables with one column
     public static boolean instanceInDatabase(String table, String column, String instance) throws SQLException {
         String sql = "SELECT * FROM " + table + " WHERE " + column + " = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, instance);
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
+    // Specifically for simple tables with one column and an ID
+    public static boolean instanceInDatabase(String table, String value, int id, String valueColumn, String idColumn) throws SQLException {
+        String sql = "SELECT * FROM " + table + " WHERE " + valueColumn + " = ? AND " + idColumn + " = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, value);
+            pstmt.setInt(1, id);
             try (ResultSet resultSet = pstmt.executeQuery()) {
                 return resultSet.next();
             }
@@ -319,7 +300,6 @@ public class DatabaseService {
         TestManager testManager = new TestManager();
         TopicManager topicManager = new TopicManager();
         UserManager userManager = new UserManager();
-        TagManager tagManager = new TagManager();
     }
 
     public static void initialize() {
@@ -330,7 +310,6 @@ public class DatabaseService {
             dbService.createDatabase();
             dbService.useDatabase();
 
-            dbService.createTableTags();
             dbService.createTableSubjects();
             dbService.createTableTopics();
             dbService.createTablePrompts();
@@ -339,7 +318,6 @@ public class DatabaseService {
             dbService.createTableUsers();
             dbService.createTableUsersSubjects();
             dbService.createTableTests();
-            dbService.createTableTagsTests();
             dbService.createTableQuestionsTests();
             dbService.createTableAnswers();
             dbService.createTableQuestionsAnswers();

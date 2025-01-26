@@ -79,6 +79,10 @@ public class UserManager {
                     int subjectId = SubjectManager.getId(subject);
                     int userId = UserManager.getId(user.getEmail());
 
+                    if (!DatabaseService.instanceInDatabase("users_subjects", "userId", userId, "subjectId", subjectId)) {
+
+                    }
+
                     pstmt.setInt(1, userId);
                     pstmt.setInt(2, subjectId);
 
@@ -160,9 +164,9 @@ public class UserManager {
                 .toString();
 
         // Test user
-        User user = new User("user", "user", "user@user.com", userPasswordHash, UserRoleEnum.TEACHER);
+        User user = new User("user", userPasswordHash, UserRoleEnum.TEACHER);
         // Default admin
-        User admin = new User("admin", "admin", adminEmail, adminPasswordHash, UserRoleEnum.ADMIN);
+        User admin = new User(adminEmail, adminPasswordHash, UserRoleEnum.ADMIN);
 
         try {
             if (!instanceInDatabase("users", "email", "user@user.com")) {

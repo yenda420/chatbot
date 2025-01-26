@@ -79,10 +79,12 @@ public class UserManager {
                     int subjectId = SubjectManager.getId(subject);
                     int userId = UserManager.getId(user.getEmail());
 
-                    pstmt.setInt(1, userId);
-                    pstmt.setInt(2, subjectId);
+                    if (!DatabaseService.instanceInDatabase("users_subjects", userId, subjectId, "userId", "subjectId")) {
+                        pstmt.setInt(1, userId);
+                        pstmt.setInt(2, subjectId);
 
-                    pstmt.executeUpdate();
+                        pstmt.executeUpdate();
+                    }
 
                     System.out.println("[INFO] - User with ID " + userId + " linked to subject with ID " + subjectId + ".");
                 }

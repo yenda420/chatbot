@@ -5,12 +5,12 @@
 
 <?import javafx.scene.text.Text?>
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.MainController" styleClass="background">
-  <!-- Horizontal Navigation -->
   <VBox prefWidth="550" prefHeight="950" alignment="CENTER">
+    <!-- Horizontal Navigation -->
     <VBox spacing="10">
       <HBox spacing="10" styleClass="horizontal-menu">
         <Button text="Generátor" styleClass="menu-button-active"/>
-        <Button text="Správce témat" styleClass="menu-button"/>
+        <Button text="Správce témat" styleClass="menu-button" onAction="#onGoToTopics"/>
         <Button text="Můj účet" styleClass="menu-button"/>
       </HBox>
     </VBox>

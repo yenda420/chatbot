@@ -28,7 +28,7 @@ public class TopicManager {
                 return false;
             }
 
-            if (!DatabaseService.instanceInDatabase("topics", "name", topic.getName())) {
+            if (!DatabaseService.instanceInDatabase("topics", topic.getName(), subjectId, "name", "subjectId")) {
                 boolean descriptionExists = topic.getDescription() != null;
 
                 String sql = descriptionExists ?

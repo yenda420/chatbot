@@ -78,7 +78,7 @@ public class SubjectManager {
     }
 
     public static int getId(int topicId) throws SQLException {
-        String sql = "SELECT subjectId FROM subjects WHERE topicId = ?";
+        String sql = "SELECT subjectId FROM topics WHERE topicId = ?";
         try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
             pstmt.setInt(1, topicId);
             try (ResultSet rs = pstmt.executeQuery()) {

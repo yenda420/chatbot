@@ -2,11 +2,16 @@
 
     import app.dao.SubjectManager;
     import app.dao.UserManager;
+
     import app.enums.UserRoleEnum;
     import app.enums.ViewEnum;
+
     import app.models.User;
+
     import app.services.DatabaseService;
     import app.services.LoaderService;
+    import app.services.AlertService;
+
     import javafx.collections.FXCollections;
     import javafx.collections.ObservableList;
     import javafx.fxml.FXML;
@@ -93,52 +98,41 @@
         private boolean validateInputs() throws SQLException {
             // Using early return
             if (!emailIsValid(email.getText())) {
-                showErrorAlert(email, "Zadejte, prosím, platnou emailovou adresu.");
+                AlertService.showErrorAlert(email, "Zadejte, prosím, platnou emailovou adresu.");
                 return false;
             }
 
             if (DatabaseService.instanceInDatabase("users", "email", email.getText())) {
-                showErrorAlert(email, "Uživatel s touto emailovou adresou již existuje.");
+                AlertService.showErrorAlert(email, "Uživatel s touto emailovou adresou již existuje.");
                 return false;
             }
 
             if (password.getText().isBlank() || password.getText().isEmpty()) {
-                showErrorAlert(password, "Vyplňte, prosím, pole pro heslo.");
+                AlertService.showErrorAlert(password, "Vyplňte, prosím, pole pro heslo.");
                 return false;
             }
 
             if (!passwordIsValid(password.getText())) {
-                showErrorAlert(password, "Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak.");
+                AlertService.showErrorAlert(password, "Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak.");
                 return false;
             }
 
             if (!password.getText().equals(confirmPassword.getText())) {
-                showErrorAlert(confirmPassword, "Hesla se neshodují.");
+                AlertService.showErrorAlert(confirmPassword, "Hesla se neshodují.");
                 return false;
             }
 
             if (subjects.getSelectionModel().getSelectedItems().isEmpty()) {
-                showErrorAlert("Vyberte, prosím, alespoň jeden předmět.");
+                AlertService.showErrorAlert("Vyberte, prosím, alespoň jeden předmět.");
                 return false;
             }
 
             if (!confirmationCheckbox.isSelected()) {
-                showErrorAlert("Potvrďte, prosím, přečtení Manuálu aplikace.");
+                AlertService.showErrorAlert("Potvrďte, prosím, přečtení Manuálu aplikace.");
                 return false;
             }
 
             return true;
-        }
-
-        private void showErrorAlert(Control control, String message) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, message);
-            alert.showAndWait();
-            control.requestFocus();
-        }
-
-        private void showErrorAlert(String message) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, message);
-            alert.showAndWait();
         }
 
         private boolean emailIsValid(String email) {

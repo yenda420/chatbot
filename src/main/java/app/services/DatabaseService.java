@@ -82,7 +82,7 @@ public class DatabaseService {
         String sql = "CREATE TABLE IF NOT EXISTS topics (" +
                 "topicId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "subjectId INT NOT NULL, " +
-                "name VARCHAR(100) UNIQUE NOT NULL, " +
+                "name VARCHAR(100) NOT NULL, " +
                 "description LONGTEXT, " +
                 "CONSTRAINT FK_TOPICS_SUBJECTS FOREIGN KEY (subjectId) REFERENCES subjects (subjectId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
@@ -250,10 +250,23 @@ public class DatabaseService {
         }
     }
 
+    // Specifically for simple tables with one column
     public static boolean instanceInDatabase(String table, String column, String instance) throws SQLException {
         String sql = "SELECT * FROM " + table + " WHERE " + column + " = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, instance);
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                return resultSet.next();
+            }
+        }
+    }
+
+    // Specifically for simple tables with one column and an ID
+    public static boolean instanceInDatabase(String table, String value, int id, String valueColumn, String idColumn) throws SQLException {
+        String sql = "SELECT * FROM " + table + " WHERE " + valueColumn + " = ? AND " + idColumn + " = ?";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, value);
+            pstmt.setInt(2, id);
             try (ResultSet resultSet = pstmt.executeQuery()) {
                 return resultSet.next();
             }

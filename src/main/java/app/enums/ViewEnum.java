@@ -1,7 +1,11 @@
 package app.enums;
 
 public enum ViewEnum {
-    MAIN("main"), LOGIN("login"), REGISTER("register");
+    MAIN("main"),
+    LOGIN("login"),
+    REGISTER("register"),
+    ADD_TOPIC("add-topic");
+
     private final String name;
 
     // Enum constructor
