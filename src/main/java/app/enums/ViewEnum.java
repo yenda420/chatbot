@@ -4,7 +4,9 @@ public enum ViewEnum {
     MAIN("main"),
     LOGIN("login"),
     REGISTER("register"),
-    ADD_TOPIC("add-topic");
+    ADD_TOPIC("add-topic"),
+
+    EDIT_PROFILE("edit-profile");
 
     private final String name;
 
@@ -15,15 +17,5 @@ public enum ViewEnum {
 
     public String getName() {
         return name;
-    }
-
-    // Returns the view enum by name
-    public static ViewEnum fromString(String name) {
-        for (ViewEnum view : ViewEnum.values()) {
-            if (view.name.equalsIgnoreCase(name)) {
-                return view;
-            }
-        }
-        throw new IllegalArgumentException("[ERROR] - No constant with name " + name + " found");
     }
 }

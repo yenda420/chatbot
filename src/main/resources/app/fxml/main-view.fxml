@@ -11,7 +11,7 @@
       <HBox spacing="10" styleClass="horizontal-menu">
         <Button text="Generátor" styleClass="menu-button-active"/>
         <Button text="Správce témat" styleClass="menu-button" onAction="#onGoToTopics"/>
-        <Button text="Můj účet" styleClass="menu-button"/>
+        <Button text="Můj účet" styleClass="menu-button" onAction="#onGoToEditProfile"/>
       </HBox>
     </VBox>
 
@@ -27,12 +27,12 @@
       <TextField fx:id="questionCount" promptText="Počet otázek *" styleClass="input" maxWidth="350"/>
       <TextField fx:id="timeLimit" promptText="Časový limit v minutách *" styleClass="input" maxWidth="350"/>
 
-      <Button fx:id="fileButton" text="Soubor pro specifikaci kontextu" onAction="#handleFileUpload" styleClass="button" maxWidth="350"/>
+      <Button fx:id="fileButton" text="Soubor pro specifikaci kontextu" onAction="#onUploadFile" styleClass="button" maxWidth="350"/>
       <Text fx:id="fileLabel" styleClass="fileLabel"/>
 
       <ComboBox fx:id="difficulty" promptText="Vyberte obtížnost *" styleClass="combobox" maxWidth="350"/>
       <ComboBox fx:id="questionType" promptText="Vyberte typ otázek *" styleClass="combobox" maxWidth="350"/>
-      <ComboBox fx:id="subject" onAction="#handleChosenSubject" promptText="Vyberte předmět *" styleClass="combobox" maxWidth="350"/>
+      <ComboBox fx:id="subject" onAction="#onChooseSubject" promptText="Vyberte předmět *" styleClass="combobox" maxWidth="350"/>
 
       <Region prefHeight="10"/>
 
@@ -41,7 +41,7 @@
 
       <TextArea fx:id="message" promptText="Další specifikace testu" styleClass="textarea" maxWidth="350" prefHeight="150" wrapText="true"/>
 
-      <Button fx:id="createTestButton" onAction="#handleCreateTest" text="Vygeneruj test" styleClass="submit" maxWidth="350"/>
+      <Button fx:id="createTestButton" onAction="#onCreateTest" text="Vygeneruj test" styleClass="submit" maxWidth="350"/>
     </VBox>
   </VBox>
 

@@ -32,12 +32,12 @@ public class LoginController {
     }
 
     @FXML
-    private void handleRegisterLink() {
+    private void onClickOnRegisterLink() {
         LoaderService.load(ViewEnum.REGISTER, getClass(), email, null);
     }
 
     @FXML
-    private void handleLogin() throws SQLException {
+    private void onLogin() throws SQLException {
         if (validateInputs()) {
             LoaderService.load(ViewEnum.MAIN, getClass(), email, UserManager.getUser(email.getText()));
         }

@@ -2,6 +2,7 @@ package app.dao;
 
 import app.enums.TopicEnum;
 import app.models.Topic;
+
 import app.services.DatabaseService;
 
 import java.sql.*;

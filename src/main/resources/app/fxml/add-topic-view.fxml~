@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
+<?import javafx.scene.text.Text?>
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.AddTopicController" styleClass="background">
     <VBox spacing="10" alignment="CENTER" prefWidth="550" prefHeight="350" styleClass="form-container">
         <!-- Horizontal Navigation -->
         <VBox spacing="10">
-            <HBox spacing="10" styleClass="horizontal-menu">
-                <Button text="Generátor" styleClass="menu-button" onAction="#onGoToMain"/>
-                <Button text="Správce témat" styleClass="menu-button-active"/>
-                <Button text="Můj účet" styleClass="menu-button"/>
-            </HBox>
+            <MenuBar styleClass="horizontal-menu">
+                <Menu text="Generátor" styleClass="menu" onAction="#onGoToMain"/>
+                <Menu text="Správce témat" styleClass="menu-active"/>
+                <Menu text="Můj účet" styleClass="menu" onAction="#onGoToEditProfile"/>
+            </MenuBar>
         </VBox>
 
-        <Text text="Přidejte tématický celek" styleClass="heading"/>
+        <!-- Main content -->
+        <VBox spacing="10" styleClass="form-container">
+            <Text text="Přidejte tématický celek" styleClass="heading"/>
 
-        <TextField fx:id="topicName" promptText="Název tématického celku *" styleClass="input" maxWidth="350"/>
-        <ComboBox fx:id="subject"  promptText="Vyberte předmět *" styleClass="combobox" maxWidth="350"/>
+            <TextField fx:id="topicName" promptText="Název tématického celku *" styleClass="input" maxWidth="350"/>
+            <ComboBox fx:id="subject" promptText="Vyberte předmět *" styleClass="combobox" maxWidth="350"/>
 
-        <Button fx:id="addTopicButton" text="Přidat tématický celek" onAction="#handleAddTopic" styleClass="submit" maxWidth="350"/>
+            <Button fx:id="addTopicButton" text="Přidat tématický celek" onAction="#onAddTopic" styleClass="submit" maxWidth="350"/>
+        </VBox>
     </VBox>
 </StackPane>

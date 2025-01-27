@@ -28,11 +28,18 @@ public class LoaderService {
                 MainController mainController = loader.getController();
                 mainController.setCurrentUser(user);
                 mainController.initializeUserData();
+
             } else if (view.equals(ViewEnum.ADD_TOPIC)) {
                 AddTopicController addTopicController = loader.getController();
                 addTopicController.setCurrentUser(user);
-                System.out.println(addTopicController.currentUser);
+                addTopicController.initializeUserData();
             }
+
+        } else if (view.equals(ViewEnum.ADD_TOPIC)) {
+            AddTopicController addTopicController = loader.getController();
+            addTopicController.setCurrentUser(user);
+            addTopicController.initializeUserData();
+        }
 
             Scene scene = new Scene(root);
             scene.getStylesheets().add(clazz.getResource("/app/style/style.css").toExternalForm());

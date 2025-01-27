@@ -77,7 +77,7 @@
         }
 
         @FXML
-        private void onRegister() throws SQLException {
+        private void handleRegister() throws SQLException {
             if (validateInputs()) {
                 String passwordHash = Hashing.sha256()
                         .hashString(password.getText(), StandardCharsets.UTF_8)

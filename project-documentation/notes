@@ -17,11 +17,12 @@
 -- Problém s kódem uvnitř testu
 -- Text wrap u TextArea
 -- Problém po přesměrování na stránku
+-- Základní operace oro uživatele
 
 ** Momentálně rozpracováno **
 -- CRUD operace a prohlížení pro admina
 -- Testovat příponu souborů a jejich velikost
--- Tagy v databázi jsou redundantní data => zmiňovaná funkcionalita bude, ne však pomocí tags tabulky
+-- Tagy v databázi jsou redundantní data => zmiňovaná funkcionalita by mohla být (?), ne však pomocí tags tabulky
 
 ** Na později **
 -- Zlepšit vzhled alertů

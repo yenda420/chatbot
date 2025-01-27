@@ -13,9 +13,10 @@ import app.models.User;
 
 import app.services.AITestGeneratorService;
 import app.services.AlertService;
-
 import app.services.LoaderService;
+
 import io.github.cdimascio.dotenv.Dotenv;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -130,13 +131,29 @@ public class MainController {
         });
     }
 
+    public void initializeUserData() throws SQLException {
+        if (currentUser != null) {
+            ArrayList<String> subjects = SubjectManager.getSubjects(currentUser);
+            ObservableList<String> subjectsObservable = FXCollections.observableArrayList(subjects);
+
+            subject.setItems(subjectsObservable);
+        } else {
+            System.err.println("[ERROR] - User is not set.");
+        }
+    }
+
     @FXML
     public void onGoToTopics() {
         LoaderService.load(ViewEnum.ADD_TOPIC, getClass(), testName, currentUser);
     }
 
     @FXML
-    public void handleCreateTest() {
+    public void onGoToEditProfile() {
+        LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), testName, currentUser);
+    }
+
+    @FXML
+    public void onCreateTest() {
         if (validateInputs()) {
             showLoader(true);
 
@@ -190,7 +207,7 @@ public class MainController {
     }
 
     @FXML
-    public void handleChosenSubject() throws SQLException {
+    public void onChooseSubject() throws SQLException {
         if (subject.getValue() != null) {
             if (!subject.getValue().isEmpty() || !subject.getValue().isBlank()) {
                 ObservableList<String> topicsObservable = FXCollections.observableArrayList();
@@ -215,7 +232,7 @@ public class MainController {
     }
 
     @FXML
-    private void handleFileUpload() {
+    private void onUploadFile() {
         FileChooser fileChooser = new FileChooser();
         fileAttached = fileChooser.showOpenDialog(null);
 
@@ -269,17 +286,6 @@ public class MainController {
     public void setCurrentUser(User user) {
         this.currentUser = user;
         System.out.println("[INFO] - Current user: " + user.getEmail());
-    }
-
-    public void initializeUserData() throws SQLException {
-        if (currentUser != null) {
-            ArrayList<String> subjects = SubjectManager.getSubjects(currentUser);
-            ObservableList<String> subjectsObservable = FXCollections.observableArrayList(subjects);
-
-            subject.setItems(subjectsObservable);
-        } else {
-            System.err.println("[ERROR] - User is not set.");
-        }
     }
 
     private boolean validateInputs() {

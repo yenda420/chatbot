@@ -2,6 +2,7 @@ package app.models;
 
 import app.dao.UserManager;
 import app.enums.UserRoleEnum;
+
 import javafx.collections.ObservableList;
 
 public class User {
@@ -44,6 +45,22 @@ public class User {
 
     public UserRoleEnum getRole() {
         return role;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
     }
 
     public int getId() {

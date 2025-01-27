@@ -4,18 +4,25 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.RegisterController" styleClass="background">
-    <VBox spacing="10" alignment="CENTER" prefWidth="450" prefHeight="750" styleClass="form-container">
-        <Text text="Registrace" styleClass="heading"/>
-
-        <Hyperlink text="Máte již účet? Přihlašte se." onAction="#onClickOnLoginLink" styleClass="register-link"/>
-
-        <HBox alignment="CENTER_RIGHT" maxWidth="350" styleClass="explanation-container">
-            <Text text="* povinné pole" styleClass="explanation"/>
-        </HBox>
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.EditProfileController" styleClass="background">
+    <VBox spacing="10" alignment="CENTER" prefWidth="550" prefHeight="750" styleClass="form-container">
+        <!-- Horizontal Navigation -->
+        <VBox spacing="10">
+            <HBox spacing="10" styleClass="horizontal-menu">
+                <Button text="Generátor" styleClass="menu-button" onAction="#onGoToMain"/>
+                <Button text="Správce témat" styleClass="menu-button" onAction="#onGoToTopics"/>
+                <Button text="Můj účet" styleClass="menu-button-active"/>
+            </HBox>
+        </VBox>
 
         <!-- Main content -->
         <VBox spacing="10" styleClass="form-container">
+            <Text text="Váš účet" styleClass="heading"/>
+
+            <HBox alignment="CENTER_RIGHT" maxWidth="350" styleClass="explanation-container">
+                <Text text="* povinné pole" styleClass="explanation"/>
+            </HBox>
+
             <TextField fx:id="firstName" promptText="Jméno" styleClass="input" maxWidth="350"/>
             <TextField fx:id="lastName" promptText="Příjmení" styleClass="input" maxWidth="350"/>
             <TextField fx:id="email" promptText="Email *" styleClass="input" maxWidth="350"/>
@@ -27,9 +34,7 @@
 
             <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view"/>
 
-            <CheckBox fx:id="confirmationCheckbox" text="Četl(a) jsem Manuál aplikace *" styleClass="checkbox" maxWidth="350"/>
-
-            <Button fx:id="registerButton" text="Registrovat" onAction="#onRegister" styleClass="submit" maxWidth="350"/>
+            <Button fx:id="saveButton" text="Uložit údaje" onAction="#onSave" styleClass="submit" maxWidth="350"/>
         </VBox>
     </VBox>
 </StackPane>

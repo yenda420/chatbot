@@ -7,11 +7,11 @@
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.LoginController" styleClass="background">
     <VBox spacing="10" alignment="CENTER" prefWidth="450" prefHeight="350" styleClass="form-container">
         <Text text="Přihlášení" styleClass="heading"/>
-        <Hyperlink text="Nemáte účet? Zaregistrujte se." onAction="#handleRegisterLink" styleClass="register-link"/>
+        <Hyperlink text="Nemáte účet? Zaregistrujte se." onAction="#onClickOnRegisterLink" styleClass="register-link"/>
 
         <TextField fx:id="email" promptText="Email" styleClass="input" maxWidth="350"/>
         <PasswordField fx:id="password" promptText="Heslo" styleClass="input" maxWidth="350"/>
 
-        <Button fx:id="loginButton" text="Přihlásit" onAction="#handleLogin" styleClass="submit" maxWidth="350"/>
+        <Button fx:id="loginButton" text="Přihlásit" onAction="#onLogin" styleClass="submit" maxWidth="350"/>
     </VBox>
 </StackPane>

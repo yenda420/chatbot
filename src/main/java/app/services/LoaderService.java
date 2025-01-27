@@ -1,6 +1,7 @@
 package app.services;
 
 import app.controllers.AddTopicController;
+import app.controllers.EditProfileController;
 import app.controllers.MainController;
 import app.enums.ViewEnum;
 
@@ -28,10 +29,16 @@ public class LoaderService {
                 MainController mainController = loader.getController();
                 mainController.setCurrentUser(user);
                 mainController.initializeUserData();
+
             } else if (view.equals(ViewEnum.ADD_TOPIC)) {
                 AddTopicController addTopicController = loader.getController();
                 addTopicController.setCurrentUser(user);
                 addTopicController.initializeUserData();
+
+            } else if (view.equals(ViewEnum.EDIT_PROFILE)) {
+                EditProfileController editProfileController = loader.getController();
+                editProfileController.setCurrentUser(user);
+                editProfileController.initializeUserData();
             }
 
             Scene scene = new Scene(root);

@@ -59,8 +59,13 @@ public class AddTopicController {
         }
     }
 
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+        System.out.println("[INFO] - Current user: " + user.getEmail());
+    }
+
     @FXML
-    public void handleAddTopic() {
+    public void onAddTopic() {
         if (validateInputs()) {
             try {
                 String abbreviation = SubjectManager.getAbbreviation(subject.getValue());
@@ -77,6 +82,11 @@ public class AddTopicController {
     @FXML
     public void onGoToMain() {
         LoaderService.load(ViewEnum.MAIN, getClass(), topicName, currentUser);
+    }
+
+    @FXML
+    public void onGoToEditProfile() {
+        LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), topicName, currentUser);
     }
 
     private boolean validateInputs() {
@@ -97,11 +107,6 @@ public class AddTopicController {
             return false;
         }
         return true;
-    }
-
-    public void setCurrentUser(User user) {
-        this.currentUser = user;
-        System.out.println("[INFO] - Current user: " + user.getEmail());
     }
 
     private boolean isNumeric(String str) {

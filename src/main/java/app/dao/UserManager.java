@@ -3,8 +3,10 @@ package app.dao;
 import app.enums.UserRoleEnum;
 import app.models.User;
 import app.services.DatabaseService;
+
 import com.google.common.hash.Hashing;
 import io.github.cdimascio.dotenv.Dotenv;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -145,6 +147,34 @@ public class UserManager {
         }
 
         return null;
+    }
+
+    public static boolean update(User user, String oldEmail) {
+        if (db.getConn() != null) {
+            String sql = "UPDATE users SET " +
+                        "firstName = ?, lastName = ?, " +
+                        "email = ?, passwordHash = ?, " +
+                        "role = ? WHERE email = ?";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                pstmt.setString(1, user.getFirstName());
+                pstmt.setString(2, user.getLastName());
+                pstmt.setString(3, user.getEmail());
+                pstmt.setString(4, user.getPasswordHash());
+                pstmt.setString(5, user.getRole().getName());
+                pstmt.setString(6, oldEmail);
+
+                pstmt.executeUpdate();
+
+                System.out.println("[INFO] - User " + user.getEmail() + ".");
+                return true;
+            } catch (SQLException e) {
+                System.err.println("[ERROR] - Failed to update user " + user.getEmail() + ".");
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
     }
 
     public static void saveDefaultUsers() {
