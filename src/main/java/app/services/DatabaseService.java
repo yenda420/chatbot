@@ -292,7 +292,7 @@ public class DatabaseService {
     }
 
     // This will force to create connections to all the managers
-    private void createAllManagers() {
+    private void setConnections() {
         AnswerManager answerManager = new AnswerManager();
         PromptManager promptManager = new PromptManager();
         QuestionManager questionManager = new QuestionManager();
@@ -322,7 +322,7 @@ public class DatabaseService {
             dbService.createTableAnswers();
             dbService.createTableQuestionsAnswers();
 
-            dbService.createAllManagers();
+            dbService.setConnections();
             dbService.saveDefaultData();
         } else {
             System.err.println("[ERROR] - Database initialization failed due to connection issues.");

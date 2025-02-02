@@ -3,7 +3,7 @@
 }
 
 .form-container {
-    -fx-alignment: top-center;
+    -fx-alignment: center;
     -fx-padding: 20;
 }
 

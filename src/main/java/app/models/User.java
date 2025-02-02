@@ -85,4 +85,8 @@ public class User {
     public boolean relate(ObservableList<String> subjects) {
         return UserManager.linkUserToSubjects(subjects, this);
     }
+
+    public boolean unrelate(ObservableList<String> subjects) {
+        return UserManager.unlinkUserFromSubjects(subjects, this);
+    }
 }

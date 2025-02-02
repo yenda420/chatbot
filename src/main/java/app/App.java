@@ -10,7 +10,6 @@ public class App extends Application {
     @Override
     public void start(Stage stage) {
         DatabaseService.initialize();
-
         LoaderService.load(ViewEnum.LOGIN, getClass(), stage, null);
     }
 

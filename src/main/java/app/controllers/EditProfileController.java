@@ -116,21 +116,37 @@ public class EditProfileController {
     public void onSave() throws SQLException {
         if (validateInputs()) {
             String oldEmail = currentUser.getEmail();
-            String passwordHash = Hashing.sha256()
-                    .hashString(password.getText(), StandardCharsets.UTF_8)
-                    .toString();
 
             currentUser.setFirstName(firstName.getText());
             currentUser.setLastName(lastName.getText());
             currentUser.setEmail(email.getText());
-            currentUser.setPasswordHash(passwordHash);
+
+            if (!password.getText().isBlank() && !password.getText().isEmpty()) {
+                String passwordHash = Hashing.sha256()
+                        .hashString(password.getText(), StandardCharsets.UTF_8)
+                        .toString();
+
+                currentUser.setPasswordHash(passwordHash);
+            }
 
             if (UserManager.update(currentUser, oldEmail) &&
-                currentUser.relate(subjects.getSelectionModel().getSelectedItems())) {
+                currentUser.relate(subjects.getSelectionModel().getSelectedItems()) &&
+                currentUser.unrelate(getUnselectedItems())) {
                 AlertService.showSuccessAlert("Profil byl aktualizovan.");
             }
         }
     }
+
+    private ObservableList<String> getUnselectedItems() {
+        ObservableList<String> allItems = subjects.getItems();
+        ObservableList<String> selectedItems = subjects.getSelectionModel().getSelectedItems();
+
+        ObservableList<String> unselectedItems = FXCollections.observableArrayList(allItems);
+        unselectedItems.removeAll(selectedItems);
+
+        return unselectedItems;
+    }
+
 
     private boolean validateInputs() throws SQLException {
         // Using early return
@@ -146,14 +162,11 @@ public class EditProfileController {
             }
         }
 
-        if (password.getText().isBlank() || password.getText().isEmpty()) {
-            AlertService.showErrorAlert(password, "Vyplňte, prosím, pole pro heslo.");
-            return false;
-        }
-
-        if (!passwordIsValid(password.getText())) {
-            AlertService.showErrorAlert(password, "Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak.");
-            return false;
+        if (!password.getText().isBlank() && !password.getText().isEmpty()) {
+            if (!passwordIsValid(password.getText())) {
+                AlertService.showErrorAlert(password, "Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak.");
+                return false;
+            }
         }
 
         if (!password.getText().equals(confirmPassword.getText())) {

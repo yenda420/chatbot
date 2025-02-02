@@ -12,21 +12,22 @@
 -- Automatické stáhnutí souboru po vygenerování
 -- Generování docx soubor
 -- Checkbox "Četl(a) jsem Manuál aplikace"
-
-** Co je nového **
 -- Problém s kódem uvnitř testu
 -- Text wrap u TextArea
 -- Problém po přesměrování na stránku
 -- Základní operace oro uživatele
 
+** Co je nového **
+
 ** Momentálně rozpracováno **
+-- Dodělání a zdokonalení operací pro uživatele
 -- CRUD operace a prohlížení pro admina
--- Testovat příponu souborů a jejich velikost
--- Tagy v databázi jsou redundantní data => zmiňovaná funkcionalita by mohla být (?), ne však pomocí tags tabulky
+-- Testování přípony souborů a jejich velikosti
 
 ** Na později **
--- Zlepšit vzhled alertů
 -- Přidat odkaz na Manuál aplikace
+-- Zlepšit vzhled alertů
 -- Rozpoznat, že uživatel není připojen k Wi-Fi
 -- Implementovat logger
+-- Tagy v databázi jsou redundantní data => zmiňovaná funkcionalita by mohla být (?), ne však pomocí tags tabulky
 -- Abstrakce pro volání dotazů

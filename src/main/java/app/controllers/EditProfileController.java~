@@ -3,7 +3,6 @@ package app.controllers;
 import app.dao.SubjectManager;
 
 import app.dao.UserManager;
-import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 
 import app.models.User;
@@ -117,14 +116,18 @@ public class EditProfileController {
     public void onSave() throws SQLException {
         if (validateInputs()) {
             String oldEmail = currentUser.getEmail();
-            String passwordHash = Hashing.sha256()
-                    .hashString(password.getText(), StandardCharsets.UTF_8)
-                    .toString();
 
             currentUser.setFirstName(firstName.getText());
             currentUser.setLastName(lastName.getText());
             currentUser.setEmail(email.getText());
-            currentUser.setPasswordHash(passwordHash);
+
+            if (!password.getText().isBlank() && !password.getText().isEmpty()) {
+                String passwordHash = Hashing.sha256()
+                        .hashString(password.getText(), StandardCharsets.UTF_8)
+                        .toString();
+
+                currentUser.setPasswordHash(passwordHash);
+            }
 
             if (UserManager.update(currentUser, oldEmail) &&
                 currentUser.relate(subjects.getSelectionModel().getSelectedItems())) {
@@ -147,14 +150,11 @@ public class EditProfileController {
             }
         }
 
-        if (password.getText().isBlank() || password.getText().isEmpty()) {
-            AlertService.showErrorAlert(password, "Vyplňte, prosím, pole pro heslo.");
-            return false;
-        }
-
-        if (!passwordIsValid(password.getText())) {
-            AlertService.showErrorAlert(password, "Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak.");
-            return false;
+        if (!password.getText().isBlank() && !password.getText().isEmpty()) {
+            if (!passwordIsValid(password.getText())) {
+                AlertService.showErrorAlert(password, "Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak.");
+                return false;
+            }
         }
 
         if (!password.getText().equals(confirmPassword.getText())) {

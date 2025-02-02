@@ -62,6 +62,7 @@ public class LoaderService {
             case LOGIN: return "Přihlášení";
             case MAIN: return "Generátor Testů";
             case ADD_TOPIC: return "Přidejte tématický celek";
+            case EDIT_PROFILE: return "Váš účet";
             default: return "Neznámá stránka";
         }
     }

@@ -72,6 +72,36 @@ public class UserManager {
         return -1;
     }
 
+    public static boolean unlinkUserFromSubjects(ObservableList<String> subjects, User user) {
+        if (db.getConn() != null) {
+            String sql = "DELETE FROM users_subjects WHERE userId = ? AND subjectId = ?";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                int userId = UserManager.getId(user.getEmail());
+
+                for (String subject : subjects) {
+                    if (DatabaseService.instanceInDatabase("users_subjects", userId, SubjectManager.getId(subject), "userId", "subjectId")) {
+                        int subjectId = SubjectManager.getId(subject);
+
+                        pstmt.setInt(1, userId);
+                        pstmt.setInt(2, subjectId);
+
+                        pstmt.executeUpdate();
+
+                        System.out.println("[INFO] - User with ID " + userId + " unlinked from subject with ID " + subjectId + ".");
+                    }
+                }
+
+                return true;
+            } catch (SQLException e) {
+                System.err.println("[ERROR] - Failed to unlink user from subjects.");
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
+    }
+
     public static boolean linkUserToSubjects(ObservableList<String> subjects, User user) {
         if (db.getConn() != null) {
             String sql = "INSERT INTO users_subjects(userId, subjectId) VALUES (?, ?)";
@@ -197,7 +227,7 @@ public class UserManager {
         User admin = new User(adminEmail, adminPasswordHash, UserRoleEnum.ADMIN);
 
         try {
-            if (!instanceInDatabase("users", "email", "user@user.com")) {
+            if (!instanceInDatabase("users", "email", "user")) {
                 UserManager.save(user);
 
                 // Test subjects

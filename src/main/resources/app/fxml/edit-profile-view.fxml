@@ -1,40 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.EditProfileController" styleClass="background">
-    <VBox spacing="10" alignment="CENTER" prefWidth="550" prefHeight="750" styleClass="form-container">
+<StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.EditProfileController">
+    <VBox alignment="TOP_CENTER" prefHeight="950" prefWidth="550" spacing="10" styleClass="form-container">
         <!-- Horizontal Navigation -->
-        <VBox spacing="10">
-            <HBox spacing="10" styleClass="horizontal-menu">
-                <Button text="Generátor" styleClass="menu-button" onAction="#onGoToMain"/>
-                <Button text="Správce témat" styleClass="menu-button" onAction="#onGoToTopics"/>
-                <Button text="Můj účet" styleClass="menu-button-active"/>
+        <VBox alignment="CENTER" spacing="10">
+            <HBox alignment="CENTER" spacing="10" styleClass="horizontal-menu">
+                <Button onAction="#onGoToMain" styleClass="menu-button" text="Generátor" />
+                <Button onAction="#onGoToTopics" styleClass="menu-button" text="Správce témat" />
+                <Button styleClass="menu-button-active" text="Můj účet" />
             </HBox>
         </VBox>
 
         <!-- Main content -->
-        <VBox spacing="10" styleClass="form-container">
-            <Text text="Váš účet" styleClass="heading"/>
+        <VBox alignment="CENTER" prefHeight="900.0" prefWidth="550.0" spacing="10" styleClass="form-container">
+            <Text styleClass="heading" text="Váš účet" />
 
             <HBox alignment="CENTER_RIGHT" maxWidth="350" styleClass="explanation-container">
-                <Text text="* povinné pole" styleClass="explanation"/>
+                <Text styleClass="explanation" text="* povinné pole" />
             </HBox>
 
-            <TextField fx:id="firstName" promptText="Jméno" styleClass="input" maxWidth="350"/>
-            <TextField fx:id="lastName" promptText="Příjmení" styleClass="input" maxWidth="350"/>
-            <TextField fx:id="email" promptText="Email *" styleClass="input" maxWidth="350"/>
-            <PasswordField fx:id="password" promptText="Heslo *" styleClass="input" maxWidth="350"/>
-            <PasswordField fx:id="confirmPassword" promptText="Heslo znovu *" styleClass="input" maxWidth="350"/>
-            <Text text="Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak."
-                  styleClass="explanation" wrappingWidth="350" textAlignment="CENTER"/>
-            <Text text="Vyberte vyučované předměty * (Ctrl + Klik)" styleClass="label"/>
+            <TextField fx:id="firstName" maxWidth="350" promptText="Jméno" styleClass="input" />
+            <TextField fx:id="lastName" maxWidth="350" promptText="Příjmení" styleClass="input" />
+            <TextField fx:id="email" maxWidth="350" promptText="Email *" styleClass="input" />
+            <PasswordField fx:id="password" maxWidth="350" promptText="Heslo *" styleClass="input" />
+            <PasswordField fx:id="confirmPassword" maxWidth="350" promptText="Heslo znovu *" styleClass="input" />
+            <Text styleClass="explanation" text="Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak." textAlignment="CENTER" wrappingWidth="350" />
+            <Text styleClass="label" text="Vyberte vyučované předměty * (Ctrl + Klik)" />
 
-            <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view"/>
+            <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view" />
 
-            <Button fx:id="saveButton" text="Uložit údaje" onAction="#onSave" styleClass="submit" maxWidth="350"/>
+            <Button fx:id="saveButton" maxWidth="350" onAction="#onSave" styleClass="submit" text="Uložit údaje" />
         </VBox>
     </VBox>
 </StackPane>
