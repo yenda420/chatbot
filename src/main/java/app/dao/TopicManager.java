@@ -3,6 +3,7 @@ package app.dao;
 import app.enums.TopicEnum;
 import app.models.Topic;
 
+import app.models.User;
 import app.services.DatabaseService;
 
 import java.sql.*;
@@ -68,6 +69,17 @@ public class TopicManager {
                 return;
             }
         }
+    }
+
+    public static ArrayList<String> getTopics(User user) throws SQLException {
+        ArrayList<String> subjects = SubjectManager.getSubjects(user);
+        ArrayList<String> topics = new ArrayList<>();
+
+        for (String subject : subjects) {
+            topics.addAll(getTopics(subject));
+        }
+
+        return topics;
     }
 
     public static ArrayList<String> getTopics(String fromSubjects) throws SQLException {

@@ -5,7 +5,7 @@
 <?import javafx.scene.text.*?>
 
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.RegisterController" styleClass="background">
-    <VBox spacing="10" alignment="CENTER" prefWidth="450" prefHeight="750" styleClass="form-container">
+    <VBox spacing="10" alignment="CENTER" prefWidth="450" prefHeight="750">
         <Text text="Registrace" styleClass="heading"/>
 
         <Hyperlink text="Máte již účet? Přihlašte se." onAction="#onClickOnLoginLink" styleClass="register-link"/>
@@ -15,7 +15,7 @@
         </HBox>
 
         <!-- Main content -->
-        <VBox spacing="10" styleClass="form-container">
+        <VBox styleClass="register-form-container">
             <TextField fx:id="firstName" promptText="Jméno" styleClass="input" maxWidth="350"/>
             <TextField fx:id="lastName" promptText="Příjmení" styleClass="input" maxWidth="350"/>
             <TextField fx:id="email" promptText="Email *" styleClass="input" maxWidth="350"/>

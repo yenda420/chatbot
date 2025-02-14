@@ -14,6 +14,7 @@ import app.services.AlertService;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
@@ -87,6 +88,11 @@ public class AddTopicController {
     @FXML
     public void onGoToEditProfile() {
         LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), topicName, currentUser);
+    }
+
+    @FXML
+    public void onGoToTopicsOverview() {
+        LoaderService.load(ViewEnum.TOPICS_OVERVIEW, getClass(), topicName, currentUser);
     }
 
     private boolean validateInputs() {

@@ -112,6 +112,12 @@ public class EditProfileController {
         LoaderService.load(ViewEnum.ADD_TOPIC, getClass(), email, currentUser);
     }
 
+
+    @FXML
+    public void onGoToTopicsOverview() {
+        LoaderService.load(ViewEnum.TOPICS_OVERVIEW, getClass(), firstName, currentUser);
+    }
+
     @FXML
     public void onSave() throws SQLException {
         if (validateInputs()) {

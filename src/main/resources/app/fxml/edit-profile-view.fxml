@@ -14,8 +14,9 @@
         <!-- Horizontal Navigation -->
         <VBox alignment="CENTER" spacing="10">
             <HBox alignment="CENTER" spacing="10" styleClass="horizontal-menu">
-                <Button onAction="#onGoToMain" styleClass="menu-button" text="Generátor" />
-                <Button onAction="#onGoToTopics" styleClass="menu-button" text="Správce témat" />
+                <Button onAction="#onGoToMain" styleClass="menu-button" text="Generovat test" />
+                <Button onAction="#onGoToTopics" styleClass="menu-button" text="Přidat téma" />
+                <Button onAction="#onGoToTopicsOverview" styleClass="menu-button" text="Přehled témat" />
                 <Button styleClass="menu-button-active" text="Můj účet" />
             </HBox>
         </VBox>

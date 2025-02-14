@@ -153,6 +153,11 @@ public class MainController {
     }
 
     @FXML
+    public void onGoToTopicsOverview() {
+        LoaderService.load(ViewEnum.TOPICS_OVERVIEW, getClass(), testName, currentUser);
+    }
+
+    @FXML
     public void onCreateTest() {
         if (validateInputs()) {
             showLoader(true);

@@ -3,12 +3,14 @@ package app.services;
 import app.controllers.AddTopicController;
 import app.controllers.EditProfileController;
 import app.controllers.MainController;
+import app.controllers.TopicsOverviewController;
 import app.enums.ViewEnum;
 
 import app.models.User;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
@@ -17,6 +19,10 @@ import java.sql.SQLException;
 
 public class LoaderService {
     public static void  load(ViewEnum view, Class<?> clazz, TextField someStageInput, User user) {
+        load(view, clazz, (Stage) someStageInput.getScene().getWindow(), user);
+    }
+
+    public static void  load(ViewEnum view, Class<?> clazz, ListView someStageInput, User user) {
         load(view, clazz, (Stage) someStageInput.getScene().getWindow(), user);
     }
 
@@ -39,6 +45,11 @@ public class LoaderService {
                 EditProfileController editProfileController = loader.getController();
                 editProfileController.setCurrentUser(user);
                 editProfileController.initializeUserData();
+
+            } else if (view.equals(ViewEnum.TOPICS_OVERVIEW)) {
+                TopicsOverviewController topicsOverviewController = loader.getController();
+                topicsOverviewController.setCurrentUser(user);
+                topicsOverviewController.initializeUserData();
             }
 
             Scene scene = new Scene(root);
@@ -62,6 +73,7 @@ public class LoaderService {
             case LOGIN: return "Přihlášení";
             case MAIN: return "Generátor Testů";
             case ADD_TOPIC: return "Přidejte tématický celek";
+            case EDIT_PROFILE: return "Váš účet";
             default: return "Neznámá stránka";
         }
     }

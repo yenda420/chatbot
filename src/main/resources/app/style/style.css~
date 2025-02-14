@@ -3,8 +3,17 @@
 }
 
 .form-container {
-    -fx-alignment: center;
+    -fx-alignment: top-center;
     -fx-padding: 20;
+    -fx-pref-width: 600;
+    -fx-pref-height: 950;
+    -fx-spacing: 10;
+}
+
+.register-form-container {
+    -fx-alignment: top-center;
+    -fx-padding: 20;
+    -fx-spacing: 10;
 }
 
 .input, .combobox, .textarea, .button, .submit {
