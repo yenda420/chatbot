@@ -18,6 +18,7 @@
 -- Základní operace oro uživatele
 
 ** Co je nového **
+-- Custom scrollbar
 
 ** Momentálně rozpracováno **
 -- Dodělání a zdokonalení operací pro uživatele
@@ -25,9 +26,9 @@
 -- Testování přípony souborů a jejich velikosti
 
 ** Na později **
--- Přidat odkaz na Manuál aplikace
--- Zlepšit vzhled alertů
--- Rozpoznat, že uživatel není připojen k Wi-Fi
--- Implementovat logger
+-- Odkaz na Manuál aplikace
+-- Lepší vzhled alertů
+-- Rozpoznání, že uživatel není připojen k Wi-Fi
+-- Custom logger
 -- Tagy v databázi jsou redundantní data => zmiňovaná funkcionalita by mohla být (?), ne však pomocí tags tabulky
 -- Abstrakce pro volání dotazů

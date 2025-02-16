@@ -10,7 +10,7 @@
 <?import javafx.scene.text.Text?>
 
 <StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.EditProfileController">
-    <VBox alignment="TOP_CENTER" prefHeight="950" prefWidth="650" spacing="10" styleClass="form-container">
+    <VBox alignment="TOP_CENTER" prefHeight="950" prefWidth="550" spacing="10" styleClass="form-container">
         <!-- Horizontal Navigation -->
         <VBox alignment="CENTER" spacing="10">
             <HBox alignment="CENTER" spacing="10" styleClass="horizontal-menu">

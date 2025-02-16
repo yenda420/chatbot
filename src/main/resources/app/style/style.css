@@ -162,3 +162,74 @@
     -fx-border-color: maroon;
     -fx-font-weight: bold;
 }
+
+.three-dots-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-background-radius: 15px;
+    -fx-padding: 5 10;
+    -fx-border-color: maroon;
+    -fx-border-width: 1;
+    -fx-border-radius: 15px;
+}
+
+.three-dots-button:hover {
+    -fx-background-color: maroon;
+    -fx-text-fill: white;
+}
+
+.context-menu {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-padding: 0;
+    -fx-effect: dropshadow(gaussian, black, 10, 0, 2, 2);
+}
+
+.context-menu-item-top {
+    -fx-background-radius: 0 10px 0 0;
+}
+
+.context-menu-item-bottom {
+    -fx-background-radius: 0 0 10px 10px;
+}
+
+.context-menu-item-top,
+.context-menu-item-bottom {
+    -fx-background-color: maroon;
+    -fx-padding: 5;
+    -fx-text-fill: white !important;
+}
+
+.context-menu-item-top:hover,
+.context-menu-item-bottom:hover {
+    -fx-background-color: darkred;
+}
+
+.scroll-bar:vertical {
+    -fx-background-color: maroon;
+    -fx-padding: 5;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #650000;
+    -fx-background-radius: 10;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-background-color: white;
+}
+
+.scroll-bar .track {
+    -fx-background-color: transparent;
+}
