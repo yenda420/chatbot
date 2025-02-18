@@ -5,6 +5,7 @@ public enum ViewEnum {
     LOGIN("login"),
     REGISTER("register"),
     ADD_TOPIC("add-topic"),
+    EDIT_TOPIC("edit-topic"),
     TOPICS_OVERVIEW("topics-overview"),
 
     EDIT_PROFILE("edit-profile");

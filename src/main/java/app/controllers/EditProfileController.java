@@ -5,6 +5,7 @@ import app.dao.SubjectManager;
 import app.dao.UserManager;
 import app.enums.ViewEnum;
 
+import app.models.Topic;
 import app.models.User;
 
 import app.services.AlertService;

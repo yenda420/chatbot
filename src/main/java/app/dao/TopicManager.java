@@ -59,6 +59,57 @@ public class TopicManager {
         return false;
     }
 
+    public static boolean delete(Topic topic) {
+        if (db.getConn() != null) {
+            String sql = "DELETE FROM topics WHERE topicId = ?";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                pstmt.setInt(1, getId(topic));
+
+                int rowsDeleted = pstmt.executeUpdate();
+                if (rowsDeleted > 0) {
+                    System.out.println("[INFO] - Topic " + topic.getName() + " deleted from database.");
+                    return true;
+                } else {
+                    System.out.println("[INFO] - Topic " + topic.getName() + " not found in database.");
+                    return false;
+                }
+            } catch (SQLException e) {
+                System.err.println("[ERROR] - Failed to delete topic " + topic.getName() + " from database.");
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean update(Topic oldTopic, Topic newTopic) {
+        String sql = "UPDATE topics " +
+                    "SET subjectId = ?, name = ?, description = ? " +
+                    "WHERE topicId = ?";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setInt(1, SubjectManager.getId(newTopic.getSubject()));
+            pstmt.setString(2, newTopic.getName());
+            pstmt.setString(3, newTopic.getDescription());
+            pstmt.setInt(4, getId(oldTopic));
+
+            int rowsUpdated = pstmt.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("[INFO] - Topic " + newTopic.getName() + " updated in database.");
+                return true;
+            } else {
+                System.out.println("[INFO] - Topic " + newTopic.getName() + " not found in database.");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - Failed to update topic " + newTopic.getName() + " in database.");
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public static void saveDefaultTopics() {
         for (Topic topic : defaultTopics) {
             try {
@@ -100,12 +151,12 @@ public class TopicManager {
         return topics;
     }
 
-    public static int getId(String topicName) {
+    public static int getId(Topic topic) {
         String sql = "SELECT topicId FROM topics WHERE name = ?";
         int topicId = -1;
 
         try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
-            pstmt.setString(1, topicName);
+            pstmt.setString(1, topic.getName());
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {

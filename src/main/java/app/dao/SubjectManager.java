@@ -113,7 +113,7 @@ public class SubjectManager {
     }
 
     public static Subject getSubject(Topic topic) throws SQLException {
-        int topicId = TopicManager.getId(topic.getName());
+        int topicId = TopicManager.getId(topic);
         int subjectId = getId(topicId);
 
         String sql = "SELECT * FROM subjects WHERE subjectId = ?";

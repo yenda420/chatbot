@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.EditTopicController">
+    <VBox alignment="TOP_CENTER" prefHeight="950" prefWidth="650" spacing="10" styleClass="form-container">
+        <!-- Horizontal Navigation -->
+        <HBox alignment="CENTER" spacing="10" styleClass="horizontal-menu">
+            <Button onAction="#onGoToMain" styleClass="menu-button" text="Generovat test" />
+            <Button onAction="#onGoToTopics" styleClass="menu-button" text="Přidat téma" />
+            <Button onAction="#onGoToTopicsOverview" styleClass="menu-button" text="Přehled témat" />
+            <Button onAction="#onGoToEditProfile" styleClass="menu-button" text="Můj účet" />
+        </HBox>
+
+      <!-- Main content -->
+        <VBox alignment="CENTER" prefHeight="723.0" prefWidth="550.0">
+          <VBox alignment="CENTER" spacing="10" styleClass="form-container">
+              <Text styleClass="heading" text="Změna tématického celku" />
+
+              <HBox alignment="CENTER_RIGHT" maxWidth="350" styleClass="explanation-container">
+                  <Text styleClass="explanation" text="* povinné pole" />
+              </HBox>
+
+              <TextField fx:id="topicName" maxWidth="350" promptText="Název tématického celku *" styleClass="input" />
+              <ComboBox fx:id="subject" maxWidth="350" promptText="Vyberte předmět *" styleClass="combobox" />
+
+              <Button fx:id="updateTopicButton" maxWidth="350" onAction="#onUpdateTopic" styleClass="submit" text="Aktualizovat tématický celek" />
+          </VBox>
+        </VBox>
+    </VBox>
+</StackPane>

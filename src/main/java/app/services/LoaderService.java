@@ -1,11 +1,9 @@
 package app.services;
 
-import app.controllers.AddTopicController;
-import app.controllers.EditProfileController;
-import app.controllers.MainController;
-import app.controllers.TopicsOverviewController;
+import app.controllers.*;
 import app.enums.ViewEnum;
 
+import app.models.Topic;
 import app.models.User;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -18,11 +16,15 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 public class LoaderService {
-    public static void  load(ViewEnum view, Class<?> clazz, TextField someStageInput, User user) {
+    public static void load(ViewEnum view, Class<?> clazz, TextField someStageInput, User user) {
         load(view, clazz, (Stage) someStageInput.getScene().getWindow(), user);
     }
 
-    public static void  load(ViewEnum view, Class<?> clazz, ListView someStageInput, User user) {
+    public static void load(ViewEnum view, Class<?> clazz, ListView someStageInput, User user, Topic topicToEdit) {
+        load(view, clazz, (Stage) someStageInput.getScene().getWindow(), user, topicToEdit);
+    }
+
+    public static void load(ViewEnum view, Class<?> clazz, ListView someStageInput, User user) {
         load(view, clazz, (Stage) someStageInput.getScene().getWindow(), user);
     }
 
@@ -50,6 +52,37 @@ public class LoaderService {
                 TopicsOverviewController topicsOverviewController = loader.getController();
                 topicsOverviewController.setCurrentUser(user);
                 topicsOverviewController.initializeUserData();
+
+            } else if (view.equals(ViewEnum.EDIT_TOPIC)) {
+                EditProfileController editProfileController = loader.getController();
+                editProfileController.setCurrentUser(user);
+            }
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(clazz.getResource("/app/style/style.css").toExternalForm());
+
+            stage.setScene(scene);
+            stage.setTitle(getTitle(view));
+            stage.show();
+            stage.centerOnScreen();
+        } catch (IOException e) {
+            System.err.println("[ERROR] - Failed to load " + view.getName() + "-view.fxml.");
+            e.printStackTrace();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void load(ViewEnum view, Class<?> clazz, Stage stage, User user, Topic topicToEdit) {
+        try {
+            FXMLLoader loader = new FXMLLoader(clazz.getResource("/app/fxml/" + view.getName() + "-view.fxml"));
+            Parent root = loader.load();
+
+            if (view.equals(ViewEnum.EDIT_TOPIC)) {
+                EditTopicController editTopicController = loader.getController();
+                editTopicController.setCurrentUser(user);
+                editTopicController.setTopicToEdit(topicToEdit);
+                editTopicController.initializeData();
             }
 
             Scene scene = new Scene(root);
@@ -71,10 +104,11 @@ public class LoaderService {
         return switch (view) {
             case REGISTER -> "Registrace";
             case LOGIN -> "Přihlášení";
-            case MAIN -> "Generátor Testů";
+            case MAIN -> "Generátor testů";
             case ADD_TOPIC -> "Přidejte tématický celek";
             case EDIT_PROFILE -> "Váš účet";
             case TOPICS_OVERVIEW -> "Přehled tématických celků";
+            case EDIT_TOPIC -> "Změna tématického celku";
             default -> "Neznámá stránka";
         };
     }

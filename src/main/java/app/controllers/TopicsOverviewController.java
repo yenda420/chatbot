@@ -2,6 +2,7 @@ package app.controllers;
 
 import app.dao.TopicManager;
 import app.enums.ViewEnum;
+import app.models.Topic;
 import app.models.User;
 import app.services.LoaderService;
 import javafx.collections.FXCollections;
@@ -24,15 +25,20 @@ public class TopicsOverviewController {
 
     private User currentUser;
 
+    private ObservableList<String> topicsList = null;
+
     @FXML
     private ListView<String> topics;
 
     public void initializeUserData() throws SQLException {
         if (currentUser != null) {
-            ObservableList<String> topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
+            topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
 
-            int numberOfCells = topicsList.size();
-            adjustListViewHeight(numberOfCells);
+            if (topicsList != null) {
+                int numberOfCells = topicsList.size();
+                adjustListViewHeight(numberOfCells);
+            }
+
             topics.setItems(topicsList);
             initializeCustomCellFactory();
         }
@@ -100,12 +106,19 @@ public class TopicsOverviewController {
         return customItem;
     }
 
-    private void handleEdit(String item) {
-        // TODO
+    private void handleEdit(String topicName) {
+        LoaderService.load(ViewEnum.EDIT_TOPIC, getClass(), topics, currentUser, new Topic(topicName));
     }
 
-    private void handleDelete(String item) {
-        // TODO
+    private void handleDelete(String topicName) {
+        try {
+            TopicManager.delete(new Topic(topicName));
+            topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
+            topics.setItems(topicsList);
+        } catch (SQLException e) {
+            System.out.println("[INFO] - Failed to delete topic " + topicName + " from database.");
+            e.printStackTrace();
+        }
     }
 
     private void adjustListViewHeight(int numberOfCells) {

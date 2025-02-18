@@ -82,7 +82,7 @@ public class DatabaseService {
         String sql = "CREATE TABLE IF NOT EXISTS topics (" +
                 "topicId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "subjectId INT NOT NULL, " +
-                "name VARCHAR(100) NOT NULL, " +
+                "name VARCHAR(100) UNIQUE NOT NULL, " +
                 "description LONGTEXT, " +
                 "CONSTRAINT FK_TOPICS_SUBJECTS FOREIGN KEY (subjectId) REFERENCES subjects (subjectId) ON DELETE CASCADE ON UPDATE CASCADE)";
 

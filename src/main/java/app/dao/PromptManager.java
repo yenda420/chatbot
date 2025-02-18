@@ -65,7 +65,7 @@ public class PromptManager {
                 PreparedStatement linkStmt = db.getConn().prepareStatement(linkSql);
 
                 for (Topic topic : prompt.getTopics()) {
-                    int topicId = TopicManager.getId(topic.getName());
+                    int topicId = TopicManager.getId(topic);
 
                     if (!DatabaseService.instanceInDatabase("topics_prompts", topicId, promptId, "topicId", "promptId")) {
                         linkStmt.setInt(1, topicId);
