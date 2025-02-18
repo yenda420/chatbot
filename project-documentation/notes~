@@ -24,7 +24,7 @@
 
 ** Momentálně rozpracováno **
 -- CRUD operace a prohlížení pro admina
-    (Admin může přidávat, upravovat a mazat jakékoliv témata, předměty, uživatele a testy)
+    (Admin může přidávat, upravovat a mazat jakékoliv témata, předměty, uživatele
 -- Testování přípony souborů a jejich velikosti
 
 ** Na později **

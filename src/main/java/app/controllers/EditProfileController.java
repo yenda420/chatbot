@@ -5,7 +5,6 @@ import app.dao.SubjectManager;
 import app.dao.UserManager;
 import app.enums.ViewEnum;
 
-import app.models.Topic;
 import app.models.User;
 
 import app.services.AlertService;
@@ -17,6 +16,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
@@ -52,6 +53,12 @@ public class EditProfileController {
     @FXML
     private ListView<String> subjects;
 
+    @FXML
+    private Button logoutButton;
+
+    @FXML
+    private ImageView logoutIcon;
+
     private void updateFields() throws SQLException {
         if (currentUser != null) {
             ArrayList<String> usersSubjects = SubjectManager.getSubjects(currentUser);
@@ -82,8 +89,12 @@ public class EditProfileController {
     private void initialize() {
         saveButton.setDefaultButton(true);
         firstName.requestFocus();
+
         subjects.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         subjects.setItems(subjectList);
+
+        logoutButton.setOnMouseEntered(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-maroon.png"))));
+        logoutButton.setOnMouseExited(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-white.png"))));
     }
 
     public void initializeUserData() throws SQLException {
@@ -113,10 +124,19 @@ public class EditProfileController {
         LoaderService.load(ViewEnum.ADD_TOPIC, getClass(), email, currentUser);
     }
 
+    @FXML
+    public void onGoToTestsOverview() {
+
+    }
 
     @FXML
     public void onGoToTopicsOverview() {
         LoaderService.load(ViewEnum.TOPICS_OVERVIEW, getClass(), firstName, currentUser);
+    }
+
+    @FXML
+    public void onLogout() {
+        LoaderService.load(ViewEnum.LOGIN, getClass(), email, currentUser);
     }
 
     @FXML

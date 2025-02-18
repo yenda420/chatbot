@@ -22,6 +22,8 @@ import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
@@ -97,6 +99,12 @@ public class MainController {
     private Text explanation;
 
     @FXML
+    private Button logoutButton;
+
+    @FXML
+    private ImageView logoutIcon;
+
+    @FXML
     private void initialize() {
         createTestButton.setDefaultButton(true);
         testName.requestFocus();
@@ -104,6 +112,9 @@ public class MainController {
         difficulty.getItems().addAll(QuestionManager.getQuestionDifficulties());
         questionType.getItems().addAll(QuestionManager.getQuestionTypes());
         topics.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        logoutButton.setOnMouseEntered(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-maroon.png"))));
+        logoutButton.setOnMouseExited(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-white.png"))));
 
         if (topics.getItems().isEmpty()) {
             topics.setPrefHeight(CELL_HEIGHT_SMALLER * 4);
@@ -155,6 +166,16 @@ public class MainController {
     @FXML
     public void onGoToTopicsOverview() {
         LoaderService.load(ViewEnum.TOPICS_OVERVIEW, getClass(), testName, currentUser);
+    }
+
+    @FXML
+    public void onGoToTestsOverview() {
+
+    }
+
+    @FXML
+    public void onLogout() {
+        LoaderService.load(ViewEnum.LOGIN, getClass(), testName, currentUser);
     }
 
     @FXML

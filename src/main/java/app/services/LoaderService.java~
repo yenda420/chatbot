@@ -41,7 +41,7 @@ public class LoaderService {
             } else if (view.equals(ViewEnum.ADD_TOPIC)) {
                 AddTopicController addTopicController = loader.getController();
                 addTopicController.setCurrentUser(user);
-                addTopicController.initializeUserData();
+//                addTopicController.initializeUserData();
 
             } else if (view.equals(ViewEnum.EDIT_PROFILE)) {
                 EditProfileController editProfileController = loader.getController();
@@ -104,7 +104,7 @@ public class LoaderService {
         return switch (view) {
             case REGISTER -> "Registrace";
             case LOGIN -> "Přihlášení";
-            case MAIN -> "Generátor Testů";
+            case MAIN -> "Generátor testů";
             case ADD_TOPIC -> "Přidejte tématický celek";
             case EDIT_PROFILE -> "Váš účet";
             case TOPICS_OVERVIEW -> "Přehled tématických celků";

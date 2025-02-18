@@ -14,6 +14,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -33,17 +35,18 @@ public class EditTopicController {
     private TextField topicName;
 
     @FXML
-    private void initialize() throws SQLException {
-        if (currentUser != null) {
-            ArrayList<String> subjects = SubjectManager.getSubjects(currentUser);
-            ObservableList<String> subjectsObservable = FXCollections.observableArrayList(subjects);
+    private Button logoutButton;
 
-            updateTopicButton.setDefaultButton(true);
-            topicName.requestFocus();
-            subject.setItems(subjectsObservable);
-        } else {
-            System.out.println("[WARRNING] - Current user is null. Expecting the LoaderService to update.");
-        }
+    @FXML
+    private ImageView logoutIcon;
+
+    @FXML
+    private void initialize() {
+        updateTopicButton.setDefaultButton(true);
+        topicName.requestFocus();
+
+        logoutButton.setOnMouseEntered(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-maroon.png"))));
+        logoutButton.setOnMouseExited(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-white.png"))));
     }
 
     public void initializeData() throws SQLException {
@@ -105,6 +108,16 @@ public class EditTopicController {
     @FXML
     public void onGoToTopics() {
         LoaderService.load(ViewEnum.ADD_TOPIC, getClass(), topicName, currentUser);
+    }
+
+    @FXML
+    public void onGoToTestsOverview() {
+
+    }
+
+    @FXML
+    public void onLogout() {
+        LoaderService.load(ViewEnum.LOGIN, getClass(), topicName, currentUser);
     }
 
     private boolean validateInputs() {

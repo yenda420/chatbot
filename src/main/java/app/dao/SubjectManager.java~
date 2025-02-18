@@ -165,10 +165,7 @@ public class SubjectManager {
         }
 
         try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
-            if (user.getRole() != UserRoleEnum.ADMIN) {
-                pstmt.setInt(1, userId);
-            }
-
+            pstmt.setInt(1, userId);
             ResultSet rs = pstmt.executeQuery();
 
             while (rs.next()) {

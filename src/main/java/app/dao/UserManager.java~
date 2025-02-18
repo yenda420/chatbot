@@ -227,8 +227,9 @@ public class UserManager {
         User admin = new User(adminEmail, adminPasswordHash, UserRoleEnum.ADMIN);
 
         try {
+            System.out.println(SubjectManager.getSubjects(admin));
+            System.out.println(TopicManager.getTopics(admin));
             UserManager.save(user);
-            UserManager.save(admin);
 
             // Test subjects
             ObservableList<String> subjects = FXCollections.observableArrayList("Programování", "Anglický jazyk");

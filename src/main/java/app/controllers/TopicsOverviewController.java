@@ -11,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -29,6 +31,18 @@ public class TopicsOverviewController {
 
     @FXML
     private ListView<String> topics;
+
+    @FXML
+    private Button logoutButton;
+
+    @FXML
+    private ImageView logoutIcon;
+
+    @FXML
+    private void initialize() {
+        logoutButton.setOnMouseEntered(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-maroon.png"))));
+        logoutButton.setOnMouseExited(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-white.png"))));
+    }
 
     public void initializeUserData() throws SQLException {
         if (currentUser != null) {
@@ -150,5 +164,15 @@ public class TopicsOverviewController {
     @FXML
     public void onGoToEditProfile() {
         LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), topics, currentUser);
+    }
+
+    @FXML
+    public void onGoToTestsOverview() {
+
+    }
+
+    @FXML
+    public void onLogout() {
+        LoaderService.load(ViewEnum.LOGIN, getClass(), topics, currentUser);
     }
 }
