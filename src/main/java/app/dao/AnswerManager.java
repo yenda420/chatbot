@@ -9,6 +9,7 @@ import java.sql.PreparedStatement;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class AnswerManager {
     private static DatabaseService db;
@@ -107,5 +108,25 @@ public class AnswerManager {
             }
         }
         return 0;
+    }
+
+    public static ArrayList<Answer> getAnswersForQuestion(int questionId) throws SQLException {
+        ArrayList<Answer> answers = new ArrayList<>();
+        String sql = "SELECT a.text, qa.isCorrect, qa.explanation FROM answers a " +
+                    "JOIN questions_answers qa USING (answerId) " +
+                    "WHERE qa.questionId = ?";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setInt(1, questionId);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    String text = rs.getString("text");
+                    boolean isCorrect = rs.getBoolean("isCorrect");
+                    String explanation = rs.getString("explanation");
+                    answers.add(new Answer(text, isCorrect, explanation));
+                }
+            }
+        }
+        return answers;
     }
 }

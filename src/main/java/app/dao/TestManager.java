@@ -3,10 +3,7 @@ package app.dao;
 import app.enums.DifficultyEnum;
 import app.enums.QuestionTypeEnum;
 
-import app.models.Answer;
-import app.models.Question;
-import app.models.Test;
-import app.models.User;
+import app.models.*;
 
 import app.services.DatabaseService;
 
@@ -47,6 +44,88 @@ public class TestManager {
         return -1;
     }
 
+    public static ArrayList<Test> getTests(User user) throws SQLException {
+        ArrayList<String> subjects = SubjectManager.getSubjects(user);
+        ArrayList<Test> tests = new ArrayList<>();
+        ArrayList<Integer> testIds = new ArrayList<>();
+
+        for (String subject : subjects) {
+            int subjectId = SubjectManager.getId(subject);
+            String sql = "SELECT t.name, t.testId " +
+                        "FROM tests t " +
+                        "JOIN prompts p USING (promptId) " +
+                        "JOIN topics_prompts tp USING (promptId) " +
+                        "JOIN topics top USING (topicId) " +
+                        "WHERE top.subjectId = ? " +
+                        "ORDER BY t.testId ASC";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                pstmt.setInt(1, subjectId);
+
+                ResultSet rs = pstmt.executeQuery();
+
+                while (rs.next()) {
+                    int testId = rs.getInt("testId");
+                    Test test = new Test(rs.getString("name"), testId);
+
+                    if (!testIds.contains(testId)) {
+                        tests.add(test);
+                        testIds.add(testId);
+                    }
+                }
+            }
+        }
+
+        if (tests.isEmpty()) {
+            System.out.println("[WARNING] - There are no tests for user " + user.getEmail() + "'s subjects.");
+            return null;
+        }
+
+        return tests;
+    }
+
+    public static int calculateMaxPoints(int testId) throws SQLException {
+        String sql = "SELECT SUM(q.points) as totalPoints FROM questions q " +
+                    "JOIN questions_tests qt USING (questionId) " +
+                    "WHERE qt.testId = ?";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setInt(1, testId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("totalPoints");
+                }
+            }
+        }
+
+        return 0;
+    }
+
+    public static Test getTestById(int testId) throws SQLException {
+        String sql = "SELECT t.name, t.numberOfQuestions, t.timeLimit, t.difficulty, p.*, q.type " +
+                "FROM tests t " +
+                "JOIN prompts p USING (promptId) " +
+                "JOIN questions_tests qt USING (testId) " +
+                "JOIN questions q USING (questionId) " +
+                "WHERE t.testId = ? LIMIT 1";  // Use type from the first question
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setInt(1, testId);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    DifficultyEnum difficulty = DifficultyEnum.fromString(rs.getString("difficulty"));
+                    QuestionTypeEnum questionType = QuestionTypeEnum.fromString(rs.getString("type"));
+                    Prompt prompt = new Prompt(rs.getString("message"), null, TopicManager.getTopicsByPromptId(rs.getInt("promptId")));
+
+                    return new Test(rs.getString("name"), rs.getInt("numberOfQuestions"), rs.getInt("timeLimit"), difficulty, questionType, prompt, null);
+                }
+            }
+        }
+        return null;
+    }
+
     public static boolean save(Test test, User user, int promptId) {
         if (db.getConn() != null) {
             if (promptId > 0) {
@@ -85,20 +164,25 @@ public class TestManager {
             QuestionTypeEnum questionType = test.getQuestionType();
             DifficultyEnum difficulty = test.getDifficulty();
 
-            // Remove any leading unwanted lines
             int startIndex = 0;
             int endIndex = lines.length;
 
-            while (startIndex < lines.length && (lineContainsAnyOf(requiredSections, lines[startIndex]) || !containsText(lines[startIndex]))) {
+            // Log initial lines
+            for (int i = 0; i < lines.length; i++) {
+                System.out.println("[DEBUG] - Line " + i + ": " + lines[i]);
+            }
+
+            // Remove any leading unwanted lines
+            while (startIndex < lines.length &&
+                    (lineContainsAnyOf(requiredSections, lines[startIndex]) || !containsText(lines[startIndex]))) {
                 startIndex++;
             }
 
             // Remove any unwanted lines
             lines = Arrays.copyOfRange(lines, startIndex, endIndex);
 
-            // Current state variables
-            boolean inAnswers;
-            boolean inQuestions;
+            boolean inAnswers = false;
+            boolean inQuestions = true;
 
             int questionCount = 0;
             int answerCount = 0;
@@ -111,14 +195,11 @@ public class TestManager {
                 index++;
             }
 
-            inQuestions = true;
-            inAnswers = false;
-
             while (index < lines.length) {
                 String line = lines[index].trim();
+                System.out.println("[DEBUG] - Processing line: " + line);
 
                 if (line.equalsIgnoreCase("Správné odpovědi:")) {
-                    // Switch to answers
                     inQuestions = false;
                     inAnswers = true;
                     index++;
@@ -132,13 +213,10 @@ public class TestManager {
 
                 if (inQuestions) {
                     if (questionPattern.matcher(line).matches()) {
-                        // Get the text after the question number
                         StringBuilder questionText = new StringBuilder();
-
                         questionText.append(line.substring(line.indexOf('.') + 1).trim()).append("\n");
 
                         while (!lines[index + 1].startsWith("Body:")) {
-                            // Check if next line exists
                             if (index + 2 >= lines.length) {
                                 System.err.println("[ERROR] - Unexpected end of content when reading points for question " + (questionCount + 2) + "(Line: " + lines[index + 1] + ")");
                                 return false;
@@ -150,12 +228,12 @@ public class TestManager {
 
                             index++;
                         }
-                        
+
                         index++;
-                        
-                        // Get the number of points
+
                         String pointsLine = lines[index].trim();
                         String[] pointParts = pointsLine.split(":");
+
                         if (pointParts.length < 2) {
                             System.err.println("[ERROR] - Invalid format for points on line " + (index + 1) + ". Line content: " + pointParts[0]);
                             return false;
@@ -166,8 +244,8 @@ public class TestManager {
 
                         Question question = new Question(questionText.toString(), questionType, difficulty, points);
                         System.out.println("[DEBUG] - Question: " + questionText);
-                        index += 2; // Move index past 'Body:' line
 
+                        index += 1; // Move index past 'Body:' line
                         List<Answer> answersForQuestion = new ArrayList<>();
 
                         if (questionType == QuestionTypeEnum.MULTIPLE_CHOICE) {
@@ -181,7 +259,6 @@ public class TestManager {
                             answersForQuestion.add(new Answer(lines[index + 2].replace("c) ", "").trim()));
 
                             index += 3; // Move index past the options
-
                         } else if (questionType == QuestionTypeEnum.YES_NO) {
                             if (index >= lines.length) {
                                 System.err.println("[ERROR] - Missing 'Ano / Ne' line for question " + (questionCount + 1));
@@ -189,6 +266,7 @@ public class TestManager {
                             }
 
                             String optionLine = lines[index].trim();
+                            System.out.println("[DEBUG] - Expected 'Ano / Ne' line, got: " + optionLine);
 
                             if (!optionLine.equalsIgnoreCase("Ano / Ne")) {
                                 System.err.println("[ERROR] - Expected 'Ano / Ne' line for question " + (questionCount + 1) + ", but got: '" + optionLine + "'");
@@ -199,7 +277,6 @@ public class TestManager {
                             answersForQuestion.add(new Answer("Ne"));
 
                             index += 1; // Move index past 'Ano / Ne' line
-
                         } else if (questionType == QuestionTypeEnum.OPEN_ENDED) {
                             Answer correctAnswer = findCorrectAnswerFor(questionCount + 1, testContent);
 
@@ -220,7 +297,6 @@ public class TestManager {
                         question.setAnswers(answersForQuestion);
                         questions.add(question);
                         questionCount++;
-
                     } else {
                         index++;
                     }
@@ -237,7 +313,6 @@ public class TestManager {
 
                         // Get the correct answer text
                         String correctAnswerText = answerLine.substring(answerLine.indexOf('.') + 1).trim();
-
                         index++; // Move to the line after the answer line
 
                         StringBuilder explanationBuilder = new StringBuilder();
@@ -255,10 +330,8 @@ public class TestManager {
                         String explanation = explanationBuilder.toString().trim();
 
                         if (questionType == QuestionTypeEnum.MULTIPLE_CHOICE) {
-                            // For multiple-choice questions, find the correct option and explanation and set it
                             char correctOptionLetter = correctAnswerText.charAt(0); // 'a', 'b', or 'c'
 
-                            // Set the correct answer and explanation
                             switch (correctOptionLetter) {
                                 case 'a':
                                     answersForQuestion.get(0).setCorrect(true);
@@ -277,10 +350,8 @@ public class TestManager {
                                     return false;
                             }
                         } else if (questionType == QuestionTypeEnum.YES_NO) {
-                            // For Yes / No questions set the correct option and explanation
                             boolean found = false;
 
-                            // Set isCorrect and explanation if the correct answer is found
                             for (Answer answer : answersForQuestion) {
                                 if (answer.getText().equalsIgnoreCase(correctAnswerText)) {
                                     answer.setCorrect(true);
@@ -295,7 +366,6 @@ public class TestManager {
                                 return false;
                             }
                         } else if (questionType == QuestionTypeEnum.OPEN_ENDED) {
-                            // For Open-ended questions, store the correct answer and explanation in the question
                             question.setCorrectAnswer(correctAnswerText.replace(questionNumber + ". ", ""));
                         } else {
                             System.err.println("[ERROR] - Unknown question type in inAnswers section");
@@ -303,7 +373,6 @@ public class TestManager {
                         }
 
                         answerCount++;
-
                     } else {
                         index++;
                     }
@@ -320,7 +389,6 @@ public class TestManager {
                         return false;
                     }
 
-                    // Insert answers for the question
                     List<Answer> answersForQuestion = question.getAnswers();
 
                     if (answersForQuestion != null && !answersForQuestion.isEmpty()) {
@@ -330,7 +398,6 @@ public class TestManager {
                                 return false;
                             }
 
-                            // Relate answer with the question
                             if (!answer.relate(question)) {
                                 System.err.println("[ERROR] - Failed to relate answer with question: " + answer);
                                 return false;
@@ -341,7 +408,6 @@ public class TestManager {
                         return false;
                     }
 
-                    // Relate question with the test
                     if (!question.relate(testId)) {
                         System.err.println("[ERROR] - Failed to relate question with test: " + question);
                         return false;
@@ -407,6 +473,55 @@ public class TestManager {
         }
 
         return new Answer(answerText);
+    }
+
+    public static boolean deleteTestData(int testId) throws SQLException {
+        String deleteQuestionsTestsSql = "DELETE FROM questions_tests WHERE testId = ?";
+        String deletePromptsSql = "DELETE FROM prompts WHERE promptId = (SELECT promptId FROM tests WHERE testId = ?)";
+        String deleteTopicsPromptsSql = "DELETE FROM topics_prompts WHERE promptId = (SELECT p.promptId FROM prompts p JOIN tests t USING (promptId) WHERE t.testId = ?)";
+        String deleteTestsSql = "DELETE FROM tests WHERE testId = ?";
+
+        try {
+            // Start transaction
+            db.getConn().setAutoCommit(false);
+
+            // Delete records in questions_tests
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(deleteQuestionsTestsSql)) {
+                pstmt.setInt(1, testId);
+                pstmt.executeUpdate();
+            }
+
+            // Delete records in topics_prompts
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(deleteTopicsPromptsSql)) {
+                pstmt.setInt(1, testId);
+                pstmt.executeUpdate();
+            }
+
+            // Delete prompt
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(deletePromptsSql)) {
+                pstmt.setInt(1, testId);
+                pstmt.executeUpdate();
+            }
+
+            // Delete test
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(deleteTestsSql)) {
+                pstmt.setInt(1, testId);
+                pstmt.executeUpdate();
+            }
+
+            // Commit transaction
+            db.getConn().commit();
+            return true;
+        } catch (SQLException e) {
+            // Rollback transaction
+            db.getConn().rollback();
+            System.err.println("[ERROR] - Failed to delete test data for testId: " + testId);
+            e.printStackTrace();
+        } finally {
+            // Ensure connection is returned to default state
+            db.getConn().setAutoCommit(true);
+        }
+        return false;
     }
 
     private static boolean containsText(String text) {

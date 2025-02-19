@@ -24,10 +24,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class EditProfileController {
-    private static final double CELL_HEIGHT_SMALLER = 36.7;
-    private static final double CELL_HEIGHT_BIGGER = 39.9;
-    private static final int MAX_CELLS_TO_SHOW = 11;
-
     private final ObservableList<String> subjectList =
             FXCollections.observableArrayList(SubjectManager.getSubjects());
     private User currentUser;
@@ -62,19 +58,10 @@ public class EditProfileController {
     private void updateFields() throws SQLException {
         if (currentUser != null) {
             ArrayList<String> usersSubjects = SubjectManager.getSubjects(currentUser);
-            int numberOfCells = subjectList.size();
 
             firstName.setText(currentUser.getFirstName() != null ? currentUser.getFirstName() : "");
             lastName.setText(currentUser.getLastName() != null ? currentUser.getLastName() : "");
             email.setText(currentUser.getEmail() != null ? currentUser.getEmail() : "");
-
-            if (numberOfCells > MAX_CELLS_TO_SHOW) {
-                subjects.setPrefHeight(MAX_CELLS_TO_SHOW * CELL_HEIGHT_SMALLER);
-            } else if (numberOfCells < 5) {
-                subjects.setPrefHeight(numberOfCells * CELL_HEIGHT_BIGGER);
-            } else {
-                subjects.setPrefHeight(numberOfCells * CELL_HEIGHT_SMALLER);
-            }
 
             for (String subject : usersSubjects) {
                 subjects.getSelectionModel().select(subject);
@@ -126,7 +113,7 @@ public class EditProfileController {
 
     @FXML
     public void onGoToTestsOverview() {
-
+        LoaderService.load(ViewEnum.TESTS_OVERVIEW, getClass(), firstName, currentUser);
     }
 
     @FXML

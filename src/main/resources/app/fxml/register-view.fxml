@@ -25,7 +25,7 @@
                   styleClass="explanation" wrappingWidth="350" textAlignment="CENTER"/>
             <Text text="Vyberte vyučované předměty * (Ctrl + Klik)" styleClass="label"/>
 
-            <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view"/>
+            <ListView fx:id="subjects" maxWidth="350" maxHeight="120" styleClass="input-list-view"/>
 
             <CheckBox fx:id="confirmationCheckbox" text="Četl(a) jsem Manuál aplikace *" styleClass="checkbox" maxWidth="350"/>
 

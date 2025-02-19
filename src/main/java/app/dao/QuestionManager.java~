@@ -183,7 +183,7 @@ public class QuestionManager {
                       "WHERE questionId IN (SELECT questionId FROM questions_tests WHERE testId = ?)";
 
         try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
-            pstmt.setInt(1, testId);
+            pstmt.setInt(1, testId);    // Set the testId parameter
 
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {

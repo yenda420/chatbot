@@ -23,7 +23,7 @@ public class TopicManager {
 
     public static ArrayList<Topic> getTopicsByPromptId(int promptId) throws SQLException {
         String sql = "SELECT t.* FROM topics t " +
-                    "JOIN topics_prompts tp USING (topicId) " +
+                    "JOIN topics_prompts tp ON t.topicId = tp.topicId " +
                     "WHERE tp.promptId = ?";
 
         try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {

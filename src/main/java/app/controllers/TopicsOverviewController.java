@@ -21,10 +21,6 @@ import javafx.scene.paint.Color;
 import java.sql.SQLException;
 
 public class TopicsOverviewController {
-    private static final double CELL_HEIGHT_SMALLER = 36.7;
-    private static final double CELL_HEIGHT_BIGGER = 39.9;
-    private static final int MAX_CELLS_TO_SHOW = 11;
-
     private User currentUser;
 
     private ObservableList<String> topicsList = null;
@@ -47,11 +43,6 @@ public class TopicsOverviewController {
     public void initializeUserData() throws SQLException {
         if (currentUser != null) {
             topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
-
-            if (topicsList != null) {
-                int numberOfCells = topicsList.size();
-                adjustListViewHeight(numberOfCells);
-            }
 
             topics.setItems(topicsList);
             initializeCustomCellFactory();
@@ -135,17 +126,6 @@ public class TopicsOverviewController {
         }
     }
 
-    private void adjustListViewHeight(int numberOfCells) {
-        if (numberOfCells > MAX_CELLS_TO_SHOW) {
-            topics.setPrefHeight(MAX_CELLS_TO_SHOW * CELL_HEIGHT_SMALLER);
-        } else if (numberOfCells < 5) {
-            topics.setPrefHeight(numberOfCells * CELL_HEIGHT_BIGGER);
-        } else {
-            topics.setPrefHeight(numberOfCells * CELL_HEIGHT_SMALLER);
-        }
-    }
-
-
     public void setCurrentUser(User user) {
         this.currentUser = user;
         System.out.println("[INFO] - Current user: " + user.getEmail());
@@ -168,7 +148,7 @@ public class TopicsOverviewController {
 
     @FXML
     public void onGoToTestsOverview() {
-
+        LoaderService.load(ViewEnum.TESTS_OVERVIEW, getClass(), topics, currentUser);
     }
 
     @FXML

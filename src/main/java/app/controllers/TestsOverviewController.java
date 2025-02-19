@@ -1,0 +1,277 @@
+package app.controllers;
+
+import app.dao.AnswerManager;
+import app.dao.SubjectManager;
+import app.dao.QuestionManager;
+import app.dao.TestManager;
+import app.enums.QuestionTypeEnum;
+import app.enums.ViewEnum;
+import app.models.*;
+import app.services.AlertService;
+import app.services.FileService;
+import app.services.LoaderService;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.geometry.Pos;
+import javafx.geometry.Side;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Comparator;
+
+public class TestsOverviewController {
+    private User currentUser;
+
+    private ObservableList<String> testsList = null;
+
+    @FXML
+    private ListView<String> tests;
+
+    @FXML
+    private Button logoutButton;
+
+    @FXML
+    private ImageView logoutIcon;
+
+    @FXML
+    private Text heading;
+
+    @FXML
+    private Button createFirstTestButton;
+
+
+    @FXML
+    private void initialize() {
+        logoutButton.setOnMouseEntered(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-maroon.png"))));
+        logoutButton.setOnMouseExited(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-white.png"))));
+    }
+
+    public void initializeUserData() throws SQLException {
+        if (currentUser != null) {
+            ArrayList<Test> testsFromDB = TestManager.getTests(currentUser);
+
+            if (testsFromDB != null && !testsFromDB.isEmpty()) {
+                ArrayList<String> testsArrayListString = new ArrayList<>();
+
+                // Sort tests by ID
+                testsFromDB.sort(Comparator.comparingInt(Test::getId));
+
+                for (Test test : testsFromDB) {
+                    testsArrayListString.add(test.getName() + " ID: " + test.getId());
+                }
+
+                testsList = FXCollections.observableArrayList(testsArrayListString);
+
+                tests.setItems(testsList);
+                tests.setVisible(true);
+                createFirstTestButton.setVisible(false);
+                initializeCustomCellFactory();
+            } else {
+                heading.setText("V databázi nejsou žádné testy z Vašich předmětů.");
+                tests.setVisible(false);
+                createFirstTestButton.setVisible(true);
+            }
+        }
+    }
+
+    private void initializeCustomCellFactory() {
+        tests.setCellFactory(lv -> new ListCell<>() {
+            {
+                // Instance initializer for event handling for each ListCell
+                setOnMousePressed(event -> {
+                    if (!isEmpty()) {
+                        tests.getSelectionModel().clearSelection();
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                // Called whenever a cell needs updating, such as scrolling or data changes
+                super.updateItem(item, empty);
+
+                // If the cell should display no content, set its graphic to null
+                if (empty || item == null) {
+                    setGraphic(null);
+                } else {
+                    Button threeDotsButton = new Button("•••");
+                    threeDotsButton.getStyleClass().add("three-dots-button");
+
+                    ContextMenu contextMenu = new ContextMenu();
+                    MenuItem downloadButton = createMenuItem("Stáhnout");
+
+                    downloadButton.getStyleClass().add("context-menu-item");
+                    downloadButton.setOnAction(event -> handleDownload(item));
+
+                    contextMenu.getItems().addAll(downloadButton);
+
+                    threeDotsButton.setOnAction(event -> contextMenu.show(threeDotsButton, Side.RIGHT, 0, 0));
+
+                    Label label = new Label(item);
+                    label.setTextFill(Color.WHITE);
+                    label.setMaxWidth(400);
+                    label.setWrapText(true);
+
+                    Region spacer = new Region();
+                    HBox.setHgrow(spacer, Priority.ALWAYS);
+
+                    HBox hBox = new HBox(label, spacer, threeDotsButton);
+                    hBox.setAlignment(Pos.CENTER_LEFT);
+
+                    setGraphic(hBox);
+                }
+            }
+        });
+    }
+
+    private MenuItem createMenuItem(String text) {
+        Label label = new Label(text);
+        CustomMenuItem customItem = new CustomMenuItem(label);
+        label.setStyle("-fx-text-fill: white; -fx-padding: 5;");
+        customItem.setHideOnClick(false);
+        return customItem;
+    }
+
+    private void handleDownload(String item) {
+        try {
+            String[] parts = item.split("ID: ");
+
+            if (parts.length < 2) {
+                System.err.println("[ERROR] - Unable to extract test ID from item.");
+                return;
+            }
+
+            int testId = Integer.parseInt(parts[1].trim());
+            Test testForDownload = TestManager.getTestById(testId);
+
+            if (testForDownload != null) {
+                testForDownload.setId(testId);
+            } else {
+                System.err.println("[ERROR] - Test with ID " + testId + " not found in database.");
+                return;
+            }
+
+            String testContent = generateTestContent(testForDownload);
+
+            if (!FileService.writeTestToFile(testContent, testForDownload)) {
+                System.err.println("[ERROR] - Failed to write test to file.");
+                AlertService.showErrorAlert("Test se nepodařilo uložit z technických důvodů.");
+            } else {
+                System.out.println("[INFO] - Test downloaded successfully.");
+                AlertService.showSuccessAlert("Test byl uložen do Stažených souborů (Downloads).");
+            }
+        } catch (NumberFormatException e) {
+            System.err.println("[ERROR] - Invalid test ID format.");
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - SQL exception occurred while downloading test.");
+            e.printStackTrace();
+        }
+    }
+
+    private String generateTestContent(Test test) throws SQLException {
+        StringBuilder contentBuilder = new StringBuilder();
+
+        System.out.println("[INFO] - Generating content for test: " + test.getName());
+
+        contentBuilder.append("Název testu: ").append(test.getName()).append("\n");
+        contentBuilder.append("Předmět: ").append(SubjectManager.getSubject(test.getPrompt().getTopics().get(0)).getName()).append("\n");
+        contentBuilder.append("Témata: ");
+
+        for (Topic topic : test.getPrompt().getTopics()) {
+            contentBuilder.append(topic.getName()).append(", ");
+        }
+
+        if (!test.getPrompt().getTopics().isEmpty()) {
+            contentBuilder.setLength(contentBuilder.length() - 2); // Remove last comma
+        }
+
+        contentBuilder.append("\n\n");
+        contentBuilder.append("Obtížnost: ").append(test.getDifficulty().getName()).append("\n");
+        contentBuilder.append("Časový limit: ").append(test.getTimeLimitInMinutes()).append(" minut\n\n");
+
+        // Fetch questions
+        ArrayList<Question> questions = QuestionManager.getQuestionsForTest(test.getId());
+
+        int questionNumber = 1;
+
+        for (Question question : questions) {
+            contentBuilder.append(questionNumber).append(". ").append(question.getText()).append("\n");
+            contentBuilder.append("Body: ").append(question.getPoints()).append("\n");
+
+            ArrayList<Answer> answers = AnswerManager.getAnswersForQuestion(question.getId());
+            if (test.getQuestionType().equals(QuestionTypeEnum.MULTIPLE_CHOICE)) {
+                char option = 'a';
+                for (Answer answer : answers) {
+                    contentBuilder.append(option).append(") ").append(answer.getText()).append("\n");
+                    option++;
+                }
+                contentBuilder.append("\n");
+            } else if (test.getQuestionType().equals(QuestionTypeEnum.YES_NO)) {
+                contentBuilder.append("Ano / Ne\n\n");
+            } else if (test.getQuestionType().equals(QuestionTypeEnum.OPEN_ENDED)) {
+                contentBuilder.append("\n");
+            }
+
+            questionNumber++;
+        }
+
+        // Correct Answers and Explanations
+        contentBuilder.append("Správné odpovědi:\n");
+        questionNumber = 1;
+
+        for (Question question : questions) {
+            ArrayList<Answer> answers = AnswerManager.getAnswersForQuestion(question.getId());
+            for (Answer answer : answers) {
+                if (answer.isCorrect()) {
+                    contentBuilder.append(questionNumber).append(". ").append(answer.getText()).append("\n");
+
+                    if (!test.getQuestionType().equals(QuestionTypeEnum.OPEN_ENDED)) {
+                        contentBuilder.append("Vysvětlení: ").append(answer.getExplanation()).append("\n\n");
+                    }
+                }
+            }
+            questionNumber++;
+        }
+
+        return contentBuilder.toString();
+    }
+
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+        System.out.println("[INFO] - Current user: " + user.getEmail());
+    }
+
+    @FXML
+    public void onGoToMain() {
+        LoaderService.load(ViewEnum.MAIN, getClass(), tests, currentUser);
+    }
+
+    @FXML
+    public void onGoToTopics() {
+        LoaderService.load(ViewEnum.ADD_TOPIC, getClass(), tests, currentUser);
+    }
+
+    @FXML
+    public void onGoToEditProfile() {
+        LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), tests, currentUser);
+    }
+
+    @FXML
+    public void onGoToTopicsOverview() {
+        LoaderService.load(ViewEnum.TOPICS_OVERVIEW, getClass(), tests, currentUser);
+    }
+
+    @FXML
+    public void onLogout() {
+        LoaderService.load(ViewEnum.LOGIN, getClass(), tests, currentUser);
+    }
+}

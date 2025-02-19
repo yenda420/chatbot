@@ -11,6 +11,7 @@ public class Test {
     private QuestionTypeEnum questionType;
     private Prompt fromPrompt;
     private User fromUser;
+
     private int id;
 
     public Test(String name, int numberOfQuestions, int timeLimitInMinutes, DifficultyEnum difficulty, QuestionTypeEnum questionType, Prompt fromPrompt, User fromUser) {

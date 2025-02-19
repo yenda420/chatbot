@@ -15,7 +15,7 @@
         </HBox>
 
         <!-- Main content -->
-        <VBox styleClass="register-form-container">
+        <VBox spacing="10" styleClass="form-container">
             <TextField fx:id="firstName" promptText="Jméno" styleClass="input" maxWidth="350"/>
             <TextField fx:id="lastName" promptText="Příjmení" styleClass="input" maxWidth="350"/>
             <TextField fx:id="email" promptText="Email *" styleClass="input" maxWidth="350"/>
@@ -25,7 +25,7 @@
                   styleClass="explanation" wrappingWidth="350" textAlignment="CENTER"/>
             <Text text="Vyberte vyučované předměty * (Ctrl + Klik)" styleClass="label"/>
 
-            <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view"/>
+            <ListView fx:id="subjects" maxWidth="350" maxHeight="150" styleClass="input-list-view"/>
 
             <CheckBox fx:id="confirmationCheckbox" text="Četl(a) jsem Manuál aplikace *" styleClass="checkbox" maxWidth="350"/>
 

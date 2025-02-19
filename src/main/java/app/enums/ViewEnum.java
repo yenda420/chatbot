@@ -7,6 +7,7 @@ public enum ViewEnum {
     ADD_TOPIC("add-topic"),
     EDIT_TOPIC("edit-topic"),
     TOPICS_OVERVIEW("topics-overview"),
+    TESTS_OVERVIEW("tests-overview"),
 
     EDIT_PROFILE("edit-profile");
 

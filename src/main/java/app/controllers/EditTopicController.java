@@ -112,7 +112,7 @@ public class EditTopicController {
 
     @FXML
     public void onGoToTestsOverview() {
-
+        LoaderService.load(ViewEnum.TESTS_OVERVIEW, getClass(), topicName, currentUser);
     }
 
     @FXML

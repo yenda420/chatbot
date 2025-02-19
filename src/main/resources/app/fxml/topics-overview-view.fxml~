@@ -40,7 +40,7 @@
                 </Text>
 
                 <HBox alignment="CENTER">
-                    <ListView fx:id="topics" prefWidth="500" prefHeight="300" style="-fx-cursor: context-menu;" styleClass="input-list-view" />
+                    <ListView fx:id="topics" prefWidth="500" prefHeight="300" styleClass="input-list-view" />
                 </HBox>
             </VBox>
         </VBox>

@@ -16,15 +16,22 @@
 -- Text wrap u TextArea
 -- Problém po přesměrování na stránku
 -- Základní operace oro uživatele
+-- Custom scrollbar, ikona pro odhlášní uživatele
 
 ** Co je nového **
--- Custom scrollbar
 -- Dodělání a zdokonalení operací pro uživatele
-    (User může přidávat, upravovat a mazat témata předmětů, které učí)
+    User může prohlížet, přidávat, upravovat a mazat:
+       - Témata předmětů, které učí
+    User může prohlížet a zpětně stahovat:
+       - Testy z předmětů, které učí
 
 ** Momentálně rozpracováno **
 -- CRUD operace a prohlížení pro admina
-    (Admin může přidávat, upravovat a mazat jakékoliv témata, předměty, uživatele a testy)
+    Admin může prohlížet, přidávat, upravovat a mazat:
+        - Jakékoliv témata, předměty, uživatele a testy
+    Admin může prohlížet, zpětně stahovat a mazat:
+        - Jakékoliv testy
+
 -- Testování přípony souborů a jejich velikosti
 
 ** Na později **
@@ -32,5 +39,6 @@
 -- Lepší vzhled alertů
 -- Rozpoznání, že uživatel není připojen k Wi-Fi
 -- Custom logger
+
 -- Tagy v databázi jsou redundantní data => zmiňovaná funkcionalita by mohla být (?), ne však pomocí tags tabulky
 -- Abstrakce pro volání dotazů

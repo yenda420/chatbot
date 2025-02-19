@@ -47,7 +47,7 @@
             <Text styleClass="explanation" text="Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak." textAlignment="CENTER" wrappingWidth="350" />
             <Text styleClass="label" text="Vyberte vyučované předměty * (Ctrl + Klik)" />
 
-            <ListView fx:id="subjects" maxWidth="350" maxHeight="120" styleClass="input-list-view" />
+            <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view" />
 
             <Button fx:id="saveButton" maxWidth="350" onAction="#onSave" styleClass="submit" text="Uložit údaje" />
         </VBox>

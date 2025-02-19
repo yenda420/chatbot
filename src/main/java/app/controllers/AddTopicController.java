@@ -91,7 +91,7 @@ public class AddTopicController {
 
     @FXML
     public void onGoToTestsOverview() {
-
+        LoaderService.load(ViewEnum.TESTS_OVERVIEW, getClass(), topicName, currentUser);
     }
 
     @FXML

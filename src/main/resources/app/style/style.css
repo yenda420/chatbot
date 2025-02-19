@@ -7,7 +7,7 @@
     -fx-padding: 20;
 }
 
-.input, .combobox, .textarea, .button, .submit {
+.input, .combobox, .textarea, .button, .submit, .createFirstTestButton {
     -fx-background-color: maroon;
     -fx-text-fill: white;
     -fx-background-radius: 20;
@@ -45,6 +45,11 @@
 .submit {
     -fx-background-color: white;
     -fx-text-fill: black;
+}
+
+.createFirstTestButton {
+    -fx-pref-width: 200;
+    -fx-pref-height: 50;
 }
 
 .textarea {
@@ -188,6 +193,10 @@
     -fx-effect: dropshadow(gaussian, black, 10, 0, 2, 2);
 }
 
+.context-menu-item {
+    -fx-background-radius: 10px;
+}
+
 .context-menu-item-top {
     -fx-background-radius: 0 10px 0 0;
 }
@@ -197,15 +206,18 @@
 }
 
 .context-menu-item-top,
-.context-menu-item-bottom {
+.context-menu-item-bottom,
+.context-menu-item {
     -fx-background-color: maroon;
     -fx-padding: 5;
     -fx-text-fill: white !important;
 }
 
 .context-menu-item-top:hover,
-.context-menu-item-bottom:hover {
+.context-menu-item-bottom:hover,
+.context-menu-item:hover {
     -fx-background-color: darkred;
+    -fx-cursor: hand;
 }
 
 .scroll-bar:vertical {
@@ -232,4 +244,14 @@
 
 .scroll-bar .track {
     -fx-background-color: transparent;
+}
+
+.createFirstTestButton {
+    -fx-background-color: maroon;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-prompt-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 8;
+    -fx-cursor: hand;
 }

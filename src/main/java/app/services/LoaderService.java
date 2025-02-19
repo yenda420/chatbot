@@ -33,29 +33,45 @@ public class LoaderService {
             FXMLLoader loader = new FXMLLoader(clazz.getResource("/app/fxml/" + view.getName() + "-view.fxml"));
             Parent root = loader.load();
 
-            if (view.equals(ViewEnum.MAIN)) {
-                MainController mainController = loader.getController();
-                mainController.setCurrentUser(user);
-                mainController.initializeUserData();
+            switch (view) {
+                case MAIN:
+                    MainController mainController = loader.getController();
+                    mainController.setCurrentUser(user);
+                    mainController.initializeUserData();
+                    break;
 
-            } else if (view.equals(ViewEnum.ADD_TOPIC)) {
-                AddTopicController addTopicController = loader.getController();
-                addTopicController.setCurrentUser(user);
-                addTopicController.initializeUserData();
+                case ADD_TOPIC:
+                    AddTopicController addTopicController = loader.getController();
+                    addTopicController.setCurrentUser(user);
+                    addTopicController.initializeUserData();
+                    break;
 
-            } else if (view.equals(ViewEnum.EDIT_PROFILE)) {
-                EditProfileController editProfileController = loader.getController();
-                editProfileController.setCurrentUser(user);
-                editProfileController.initializeUserData();
+                case EDIT_PROFILE:
+                    EditProfileController editProfileController = loader.getController();
+                    editProfileController.setCurrentUser(user);
+                    editProfileController.initializeUserData();
+                    break;
 
-            } else if (view.equals(ViewEnum.TOPICS_OVERVIEW)) {
-                TopicsOverviewController topicsOverviewController = loader.getController();
-                topicsOverviewController.setCurrentUser(user);
-                topicsOverviewController.initializeUserData();
+                case TOPICS_OVERVIEW:
+                    TopicsOverviewController topicsOverviewController = loader.getController();
+                    topicsOverviewController.setCurrentUser(user);
+                    topicsOverviewController.initializeUserData();
+                    break;
 
-            } else if (view.equals(ViewEnum.EDIT_TOPIC)) {
-                EditProfileController editProfileController = loader.getController();
-                editProfileController.setCurrentUser(user);
+                case EDIT_TOPIC:
+                    EditProfileController editTopicController = loader.getController();
+                    editTopicController.setCurrentUser(user);
+                    break;
+
+                case TESTS_OVERVIEW:
+                    TestsOverviewController testsOverviewController = loader.getController();
+                    testsOverviewController.setCurrentUser(user);
+                    testsOverviewController.initializeUserData();
+                    break;
+
+                default:
+                    System.out.println("[WARNING] - No specified actions for view: " + view.getName());
+                    break;
             }
 
             Scene scene = new Scene(root);
@@ -83,6 +99,8 @@ public class LoaderService {
                 editTopicController.setCurrentUser(user);
                 editTopicController.setTopicToEdit(topicToEdit);
                 editTopicController.initializeData();
+            } else {
+                System.out.println("[WARNING] - No specified actions for view: " + view.getName());
             }
 
             Scene scene = new Scene(root);
@@ -108,6 +126,7 @@ public class LoaderService {
             case ADD_TOPIC -> "Přidejte tématický celek";
             case EDIT_PROFILE -> "Váš účet";
             case TOPICS_OVERVIEW -> "Přehled tématických celků";
+            case TESTS_OVERVIEW -> "Přehled testů z Vašich předmětů";
             case EDIT_TOPIC -> "Změna tématického celku";
             default -> "Neznámá stránka";
         };

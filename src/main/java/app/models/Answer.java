@@ -15,6 +15,12 @@ public class Answer {
         this.explanation = null;
     }
 
+    public Answer(String text, boolean isCorrect, String explanation) {
+        this.text = text;
+        this.isCorrect = isCorrect;
+        this.explanation = explanation;
+    }
+
     public int getId() {
         return id;
     }

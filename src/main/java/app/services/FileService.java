@@ -35,7 +35,7 @@ public class FileService {
         File downloadsDir = new File(userHome, "Downloads");
 
         // Create the target file in Downloads
-        File file = new File(downloadsDir, test.getName() + ".docx");
+        File file = new File(downloadsDir, test.getName().replace(" ", "_").replace("/", "_") + ".docx");
 
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
@@ -115,7 +115,7 @@ public class FileService {
         XWPFParagraph maxPoints = document.createParagraph();
         maxPoints.setAlignment(ParagraphAlignment.RIGHT);
 
-        String maxPointsLine = content.split("\n")[content.split("\n").length - 1];
+        String maxPointsLine = "Maximalní počet bodů: " + TestManager.calculateMaxPoints(test.getId());
         maxPointsLine = maxPointsLine.replace("\n", "");
 
         XWPFRun maxPointsRun = maxPoints.createRun();

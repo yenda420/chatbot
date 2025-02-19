@@ -190,7 +190,6 @@ public class MainController {
                     String error = handleTestProcessing(test, prompt, ai);
 
                     if (error != null) {
-                        TestManager.deleteTestData(test.getId());
                         AlertService.showErrorAlert(testName, error);
                     }
                     return null;
@@ -255,7 +254,6 @@ public class MainController {
         String fileError = "Test se nepodařilo zapsat do souboru z technických důvodů. Zkuste to, prosím později.";
 
         int promptId = PromptManager.save(prompt);
-        test.setId(promptId);
 
         if (promptId == -1) {
             System.err.println("[ERROR] - Failed to save prompt " + prompt + " into database.");

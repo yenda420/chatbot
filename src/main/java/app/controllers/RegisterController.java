@@ -22,10 +22,6 @@
     import com.google.common.hash.Hashing;
 
     public class RegisterController {
-        private static final double CELL_HEIGHT_SMALLER = 36.7;
-        private static final double CELL_HEIGHT_BIGGER = 39.9;
-        private static final int MAX_CELLS_TO_SHOW = 11;
-
         private final ObservableList<String> subjectList =
                 FXCollections.observableArrayList(SubjectManager.getSubjects());
 
@@ -60,16 +56,6 @@
 
             subjects.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
             subjects.setItems(subjectList);
-
-            int numberOfCells = subjectList.size();
-
-            if (numberOfCells > MAX_CELLS_TO_SHOW) {
-                subjects.setPrefHeight(MAX_CELLS_TO_SHOW * CELL_HEIGHT_SMALLER);
-            } else if (numberOfCells < 5) {
-                subjects.setPrefHeight(numberOfCells * CELL_HEIGHT_BIGGER);
-            } else {
-                subjects.setPrefHeight(numberOfCells * CELL_HEIGHT_SMALLER);
-            }
         }
 
         public void onClickOnLoginLink() {
