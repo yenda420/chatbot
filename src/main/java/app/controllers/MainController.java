@@ -4,6 +4,7 @@ import app.dao.*;
 
 import app.enums.DifficultyEnum;
 import app.enums.QuestionTypeEnum;
+import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 
 import app.models.Prompt;
@@ -24,7 +25,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 
@@ -97,6 +100,12 @@ public class MainController {
     private ImageView logoutIcon;
 
     @FXML
+    private HBox horizontalMenu;
+
+    @FXML
+    private VBox content;
+
+    @FXML
     private void initialize() {
         createTestButton.setDefaultButton(true);
         testName.requestFocus();
@@ -136,6 +145,23 @@ public class MainController {
             ObservableList<String> subjectsObservable = FXCollections.observableArrayList(subjects);
 
             subject.setItems(subjectsObservable);
+
+            if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
+                int logoutIndex = horizontalMenu.getChildren().indexOf(logoutButton);
+                Button addUserButton = new Button("Přidat uživatele");
+                Button userOverviewButton = new Button("Přehled uživatelů");
+
+                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), testName, currentUser));
+                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), testName, currentUser));
+
+                addUserButton.getStyleClass().add("menu-button");
+                userOverviewButton.getStyleClass().add("menu-button");
+
+                horizontalMenu.getChildren().add(logoutIndex, addUserButton);
+                horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
+
+                content.setPrefWidth(content.getPrefWidth() + 400);
+            }
         } else {
             System.err.println("[ERROR] - User is not set.");
         }
@@ -212,7 +238,7 @@ public class MainController {
                     System.err.println("[ERROR] - An exception occurred: " + exception.getMessage());
                 }
 
-                AlertService.showErrorAlert("Test se nepodařilo vygenerovat z technických důvodů. Zkuste to, prosím později.");
+                AlertService.showErrorAlert("Test se nepodařilo vygenerovat z technických důvodů. Zkuste to, prosím, znovu.");
                 LoaderService.load(ViewEnum.MAIN, getClass(), testName, currentUser);
             });
 
@@ -251,8 +277,8 @@ public class MainController {
 
     private String handleTestProcessing(Test test, Prompt prompt, AITestGeneratorService ai) throws SQLException, FileNotFoundException {
         // Using early return
-        String technicalError = "Test se nepodařilo vygenerovat z technických důvodů. Zkuste to, prosím později.";
-        String fileError = "Test se nepodařilo zapsat do souboru z technických důvodů. Zkuste to, prosím později.";
+        String technicalError = "Test se nepodařilo vygenerovat z technických důvodů. Zkuste to, prosím, znovu.";
+        String fileError = "Test se nepodařilo zapsat do souboru z technických důvodů. Zkuste to, prosím, znovu.";
 
         int promptId = PromptManager.save(prompt);
         test.setId(promptId);
@@ -290,7 +316,6 @@ public class MainController {
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
-        System.out.println("[INFO] - Current user: " + user.getEmail());
     }
 
     private boolean validateInputs() {

@@ -1,9 +1,8 @@
 package app.controllers;
 
-import app.dao.TopicManager;
+import app.dao.UserManager;
 import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
-import app.models.Topic;
 import app.models.User;
 import app.services.LoaderService;
 import javafx.collections.FXCollections;
@@ -19,16 +18,18 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Comparator;
 
-public class TopicsOverviewController {
+public class UsersOverviewController {
     private User currentUser;
 
-    private ObservableList<String> topicsList = null;
+    private ObservableList<String> usersList = null;
 
     @FXML
-    private ListView<String> topics;
+    private ListView<String> users;
 
     @FXML
     private Button logoutButton;
@@ -43,16 +44,22 @@ public class TopicsOverviewController {
     private VBox content;
 
     @FXML
+    private Text heading;
+
+    @FXML
+    private Button createFirstUserButton;
+
+    @FXML
     private void initialize() {
         logoutButton.setOnMouseEntered(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-maroon.png"))));
         logoutButton.setOnMouseExited(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-white.png"))));
     }
 
-    public void initializeUserData() throws SQLException {
+    public void initializeUserData() {
         if (currentUser != null) {
-            topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
+            showUsersListView();
 
-            topics.setItems(topicsList);
+            users.setItems(usersList);
             initializeCustomCellFactory();
 
             if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
@@ -60,11 +67,11 @@ public class TopicsOverviewController {
                 Button addUserButton = new Button("Přidat uživatele");
                 Button userOverviewButton = new Button("Přehled uživatelů");
 
-                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), topics, currentUser));
-                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), topics, currentUser));
+                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), users, currentUser));
+                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), users, currentUser));
 
                 addUserButton.getStyleClass().add("menu-button");
-                userOverviewButton.getStyleClass().add("menu-button");
+                userOverviewButton.getStyleClass().add("menu-button-active");
 
                 horizontalMenu.getChildren().add(logoutIndex, addUserButton);
                 horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
@@ -75,12 +82,12 @@ public class TopicsOverviewController {
     }
 
     private void initializeCustomCellFactory() {
-        topics.setCellFactory(lv -> new ListCell<>() {
+        users.setCellFactory(lv -> new ListCell<>() {
             {
                 // Instance initializer for event handling for each ListCell
                 setOnMousePressed(event -> {
                     if (!isEmpty()) {
-                        topics.getSelectionModel().clearSelection();
+                        users.getSelectionModel().clearSelection();
                     }
                 });
             }
@@ -104,7 +111,7 @@ public class TopicsOverviewController {
                     editItem.getStyleClass().add("context-menu-item-top");
                     deleteItem.getStyleClass().add("context-menu-item-bottom");
 
-                    editItem.setOnAction(event -> LoaderService.load(ViewEnum.EDIT_TOPIC, getClass(), topics, currentUser, new Topic(item)));
+                    editItem.setOnAction(event -> LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), users, currentUser, UserManager.getUser(getUserEmail(item))));
                     deleteItem.setOnAction(event -> handleDelete(item));
 
                     contextMenu.getItems().addAll(editItem, deleteItem);
@@ -128,6 +135,43 @@ public class TopicsOverviewController {
         });
     }
 
+    private String getUserEmail(String userData) {
+        String[] parts = userData.split(" | ");
+
+        if (parts.length < 2) {
+            System.err.println("[ERROR] - Unable to extract test email from userData.");
+            return null;
+        }
+
+        return parts[0].trim();
+    }
+
+    private void showUsersListView() {
+        ArrayList<User> usersFromDB = UserManager.getUsers();
+
+        if (!usersFromDB.isEmpty()) {
+            ArrayList<String> usersArrayListString = new ArrayList<>();
+
+            // Sort tests by ID
+            usersFromDB.sort(Comparator.comparingInt(User::getId));
+
+            for (User user : usersFromDB) {
+                usersArrayListString.add(user.getEmail() + " | " + user.getRole().getName());
+            }
+
+            usersList = FXCollections.observableArrayList(usersArrayListString);
+
+            users.setItems(usersList);
+            users.setVisible(true);
+            createFirstUserButton.setVisible(false);
+            initializeCustomCellFactory();
+        } else {
+            heading.setText("V databázi nejsou žádní uživatelé.");
+            users.setVisible(false);
+            createFirstUserButton.setVisible(true);
+        }
+    }
+
     private MenuItem createMenuItem(String text) {
         Label label = new Label(text);
         CustomMenuItem customItem = new CustomMenuItem(label);
@@ -136,13 +180,15 @@ public class TopicsOverviewController {
         return customItem;
     }
 
-    private void handleDelete(String topicName) {
+    private void handleDelete(String userData) {
         try {
-            TopicManager.delete(new Topic(topicName));
-            topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
-            topics.setItems(topicsList);
-        } catch (SQLException e) {
-            System.out.println("[INFO] - Failed to delete topic " + topicName + " from database.");
+            if (UserManager.delete(new User(getUserEmail(userData)))) {
+                showUsersListView();
+            } else {
+                System.out.println("[INFO] - Failed to delete user " + userData + " from database.");
+            }
+        } catch (Exception e) {
+            System.out.println("[INFO] - Error while deleting user " + userData + " from database.");
             e.printStackTrace();
         }
     }
@@ -153,26 +199,31 @@ public class TopicsOverviewController {
 
     @FXML
     public void onGoToMain() {
-        LoaderService.load(ViewEnum.MAIN, getClass(), topics, currentUser);
+        LoaderService.load(ViewEnum.MAIN, getClass(), users, currentUser);
     }
 
     @FXML
     public void onGoToTopics() {
-        LoaderService.load(ViewEnum.ADD_TOPIC, getClass(), topics, currentUser);
+        LoaderService.load(ViewEnum.ADD_TOPIC, getClass(), users, currentUser);
     }
 
     @FXML
     public void onGoToEditProfile() {
-        LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), topics, currentUser);
+        LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), users, currentUser);
     }
 
     @FXML
     public void onGoToTestsOverview() {
-        LoaderService.load(ViewEnum.TESTS_OVERVIEW, getClass(), topics, currentUser);
+        LoaderService.load(ViewEnum.TESTS_OVERVIEW, getClass(), users, currentUser);
     }
 
     @FXML
     public void onLogout() {
-        LoaderService.load(ViewEnum.LOGIN, getClass(), topics, currentUser);
+        LoaderService.load(ViewEnum.LOGIN, getClass(), users, currentUser);
+    }
+
+    @FXML
+    public void onGoToTopicsOverview() {
+        LoaderService.load(ViewEnum.TOPICS_OVERVIEW, getClass(), users, currentUser);
     }
 }

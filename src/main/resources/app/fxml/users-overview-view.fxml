@@ -7,14 +7,15 @@
 
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.text.Text?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.TestsOverviewController">
+<StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.UsersOverviewController">
     <VBox fx:id="content" alignment="TOP_CENTER" prefHeight="950" prefWidth="900" styleClass="form-container">
         <!-- Horizontal Navigation -->
         <HBox fx:id="horizontalMenu" alignment="CENTER" spacing="10" styleClass="horizontal-menu">
             <Button onAction="#onGoToMain" styleClass="menu-button" text="Generovat test" />
-            <Button styleClass="menu-button-active" text="Přehled testů" />
+            <Button onAction="#onGoToTestsOverview" styleClass="menu-button" text="Přehled testů" />
             <Button onAction="#onGoToTopics" styleClass="menu-button" text="Přidat téma" />
             <Button onAction="#onGoToTopicsOverview" styleClass="menu-button" text="Přehled témat" />
             <Button onAction="#onGoToEditProfile" styleClass="menu-button" text="Můj účet" />
@@ -32,12 +33,17 @@
         <!-- Main content -->
         <VBox alignment="CENTER" prefHeight="723.0">
             <VBox alignment="CENTER" spacing="10" styleClass="form-container">
-                <Text fx:id="heading" styleClass="heading" text="Přehled testů z Vašich předmětů" />
+                <Text fx:id="heading" styleClass="heading" text="Přehled uživatelů">
+                    <VBox.margin>
+                        <Insets bottom="35"/>
+                    </VBox.margin>
+                </Text>
 
-                <Button fx:id="createFirstTestButton" onAction="#onGoToMain" styleClass="button" prefWidth="250" text="Vytvořit první test" visible="false" />
+                <Button fx:id="createFirstUserButton" onAction="#onGoToMain" styleClass="button" prefWidth="250" text="Vytvořit první test" visible="false" />
+
 
                 <HBox alignment="CENTER">
-                    <ListView fx:id="tests" prefWidth="500" prefHeight="300" style="-fx-cursor: context-menu;" styleClass="input-list-view" />
+                    <ListView fx:id="users" prefWidth="500" prefHeight="300" style="-fx-cursor: context-menu;" styleClass="input-list-view" />
                 </HBox>
             </VBox>
         </VBox>

@@ -104,7 +104,7 @@ public class TopicsOverviewController {
                     editItem.getStyleClass().add("context-menu-item-top");
                     deleteItem.getStyleClass().add("context-menu-item-bottom");
 
-                    editItem.setOnAction(event -> LoaderService.load(ViewEnum.EDIT_TOPIC, getClass(), topics, currentUser, new Topic(item)));
+                    editItem.setOnAction(event -> handleEdit(item));
                     deleteItem.setOnAction(event -> handleDelete(item));
 
                     contextMenu.getItems().addAll(editItem, deleteItem);
@@ -134,6 +134,10 @@ public class TopicsOverviewController {
         label.setStyle("-fx-text-fill: white; -fx-padding: 5;");
         customItem.setHideOnClick(false);
         return customItem;
+    }
+
+    private void handleEdit(String topicName) {
+        LoaderService.load(ViewEnum.EDIT_TOPIC, getClass(), topics, currentUser, new Topic(topicName));
     }
 
     private void handleDelete(String topicName) {

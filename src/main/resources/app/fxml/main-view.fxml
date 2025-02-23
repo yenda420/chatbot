@@ -15,9 +15,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.MainController">
-  <VBox alignment="TOP_CENTER" prefHeight="950" prefWidth="900" styleClass="form-container">
+  <VBox fx:id="content" alignment="TOP_CENTER" prefHeight="950" prefWidth="900" styleClass="form-container">
     <!-- Horizontal Navigation -->
-    <HBox alignment="CENTER" spacing="10" styleClass="horizontal-menu">
+    <HBox fx:id="horizontalMenu" alignment="CENTER" spacing="10" styleClass="horizontal-menu">
       <Button styleClass="menu-button-active" text="Generovat test" />
       <Button onAction="#onGoToTestsOverview" styleClass="menu-button" text="Přehled testů" />
       <Button onAction="#onGoToTopics" styleClass="menu-button" text="Přidat téma" />

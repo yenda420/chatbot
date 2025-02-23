@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.PasswordField?>
@@ -12,14 +13,14 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.EditProfileController">
-    <VBox alignment="TOP_CENTER" prefHeight="950" prefWidth="900" spacing="10" styleClass="form-container">
+    <VBox fx:id="content" alignment="TOP_CENTER" prefHeight="950" prefWidth="900" spacing="10" styleClass="form-container">
         <!-- Horizontal Navigation -->
-        <HBox alignment="CENTER" spacing="10" styleClass="horizontal-menu">
+        <HBox fx:id="horizontalMenu" alignment="CENTER" spacing="10" styleClass="horizontal-menu">
             <Button onAction="#onGoToMain" styleClass="menu-button" text="Generovat test" />
             <Button onAction="#onGoToTestsOverview" styleClass="menu-button" text="Přehled testů" />
             <Button onAction="#onGoToTopics" styleClass="menu-button" text="Přidat téma" />
             <Button onAction="#onGoToTopicsOverview" styleClass="menu-button" text="Přehled témat" />
-            <Button styleClass="menu-button-active" text="Můj účet" />
+            <Button fx:id="myAccountButton" styleClass="menu-button-active" text="Můj účet" />
 
             <!-- Logout Button -->
             <Button fx:id="logoutButton" onAction="#onLogout" styleClass="menu-button">
@@ -33,7 +34,7 @@
 
         <!-- Main content -->
         <VBox alignment="CENTER" prefHeight="900.0" prefWidth="550.0" spacing="10" styleClass="form-container">
-            <Text styleClass="heading" text="Váš účet" />
+            <Text fx:id="heading" styleClass="heading" text="Váš účet" />
 
             <HBox alignment="CENTER_RIGHT" maxWidth="350" styleClass="explanation-container">
                 <Text styleClass="explanation" text="* povinné pole" />
@@ -45,9 +46,11 @@
             <PasswordField fx:id="password" maxWidth="350" promptText="Heslo *" styleClass="input" />
             <PasswordField fx:id="confirmPassword" maxWidth="350" promptText="Heslo znovu *" styleClass="input" />
             <Text styleClass="explanation" text="Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak." textAlignment="CENTER" wrappingWidth="350" />
-            <Text styleClass="label" text="Vyberte vyučované předměty * (Ctrl + Klik)" />
+            <Text fx:id="selectSubjectsHeading" styleClass="label" text="Vyberte vyučované předměty * (Ctrl + Klik)" />
 
-            <ListView fx:id="subjects" maxWidth="350" styleClass="input-list-view" />
+            <ListView fx:id="subjects" maxWidth="350" maxHeight="120" styleClass="input-list-view" />
+
+            <ComboBox fx:id="role" maxWidth="350" promptText="Vyberte roli *" onAction="#onChooseRole" styleClass="combobox" />
 
             <Button fx:id="saveButton" maxWidth="350" onAction="#onSave" styleClass="submit" text="Uložit údaje" />
         </VBox>

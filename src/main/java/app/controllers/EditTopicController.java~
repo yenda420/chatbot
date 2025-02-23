@@ -2,18 +2,14 @@ package app.controllers;
 
 import app.dao.SubjectManager;
 import app.dao.TopicManager;
-
 import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
-
 import app.models.Subject;
 import app.models.Topic;
 import app.models.User;
-
+import app.services.AlertService;
 import app.services.DatabaseService;
 import app.services.LoaderService;
-import app.services.AlertService;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -28,11 +24,13 @@ import javafx.scene.layout.VBox;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class AddTopicController {
+public class EditTopicController {
     private User currentUser;
 
+    private Topic topicToEdit;
+
     @FXML
-    private Button addTopicButton;
+    private Button updateTopicButton;
 
     @FXML
     private ComboBox<String> subject;
@@ -54,14 +52,14 @@ public class AddTopicController {
 
     @FXML
     private void initialize() {
-        addTopicButton.setDefaultButton(true);
+        updateTopicButton.setDefaultButton(true);
         topicName.requestFocus();
 
         logoutButton.setOnMouseEntered(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-maroon.png"))));
         logoutButton.setOnMouseExited(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-white.png"))));
     }
 
-    public void initializeUserData() throws SQLException {
+    public void initializeData() throws SQLException {
         if (currentUser != null) {
             ArrayList<String> subjects = SubjectManager.getSubjects(currentUser);
             ObservableList<String> subjectsObservable = FXCollections.observableArrayList(subjects);
@@ -87,26 +85,33 @@ public class AddTopicController {
         } else {
             System.err.println("[ERROR] - User is not set.");
         }
+
+        if (topicToEdit != null) {
+            topicName.setText(topicToEdit.getName());
+            subject.getSelectionModel().select(SubjectManager.getSubject(topicToEdit).getName());
+        } else {
+            System.err.println("[ERROR] - Topic to edit is not set.");
+        }
     }
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
     }
 
-    @FXML
-    public void onAddTopic() throws SQLException {
-        if (validateInputs()) {
-            try {
-                String abbreviation = SubjectManager.getAbbreviation(subject.getValue());
-                Topic topic = new Topic(topicName.getText(), new Subject(subject.getValue(), abbreviation));
+    public void setTopicToEdit(Topic topicToEdit) {
+        this.topicToEdit = topicToEdit;
+        System.out.println("[INFO] - Topic to edit: " + topicToEdit.getName());
+    }
 
-                if (TopicManager.save(topic)) {
-                    AlertService.showSuccessAlert("Tématický celek byl uloňen.");
-                    LoaderService.load(ViewEnum.ADD_TOPIC, getClass(), topicName, currentUser);
-                }
-            } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to save topic.");
-                e.printStackTrace();
+    @FXML
+    public void onUpdateTopic() throws SQLException {
+        if (validateInputs()) {
+            String abbreviation = SubjectManager.getAbbreviation(subject.getValue());
+            Topic topic = new Topic(topicName.getText(), new Subject(subject.getValue(), abbreviation));
+
+            if (TopicManager.update(topicToEdit, topic)) {
+                AlertService.showSuccessAlert("Tématický celek byl upraven.");
+                LoaderService.load(ViewEnum.TOPICS_OVERVIEW, getClass(), topicName, currentUser);
             }
         }
     }
@@ -117,11 +122,6 @@ public class AddTopicController {
     }
 
     @FXML
-    public void onGoToTestsOverview() {
-        LoaderService.load(ViewEnum.TESTS_OVERVIEW, getClass(), topicName, currentUser);
-    }
-
-    @FXML
     public void onGoToEditProfile() {
         LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), topicName, currentUser);
     }
@@ -129,6 +129,16 @@ public class AddTopicController {
     @FXML
     public void onGoToTopicsOverview() {
         LoaderService.load(ViewEnum.TOPICS_OVERVIEW, getClass(), topicName, currentUser);
+    }
+
+    @FXML
+    public void onGoToTopics() {
+        LoaderService.load(ViewEnum.ADD_TOPIC, getClass(), topicName, currentUser);
+    }
+
+    @FXML
+    public void onGoToTestsOverview() {
+        LoaderService.load(ViewEnum.TESTS_OVERVIEW, getClass(), topicName, currentUser);
     }
 
     @FXML
@@ -154,9 +164,10 @@ public class AddTopicController {
             return false;
         }
 
-        if (DatabaseService.instanceInDatabase("topics", "name", topicName.getText())) {
-            AlertService.showErrorAlert(topicName, "Tématický celek s názvem '" + topicName.getText() + "' již existuje.");
-            return false;
+        if (!topicToEdit.getName().equals(topicName.getText())) {
+            if (DatabaseService.instanceInDatabase("topics", "name", topicName.getText())) {
+                AlertService.showErrorAlert(topicName, "Tématický celek s tímto názvem již existuje.");
+            }
         }
 
         return true;

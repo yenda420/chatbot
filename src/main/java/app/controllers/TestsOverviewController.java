@@ -1,10 +1,8 @@
 package app.controllers;
 
-import app.dao.AnswerManager;
-import app.dao.SubjectManager;
-import app.dao.QuestionManager;
-import app.dao.TestManager;
+import app.dao.*;
 import app.enums.QuestionTypeEnum;
+import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 import app.models.*;
 import app.services.AlertService;
@@ -21,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
@@ -48,6 +47,12 @@ public class TestsOverviewController {
     @FXML
     private Button createFirstTestButton;
 
+    @FXML
+    private HBox horizontalMenu;
+
+    @FXML
+    private VBox content;
+
 
     @FXML
     private void initialize() {
@@ -57,29 +62,50 @@ public class TestsOverviewController {
 
     public void initializeUserData() throws SQLException {
         if (currentUser != null) {
-            ArrayList<Test> testsFromDB = TestManager.getTests(currentUser);
+            showTestsListView();
 
-            if (testsFromDB != null && !testsFromDB.isEmpty()) {
-                ArrayList<String> testsArrayListString = new ArrayList<>();
+            if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
+                int logoutIndex = horizontalMenu.getChildren().indexOf(logoutButton);
+                Button addUserButton = new Button("Přidat uživatele");
+                Button userOverviewButton = new Button("Přehled uživatelů");
 
-                // Sort tests by ID
-                testsFromDB.sort(Comparator.comparingInt(Test::getId));
+                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), tests, currentUser));
+                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), tests, currentUser));
 
-                for (Test test : testsFromDB) {
-                    testsArrayListString.add(test.getName() + " ID: " + test.getId());
-                }
+                addUserButton.getStyleClass().add("menu-button");
+                userOverviewButton.getStyleClass().add("menu-button");
 
-                testsList = FXCollections.observableArrayList(testsArrayListString);
+                horizontalMenu.getChildren().add(logoutIndex, addUserButton);
+                horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
 
-                tests.setItems(testsList);
-                tests.setVisible(true);
-                createFirstTestButton.setVisible(false);
-                initializeCustomCellFactory();
-            } else {
-                heading.setText("V databázi nejsou žádné testy z Vašich předmětů.");
-                tests.setVisible(false);
-                createFirstTestButton.setVisible(true);
+                content.setPrefWidth(content.getPrefWidth() + 400);
             }
+        }
+    }
+
+    private void showTestsListView() throws SQLException {
+        ArrayList<Test> testsFromDB = TestManager.getTests(currentUser);
+
+        if (testsFromDB != null && !testsFromDB.isEmpty()) {
+            ArrayList<String> testsArrayListString = new ArrayList<>();
+
+            // Sort tests by ID
+            testsFromDB.sort(Comparator.comparingInt(Test::getId));
+
+            for (Test test : testsFromDB) {
+                testsArrayListString.add(test.getName() + " | ID: " + test.getId());
+            }
+
+            testsList = FXCollections.observableArrayList(testsArrayListString);
+
+            tests.setItems(testsList);
+            tests.setVisible(true);
+            createFirstTestButton.setVisible(false);
+            initializeCustomCellFactory();
+        } else {
+            heading.setText("V databázi nejsou žádné testy z Vašich předmětů.");
+            tests.setVisible(false);
+            createFirstTestButton.setVisible(true);
         }
     }
 
@@ -96,7 +122,7 @@ public class TestsOverviewController {
 
             @Override
             protected void updateItem(String item, boolean empty) {
-                // Called whenever a cell needs updating, such as scrolling or data changes
+                // Called whenever a cell needs updating
                 super.updateItem(item, empty);
 
                 // If the cell should display no content, set its graphic to null
@@ -109,10 +135,20 @@ public class TestsOverviewController {
                     ContextMenu contextMenu = new ContextMenu();
                     MenuItem downloadButton = createMenuItem("Stáhnout");
 
-                    downloadButton.getStyleClass().add("context-menu-item");
                     downloadButton.setOnAction(event -> handleDownload(item));
-
                     contextMenu.getItems().addAll(downloadButton);
+
+                    if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
+                        MenuItem deleteButton = createMenuItem("Smazat");
+
+                        downloadButton.getStyleClass().add("context-menu-item-top");
+                        deleteButton.getStyleClass().add("context-menu-item-bottom");
+                        deleteButton.setOnAction(event -> handleDelete(item));
+
+                        contextMenu.getItems().add(deleteButton);
+                    } else {
+                        downloadButton.getStyleClass().add("context-menu-item");
+                    }
 
                     threeDotsButton.setOnAction(event -> contextMenu.show(threeDotsButton, Side.RIGHT, 0, 0));
 
@@ -141,16 +177,36 @@ public class TestsOverviewController {
         return customItem;
     }
 
+    private int getTestId(String item) {
+        try {
+            return Integer.parseInt(item.substring(item.indexOf("ID: ") + 4).trim());
+        } catch (NumberFormatException e) {
+            System.err.println("[ERROR] - Invalid test ID format: " + item.substring(item.indexOf("ID: ")));
+            return -1;
+        }
+    }
+
+    private void handleDelete(String item) {
+        try {
+            if (TestManager.deleteTestData(getTestId(item))) {
+                showTestsListView();
+            } else {
+                System.err.println("[ERROR] - Failed to delete test " + item + " from database.");
+            }
+        } catch (Exception e) {
+            System.err.println("[ERROR] - Error while deleting test: " + item + " from database.");
+        }
+    }
+
     private void handleDownload(String item) {
         try {
-            String[] parts = item.split("ID: ");
+            int testId = getTestId(item);
 
-            if (parts.length < 2) {
+            if (testId < 0) {
                 System.err.println("[ERROR] - Unable to extract test ID from item.");
                 return;
             }
 
-            int testId = Integer.parseInt(parts[1].trim());
             Test testForDownload = TestManager.getTestById(testId);
 
             if (testForDownload != null) {
@@ -247,7 +303,6 @@ public class TestsOverviewController {
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
-        System.out.println("[INFO] - Current user: " + user.getEmail());
     }
 
     @FXML

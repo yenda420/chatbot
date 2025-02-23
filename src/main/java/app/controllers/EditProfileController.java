@@ -3,6 +3,7 @@ package app.controllers;
 import app.dao.SubjectManager;
 
 import app.dao.UserManager;
+import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 
 import app.models.User;
@@ -18,6 +19,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
@@ -27,6 +31,16 @@ public class EditProfileController {
     private final ObservableList<String> subjectList =
             FXCollections.observableArrayList(SubjectManager.getSubjects());
     private User currentUser;
+
+    private User userToEdit;
+
+    private boolean editingCurrentUser;
+
+    @FXML
+    private Text selectSubjectsHeading;
+
+    @FXML
+    private Text heading;
 
     @FXML
     private PasswordField confirmPassword;
@@ -55,22 +69,66 @@ public class EditProfileController {
     @FXML
     private ImageView logoutIcon;
 
-    private void updateFields() throws SQLException {
-        if (currentUser != null) {
-            ArrayList<String> usersSubjects = SubjectManager.getSubjects(currentUser);
+    @FXML
+    private HBox horizontalMenu;
 
-            firstName.setText(currentUser.getFirstName() != null ? currentUser.getFirstName() : "");
-            lastName.setText(currentUser.getLastName() != null ? currentUser.getLastName() : "");
-            email.setText(currentUser.getEmail() != null ? currentUser.getEmail() : "");
+    @FXML
+    private VBox content;
+
+    @FXML
+    private Button myAccountButton;
+
+    @FXML
+    private ComboBox<String> role;
+
+    private void setEditingCurrentUser() {
+        if (userToEdit != null && currentUser != null) {
+            if (userToEdit.getEmail().equals(currentUser.getEmail())) {
+                editingCurrentUser = true;
+                return;
+            }
+        }
+        editingCurrentUser = false;
+    }
+
+    private void updateFields(User forUser, boolean isDifferentUser) throws SQLException {
+        ArrayList<String> usersSubjects = SubjectManager.getSubjects(forUser);
+
+        firstName.setText(forUser.getFirstName() != null ? forUser.getFirstName() : "");
+        lastName.setText(forUser.getLastName() != null ? forUser.getLastName() : "");
+        email.setText(forUser.getEmail() != null ? forUser.getEmail() : "");
+        role.getSelectionModel().select(forUser.getRole().getName());
+
+        if (currentUser.getRole().equals(UserRoleEnum.TEACHER)) {
+            role.setVisible(false);
+            role.setStyle("-fx-pref-height: 0; -fx-pref-width: 0;");
+        } else {
+            selectSubjectsHeading.setVisible(false);
+            subjects.setVisible(false);
+
+            selectSubjectsHeading.setStyle("-fx-pref-height: 0; -fx-pref-width: 0;");
+            subjects.setStyle("-fx-pref-height: 0; -fx-pref-width: 0;");
+        }
+
+        if (role.getValue() != null && role.getValue().equals(UserRoleEnum.TEACHER.getName())) {
+            selectSubjectsHeading.setVisible(true);
+            subjects.setVisible(true);
+
+            selectSubjectsHeading.setStyle("-fx-pref-height: auto; -fx-pref-width: auto;");
+            subjects.setStyle("-fx-max-height: 120; -fx-max-width: 350;");
 
             for (String subject : usersSubjects) {
                 subjects.getSelectionModel().select(subject);
             }
-        } else {
-            System.err.println("[ERROR] - Current user is not null.");
+        }
+
+        if (isDifferentUser && !editingCurrentUser) {
+            myAccountButton.getStyleClass().remove("menu-button-active");
+            myAccountButton.getStyleClass().add("menu-button");
+            myAccountButton.setOnAction(event -> LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), firstName, currentUser));
+            heading.setText("Změna údajů uživatele");
         }
     }
-
 
     @FXML
     private void initialize() {
@@ -79,26 +137,82 @@ public class EditProfileController {
 
         subjects.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         subjects.setItems(subjectList);
+        role.setItems(FXCollections.observableArrayList(UserManager.getUserRoles()));
 
         logoutButton.setOnMouseEntered(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-maroon.png"))));
         logoutButton.setOnMouseExited(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-white.png"))));
     }
 
     public void initializeUserData() throws SQLException {
+        setEditingCurrentUser();
+
+        if (editingCurrentUser) {
+            myAccountButton.getStyleClass().remove("menu-button");
+            myAccountButton.getStyleClass().add("menu-button-active");
+            heading.setText("Váš účet");
+        }
+
         if (currentUser != null) {
             ArrayList<String> allSubjects = SubjectManager.getSubjects();
             ObservableList<String> subjectsObservable = FXCollections.observableArrayList(allSubjects);
 
             subjects.setItems(subjectsObservable);
-            updateFields();
+
+            if (userToEdit != null) {
+                updateFields(userToEdit, true);
+            } else {
+                updateFields(currentUser, false);
+            }
+
+            if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
+                int logoutIndex = horizontalMenu.getChildren().indexOf(logoutButton);
+                Button addUserButton = new Button("Přidat uživatele");
+                Button userOverviewButton = new Button("Přehled uživatelů");
+
+                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), firstName, currentUser));
+                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), firstName, currentUser));
+
+                addUserButton.getStyleClass().add("menu-button");
+                userOverviewButton.getStyleClass().add("menu-button");
+
+                horizontalMenu.getChildren().add(logoutIndex, addUserButton);
+                horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
+
+                content.setPrefWidth(content.getPrefWidth() + 400);
+            }
         } else {
             System.err.println("[ERROR] - User is not set.");
         }
     }
 
+    @FXML
+    public void onChooseRole() {
+        if (!role.getValue().isEmpty() && !role.getValue().isBlank() && role.getValue() != null) {
+            if (role.getValue().equalsIgnoreCase(UserRoleEnum.TEACHER.getName())) {
+                subjects.setItems(subjectList);
+
+                selectSubjectsHeading.setVisible(true);
+                subjects.setVisible(true);
+
+                selectSubjectsHeading.setStyle("-fx-pref-height: auto; -fx-pref-width: auto;");
+                subjects.setStyle("-fx-pref-height: 120; -fx-pref-width: 350;");
+            } else {
+                selectSubjectsHeading.setVisible(false);
+                subjects.setVisible(false);
+
+                selectSubjectsHeading.setStyle("-fx-pref-height: 0; -fx-pref-width: 0;");
+                subjects.setStyle("-fx-pref-height: 0; -fx-pref-width: 0;");
+            }
+        }
+    }
+
     public void setCurrentUser(User user) {
         this.currentUser = user;
-        System.out.println("[INFO] - Current user: " + user.getEmail());
+    }
+
+    public void setUserToEdit(User user) {
+        this.userToEdit = user;
+        System.out.println("Setting user: " + user);
     }
 
     @FXML
@@ -128,25 +242,42 @@ public class EditProfileController {
 
     @FXML
     public void onSave() throws SQLException {
-        if (validateInputs()) {
-            String oldEmail = currentUser.getEmail();
+        User user = userToEdit != null ? userToEdit : currentUser;
 
-            currentUser.setFirstName(firstName.getText());
-            currentUser.setLastName(lastName.getText());
-            currentUser.setEmail(email.getText());
+        if (validateInputs()) {
+            String oldEmail = user.getEmail();
+            boolean emailChanged = !user.getEmail().equals(email.getText());
+
+            user.setFirstName(firstName.getText());
+            user.setLastName(lastName.getText());
+            user.setEmail(email.getText());
+            user.setRole(UserRoleEnum.fromString(role.getValue()));
 
             if (!password.getText().isBlank() && !password.getText().isEmpty()) {
                 String passwordHash = Hashing.sha256()
                         .hashString(password.getText(), StandardCharsets.UTF_8)
                         .toString();
 
-                currentUser.setPasswordHash(passwordHash);
+                user.setPasswordHash(passwordHash);
             }
 
-            if (UserManager.update(currentUser, oldEmail) &&
-                currentUser.relate(subjects.getSelectionModel().getSelectedItems()) &&
-                currentUser.unrelate(getUnselectedItems())) {
+            if (UserManager.update(user, oldEmail, emailChanged) &&
+                    user.relate(subjects.getSelectionModel().getSelectedItems()) &&
+                    user.unrelate(getUnselectedItems())) {
                 AlertService.showSuccessAlert("Profil byl aktualizovan.");
+
+                ViewEnum viewEnum = userToEdit != null ? ViewEnum.USERS_OVERVIEW : ViewEnum.EDIT_PROFILE;
+
+                if (editingCurrentUser) {
+                    boolean wasAdmin = currentUser.getRole().equals(UserRoleEnum.ADMIN);
+                    boolean isTeacher = UserRoleEnum.fromString(role.getValue()).equals(UserRoleEnum.TEACHER);
+
+                    if (wasAdmin && isTeacher) {
+                        viewEnum = ViewEnum.LOGIN;
+                    }
+                }
+
+                LoaderService.load(viewEnum, getClass(), firstName, currentUser);
             }
         }
     }
@@ -163,8 +294,10 @@ public class EditProfileController {
 
 
     private boolean validateInputs() throws SQLException {
+        User user = userToEdit != null ? userToEdit : currentUser;
+
         // Using early return
-        if (!currentUser.getEmail().equals(email.getText())) {
+        if (!user.getEmail().equals(email.getText())) {
             if (!emailIsValid(email.getText())) {
                 AlertService.showErrorAlert(email, "Zadejte, prosím, platnou emailovou adresu.");
                 return false;
@@ -188,9 +321,11 @@ public class EditProfileController {
             return false;
         }
 
-        if (subjects.getSelectionModel().getSelectedItems().isEmpty()) {
-            AlertService.showErrorAlert("Vyberte, prosím, alespoň jeden předmět.");
-            return false;
+        if (role.getValue().equals(UserRoleEnum.TEACHER.getName())) {
+            if (subjects.getSelectionModel().getSelectedItems().isEmpty()) {
+                AlertService.showErrorAlert("Vyberte, prosím, alespoň jeden předmět.");
+                return false;
+            }
         }
 
         return true;

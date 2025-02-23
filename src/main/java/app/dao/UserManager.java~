@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
+import java.util.ArrayList;
 
 import static app.services.DatabaseService.instanceInDatabase;
 
@@ -47,6 +48,26 @@ public class UserManager {
             } else {
                 System.out.println("[INFO] - User " + user.getFirstName() + " " + user.getLastName() + " already exists in database.");
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public static boolean delete(User user) {
+        if (db.getConn() != null) {
+            String sql = "DELETE FROM users WHERE email = ?";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                pstmt.setString(1, user.getEmail());
+
+                pstmt.executeUpdate();
+
+                System.out.println("[INFO] - User " + user.getEmail() + " deleted from database.");
+                return true;
+            } catch (SQLException e) {
+                System.err.println("[ERROR] - Failed to delete user " + user.getEmail() + " from database.");
+                e.printStackTrace();
+                return false;
             }
         }
         return false;
@@ -179,20 +200,58 @@ public class UserManager {
         return null;
     }
 
-    public static boolean update(User user, String oldEmail) {
+    public static ArrayList<User> getUsers() {
+        ArrayList<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM users";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    users.add(new User(
+                            rs.getString("firstName"),
+                            rs.getString("lastName"),
+                            rs.getString("email"),
+                            rs.getString("passwordHash"),
+                            UserRoleEnum.fromString(rs.getString("role"))
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - Failed to get the users.");
+            e.printStackTrace();
+        }
+
+        return users;
+    }
+
+    public static boolean update(User user, String oldEmail, boolean emailChanged) {
         if (db.getConn() != null) {
-            String sql = "UPDATE users SET " +
+            String sql;
+
+            if (emailChanged) {
+                sql = "UPDATE users SET " +
                         "firstName = ?, lastName = ?, " +
-                        "email = ?, passwordHash = ?, " +
-                        "role = ? WHERE email = ?";
+                        "passwordHash = ?, role = ?, " +
+                        "email = ? WHERE email = ?";
+            } else {
+                sql = "UPDATE users SET " +
+                        "firstName = ?, lastName = ?, " +
+                        "passwordHash = ?, role = ? " +
+                        "WHERE email = ?";
+            }
 
             try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
                 pstmt.setString(1, user.getFirstName());
                 pstmt.setString(2, user.getLastName());
-                pstmt.setString(3, user.getEmail());
-                pstmt.setString(4, user.getPasswordHash());
-                pstmt.setString(5, user.getRole().getName());
-                pstmt.setString(6, oldEmail);
+                pstmt.setString(3, user.getPasswordHash());
+                pstmt.setString(4, user.getRole().getName());
+
+                if (emailChanged) {
+                    pstmt.setString(5, user.getEmail());
+                    pstmt.setString(6, oldEmail);
+                } else {
+                    pstmt.setString(5, oldEmail);
+                }
 
                 pstmt.executeUpdate();
 
@@ -205,6 +264,39 @@ public class UserManager {
             }
         }
         return false;
+    }
+
+    public static ArrayList<String> getUserRoles() {
+        ArrayList<String> roles = new ArrayList<>();
+        String sql = "SELECT COLUMN_TYPE " +
+                "FROM INFORMATION_SCHEMA.COLUMNS " +
+                "WHERE TABLE_NAME = ? " +
+                "AND COLUMN_NAME = ?";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setString(1, "users");
+            pstmt.setString(2, "role");
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    String columnType = rs.getString("COLUMN_TYPE");
+                    // Extract the enum values from the COLUMN_TYPE string
+                    String enumValues = columnType.substring(columnType.indexOf("(") + 1, columnType.lastIndexOf(")"));
+                    String[] values = enumValues.split(",");
+
+                    for (String value : values) {
+                        // Remove single quotes and trim whitespace
+                        value = value.trim().replace("'", "");
+                        roles.add(value);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("[ERROR] - Failed to get question roles");
+            e.printStackTrace();
+        }
+
+        return roles;
     }
 
     public static void saveDefaultUsers() {
@@ -227,9 +319,8 @@ public class UserManager {
         User admin = new User(adminEmail, adminPasswordHash, UserRoleEnum.ADMIN);
 
         try {
-            System.out.println(SubjectManager.getSubjects(admin));
-            System.out.println(TopicManager.getTopics(admin));
             UserManager.save(user);
+            UserManager.save(admin);
 
             // Test subjects
             ObservableList<String> subjects = FXCollections.observableArrayList("Programování", "Anglický jazyk");

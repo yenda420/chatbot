@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.geometry.Insets?>
+<StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.AddUserController" styleClass="background">
+    <VBox fx:id="content" alignment="TOP_CENTER" prefHeight="950" prefWidth="900" styleClass="form-container">
+        <!-- Horizontal Navigation -->
+        <HBox fx:id="horizontalMenu" alignment="CENTER" spacing="10" styleClass="horizontal-menu">
+            <Button onAction="#onGoToMain" styleClass="menu-button" text="Generovat test" />
+            <Button onAction="#onGoToTestsOverview" styleClass="menu-button" text="Přehled testů" />
+            <Button onAction="#onGoToTopics" styleClass="menu-button" text="Přidat téma" />
+            <Button onAction="#onGoToTopicsOverview" styleClass="menu-button" text="Přehled témat" />
+            <Button onAction="#onGoToEditProfile" styleClass="menu-button" text="Můj účet" />
+
+            <!-- Logout Button -->
+            <Button fx:id="logoutButton" onAction="#onLogout" styleClass="menu-button">
+                <graphic>
+                    <ImageView fx:id="logoutIcon" fitHeight="24" fitWidth="24" pickOnBounds="true" preserveRatio="true">
+                        <Image url="@../../images/logout-white.png" />
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <Text text="Přidejte uživatele" styleClass="heading">
+            <VBox.margin>
+                <Insets top="25.0" bottom="20" />
+            </VBox.margin>
+        </Text>
+
+        <HBox alignment="CENTER_RIGHT" maxWidth="350" styleClass="explanation-container">
+            <Text text="* povinné pole" styleClass="explanation" />
+        </HBox>
+
+        <!-- Main content -->
+        <VBox spacing="10" styleClass="form-container">
+            <TextField fx:id="firstName" promptText="Jméno" styleClass="input" maxWidth="350"/>
+            <TextField fx:id="lastName" promptText="Příjmení" styleClass="input" maxWidth="350"/>
+            <TextField fx:id="email" promptText="Email *" styleClass="input" maxWidth="350"/>
+            <PasswordField fx:id="password" promptText="Heslo *" styleClass="input" maxWidth="350"/>
+            <PasswordField fx:id="confirmPassword" promptText="Heslo znovu *" styleClass="input" maxWidth="350"/>
+            <Text text="Heslo musí obsahovat alespoň 8 znáků, číslo, velké i malé písmeno a speciální znak."
+                  styleClass="explanation" wrappingWidth="350" textAlignment="CENTER" />
+
+            <ComboBox fx:id="role" maxWidth="350" promptText="Vyberte roli *" onAction="#onChooseRole" styleClass="combobox" />
+
+            <Text fx:id="selectSubjectsHeading" text="Vyberte roli než vyberete vyučované předměty" styleClass="label"/>
+            <ListView fx:id="subjects" maxWidth="350" maxHeight="120" styleClass="input-list-view"/>
+
+            <CheckBox fx:id="confirmationCheckbox" text="Tento uživatel četl Manuál aplikace *" styleClass="checkbox" maxWidth="350"/>
+
+            <Button fx:id="saveUserButton" text="Uložit uživatele" onAction="#onSaveUser" styleClass="submit" maxWidth="350"/>
+        </VBox>
+    </VBox>
+</StackPane>

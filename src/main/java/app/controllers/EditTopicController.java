@@ -2,11 +2,13 @@ package app.controllers;
 
 import app.dao.SubjectManager;
 import app.dao.TopicManager;
+import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 import app.models.Subject;
 import app.models.Topic;
 import app.models.User;
 import app.services.AlertService;
+import app.services.DatabaseService;
 import app.services.LoaderService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +18,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -41,6 +45,12 @@ public class EditTopicController {
     private ImageView logoutIcon;
 
     @FXML
+    private HBox horizontalMenu;
+
+    @FXML
+    private VBox content;
+
+    @FXML
     private void initialize() {
         updateTopicButton.setDefaultButton(true);
         topicName.requestFocus();
@@ -55,6 +65,23 @@ public class EditTopicController {
             ObservableList<String> subjectsObservable = FXCollections.observableArrayList(subjects);
 
             subject.setItems(subjectsObservable);
+
+            if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
+                int logoutIndex = horizontalMenu.getChildren().indexOf(logoutButton);
+                Button addUserButton = new Button("Přidat uživatele");
+                Button userOverviewButton = new Button("Přehled uživatelů");
+
+                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), topicName, currentUser));
+                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), topicName, currentUser));
+
+                addUserButton.getStyleClass().add("menu-button");
+                userOverviewButton.getStyleClass().add("menu-button");
+
+                horizontalMenu.getChildren().add(logoutIndex, addUserButton);
+                horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
+
+                content.setPrefWidth(content.getPrefWidth() + 400);
+            }
         } else {
             System.err.println("[ERROR] - User is not set.");
         }
@@ -69,7 +96,6 @@ public class EditTopicController {
 
     public void setCurrentUser(User user) {
         this.currentUser = user;
-        System.out.println("[INFO] - Current user: " + user.getEmail());
     }
 
     public void setTopicToEdit(Topic topicToEdit) {
@@ -78,7 +104,7 @@ public class EditTopicController {
     }
 
     @FXML
-    public void onUpdateTopic() {
+    public void onUpdateTopic() throws SQLException {
         if (validateInputs()) {
             String abbreviation = SubjectManager.getAbbreviation(subject.getValue());
             Topic topic = new Topic(topicName.getText(), new Subject(subject.getValue(), abbreviation));
@@ -120,7 +146,7 @@ public class EditTopicController {
         LoaderService.load(ViewEnum.LOGIN, getClass(), topicName, currentUser);
     }
 
-    private boolean validateInputs() {
+    private boolean validateInputs() throws SQLException {
         String text = topicName.getText();
 
         if (text.isEmpty() || text.isBlank()) {
@@ -137,6 +163,14 @@ public class EditTopicController {
             AlertService.showErrorAlert("Vyberte, prosím, obtížnost testu.");
             return false;
         }
+
+        if (!topicToEdit.getName().equals(topicName.getText())) {
+            if (DatabaseService.instanceInDatabase("topics", "name", topicName.getText())) {
+                AlertService.showErrorAlert(topicName, "Tématický celek s tímto názvem již existuje.");
+                return false;
+            }
+        }
+
         return true;
     }
 

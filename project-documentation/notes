@@ -25,16 +25,19 @@
     User může prohlížet a zpětně stahovat:
        - Testy z předmětů, které učí
 
-** Momentálně rozpracováno **
 -- CRUD operace a prohlížení pro admina
     Admin může prohlížet, přidávat, upravovat a mazat:
         - Jakékoliv témata, předměty, uživatele a testy
     Admin může prohlížet, zpětně stahovat a mazat:
         - Jakékoliv testy
 
--- Testování přípony souborů a jejich velikosti
+** Momentálně rozpracováno **
+-- Možnost soukromých tématických celků
+-- Manuál aplikace
+-- Dokumentace aplikace
 
 ** Na později **
+-- Testování přípony souborů a jejich velikosti
 -- Odkaz na Manuál aplikace
 -- Lepší vzhled alertů
 -- Rozpoznání, že uživatel není připojen k Wi-Fi

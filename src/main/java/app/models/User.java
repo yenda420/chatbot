@@ -27,6 +27,10 @@ public class User {
         this.role = role;
     }
 
+    public User(String email) {
+        this.email = email;
+    }
+
     public String getFirstName() {
         return firstName;
     }
@@ -61,6 +65,10 @@ public class User {
 
     public void setPasswordHash(String passwordHash) {
         this.passwordHash = passwordHash;
+    }
+
+    public void setRole(UserRoleEnum role) {
+        this.role = role;
     }
 
     public int getId() {
