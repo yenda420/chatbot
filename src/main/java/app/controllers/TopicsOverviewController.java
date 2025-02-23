@@ -104,7 +104,7 @@ public class TopicsOverviewController {
                     editItem.getStyleClass().add("context-menu-item-top");
                     deleteItem.getStyleClass().add("context-menu-item-bottom");
 
-                    editItem.setOnAction(event -> LoaderService.load(ViewEnum.EDIT_TOPIC, getClass(), topics, currentUser, new Topic(item)));
+                    editItem.setOnAction(event -> LoaderService.load(ViewEnum.EDIT_TOPIC, getClass(), topics, currentUser, TopicManager.getTopic(item)));
                     deleteItem.setOnAction(event -> handleDelete(item));
 
                     contextMenu.getItems().addAll(editItem, deleteItem);
@@ -138,9 +138,10 @@ public class TopicsOverviewController {
 
     private void handleDelete(String topicName) {
         try {
-            TopicManager.delete(new Topic(topicName));
-            topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
-            topics.setItems(topicsList);
+            if (TopicManager.delete(new Topic(topicName))) {
+                topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
+                topics.setItems(topicsList);
+            }
         } catch (SQLException e) {
             System.out.println("[INFO] - Failed to delete topic " + topicName + " from database.");
             e.printStackTrace();

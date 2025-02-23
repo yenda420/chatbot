@@ -39,7 +39,7 @@
     -fx-font-size: 14px;
     -fx-cursor: hand;
     -fx-padding: 5;
-    -fx-alignment: CENTER;
+    -fx-alignment: center;
 }
 
 .checkbox-left {
@@ -139,7 +139,7 @@
 .horizontal-menu {
     -fx-padding: 10;
     -fx-background-color: black;
-    -fx-alignment: CENTER;
+    -fx-alignment: center;
 }
 
 .menu-button {

@@ -173,6 +173,33 @@ public class UserManager {
         return null;
     }
 
+    public static User getUser(int userId) {
+        if (db.getConn() != null) {
+            String sql = "SELECT * FROM users WHERE userId = ?";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                pstmt.setInt(1, userId);
+
+                ResultSet rs = pstmt.executeQuery();
+
+                if (rs.next()) {
+                    return new User(
+                            rs.getString("firstName"),
+                            rs.getString("lastName"),
+                            rs.getString("email"),
+                            rs.getString("passwordHash"),
+                            UserRoleEnum.fromString(rs.getString("role"))
+                    );
+                }
+            } catch (SQLException e) {
+                System.err.println("[ERROR] - Failed to get the user.");
+                e.printStackTrace();
+            }
+        }
+
+        return null;
+    }
+
     public static User getUser(String email) {
         if (db.getConn() != null) {
             String sql = "SELECT * FROM users WHERE email = ?";
@@ -253,8 +280,14 @@ public class UserManager {
                     pstmt.setString(5, oldEmail);
                 }
 
-                pstmt.executeUpdate();
-                return true;
+                int rowsUpdated = pstmt.executeUpdate();
+                if (rowsUpdated > 0) {
+                    System.out.println("[INFO] - User " + oldEmail + " updated in database.");
+                    return true;
+                } else {
+                    System.out.println("[INFO] - User " + oldEmail + " not found in database.");
+                    return false;
+                }
             } catch (SQLException e) {
                 System.err.println("[ERROR] - Failed to update user " + user.getEmail() + ".");
                 e.printStackTrace();
@@ -307,22 +340,29 @@ public class UserManager {
                 .hashString("user", StandardCharsets.UTF_8)
                 .toString();
 
+        String testPasswordHash = Hashing.sha256()
+                .hashString("test", StandardCharsets.UTF_8)
+                .toString();
+
         String adminPasswordHash = Hashing.sha256()
                 .hashString(adminPassword, StandardCharsets.UTF_8)
                 .toString();
 
         // Test user
         User user = new User("user", userPasswordHash, UserRoleEnum.TEACHER);
+        User testUser = new User("test", testPasswordHash, UserRoleEnum.TEACHER);
         // Default admin
         User admin = new User(adminEmail, adminPasswordHash, UserRoleEnum.ADMIN);
 
         try {
             UserManager.save(user);
+            UserManager.save(testUser);
             UserManager.save(admin);
 
             // Test subjects
             ObservableList<String> subjects = FXCollections.observableArrayList("Programování", "Anglický jazyk");
             user.relate(subjects);
+            testUser.relate(subjects);
         } catch (SQLException e) {
             System.err.println("[ERROR] - Failed to save default users.");
             e.printStackTrace();

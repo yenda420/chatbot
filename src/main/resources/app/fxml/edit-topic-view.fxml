@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
@@ -41,6 +42,7 @@
 
               <TextField fx:id="topicName" maxWidth="350" promptText="Název tématického celku *" styleClass="input" />
               <ComboBox fx:id="subject" maxWidth="350" promptText="Vyberte předmět *" styleClass="combobox" />
+              <CheckBox fx:id="isPrivateCheckbox" text="Je soukromý (zobrazí se pouze Vám)" styleClass="checkbox-left" maxWidth="350"/>
 
               <Button fx:id="updateTopicButton" maxWidth="350" onAction="#onUpdateTopic" styleClass="submit" text="Aktualizovat tématický celek" />
           </VBox>

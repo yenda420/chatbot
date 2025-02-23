@@ -114,7 +114,7 @@ public class LoaderService {
                 EditTopicController editTopicController = loader.getController();
                 editTopicController.setCurrentUser(currentUser);
                 editTopicController.setTopicToEdit(topicToEdit);
-                editTopicController.initializeData();
+//                editTopicController.initializeData();
             } else {
                 System.out.println("[WARNING] - No specified actions for view: " + view.getName());
             }

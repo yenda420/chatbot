@@ -1,6 +1,7 @@
 package app.dao;
 
 import app.enums.TopicEnum;
+import app.enums.UserRoleEnum;
 import app.models.Topic;
 
 import app.models.User;
@@ -12,6 +13,33 @@ import java.util.ArrayList;
 public class TopicManager {
     private static DatabaseService db;
     private static final ArrayList<Topic> defaultTopics = new ArrayList<>();
+
+    public static Topic getTopic(String topicName) {
+        String sql = "SELECT * FROM topics WHERE name = ?";
+
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setString(1, topicName);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    Topic topic =
+                            new Topic(
+                                    rs.getString("name"),
+                                    SubjectManager.getSubject(new Topic(rs.getString("name"))),
+                                    rs.getBoolean("isPrivate"),
+                                    UserManager.getUser(rs.getInt("userId"))
+                            );
+                    topic.setSubject(SubjectManager.getSubject(topic));
+                    return topic;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("[ERROR] - Failed to get topic.");
+            e.printStackTrace();
+        }
+
+        return null;
+    }
 
     public TopicManager() {
         db = new DatabaseService();
@@ -55,16 +83,23 @@ public class TopicManager {
             }
 
             if (!DatabaseService.instanceInDatabase("topics", topic.getName(), subjectId, "name", "subjectId")) {
-                boolean descriptionExists = topic.getDescription() != null;
+                String sql;
+                int userId = 0;
+                boolean hasUser = topic.getCreatedBy() != null;
 
-                String sql = descriptionExists ?
-                        "INSERT INTO topics (subjectId, name, description) VALUES (?, ?, ?)" :
-                        "INSERT INTO topics (subjectId, name) VALUES (?, ?)";
+                if (hasUser) {
+                    userId = UserManager.getId(topic.getCreatedBy().getEmail());
+                    sql = "INSERT INTO topics (subjectId, name, description, isPrivate, userId) VALUES (?, ?, ?, ?, ?)";
+                } else {
+                    sql = "INSERT INTO topics (subjectId, name, description, isPrivate) VALUES (?, ?, ?, ?)";
+                }
 
                 try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
                     pstmt.setInt(1, subjectId);
                     pstmt.setString(2, topic.getName());
-                    if (descriptionExists) pstmt.setString(3, topic.getDescription());
+                    pstmt.setString(3, topic.getDescription());
+                    pstmt.setBoolean(4, topic.isPrivate());
+                    if (hasUser) pstmt.setInt(5, userId);
 
                     pstmt.executeUpdate();
 
@@ -108,16 +143,30 @@ public class TopicManager {
         return false;
     }
 
-    public static boolean update(Topic oldTopic, Topic newTopic) {
-        String sql = "UPDATE topics " +
-                    "SET subjectId = ?, name = ?, description = ? " +
-                    "WHERE topicId = ?";
+    public static boolean update(Topic oldTopic, Topic newTopic) throws SQLException {
+        String sql;
+        int userId = 0;
+        boolean hasUser = newTopic.getCreatedBy() != null;
+
+        if (hasUser) {
+            userId = UserManager.getId(newTopic.getCreatedBy().getEmail());
+            sql = "UPDATE topics SET subjectId = ?, name = ?, description = ?, isPrivate = ?, userId = ? WHERE topicId = ?";
+        } else {
+            sql = "UPDATE topics SET subjectId = ?, name = ?, description = ?, isPrivate = ? WHERE topicId = ?";
+        }
 
         try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
             pstmt.setInt(1, SubjectManager.getId(newTopic.getSubject()));
             pstmt.setString(2, newTopic.getName());
             pstmt.setString(3, newTopic.getDescription());
-            pstmt.setInt(4, getId(oldTopic));
+            pstmt.setBoolean(4, newTopic.isPrivate());
+
+            if (hasUser) {
+                pstmt.setInt(5, userId);
+                pstmt.setInt(6, getId(oldTopic));
+            } else {
+                pstmt.setInt(5, getId(oldTopic));
+            }
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
@@ -146,28 +195,55 @@ public class TopicManager {
         }
     }
 
-    public static ArrayList<String> getTopics(User user) throws SQLException {
-        ArrayList<String> subjects = SubjectManager.getSubjects(user);
+    public static ArrayList<String> getAllTopics() {
         ArrayList<String> topics = new ArrayList<>();
+        String sql = "SELECT * FROM topics";
 
-        for (String subject : subjects) {
-            topics.addAll(getTopics(subject));
+        try (Statement stmt = db.getConn().createStatement()) {
+            try (ResultSet rs = stmt.executeQuery(sql)) {
+                while (rs.next()) {
+                    topics.add(rs.getString("name"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return topics;
     }
 
-    public static ArrayList<String> getTopics(String fromSubjects) throws SQLException {
-        int id = SubjectManager.getId(fromSubjects);
+    public static ArrayList<String> getTopics(User user) throws SQLException {
+        if (user.getRole().equals(UserRoleEnum.ADMIN)) {
+            return getAllTopics();
+        } else {
+            ArrayList<String> topics = new ArrayList<>();
+            ArrayList<String> subjects = SubjectManager.getSubjects(user);
+
+            for (String subject : subjects) {
+                topics.addAll(getTopics(subject, user));
+            }
+
+            return topics;
+        }
+    }
+
+    public static ArrayList<String> getTopics(String fromSubjects, User user) throws SQLException {
+        int subjectId = SubjectManager.getId(fromSubjects);
+        int userId = UserManager.getId(user.getEmail());
         ArrayList<String> topics = new ArrayList<>();
 
-        String sql = "SELECT name FROM topics WHERE subjectId = " + id;
+        String sql = "SELECT name FROM topics " +
+                "WHERE subjectId = ? " +
+                "AND (isPrivate = FALSE OR userId = ?)";
 
-        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery(sql)) {
+        try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+            pstmt.setInt(1, subjectId);
+            pstmt.setInt(2, userId);
 
-            while (rs.next()) {
-                topics.add(rs.getString("name"));
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    topics.add(rs.getString("name"));
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

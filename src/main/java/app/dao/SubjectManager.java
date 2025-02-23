@@ -180,11 +180,11 @@ public class SubjectManager {
         return subjects;
     }
 
-    public static int getId(String name) throws SQLException {
+    public static int getId(String subjectName) throws SQLException {
         String sql = "SELECT subjectId FROM subjects WHERE name = ?";
 
         try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
-            pstmt.setString(1, name);
+            pstmt.setString(1, subjectName);
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {

@@ -7,13 +7,6 @@ public class Topic {
     private boolean isPrivate;
     private User createdBy;
 
-    public Topic(String name, Subject subject, boolean isPrivate, User createdBy) {
-        this.name = name;
-        this.subject = subject;
-        this.isPrivate = isPrivate;
-        this.createdBy = createdBy;
-    }
-
     public Topic(String name, Subject subject) {
         this.name = name;
         this.subject = subject;
@@ -33,14 +26,6 @@ public class Topic {
 
     public Subject getSubject() {
         return subject;
-    }
-
-    public boolean isPrivate() {
-        return isPrivate;
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
     }
 
     public void setSubject(Subject subject) {

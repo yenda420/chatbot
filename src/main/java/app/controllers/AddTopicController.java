@@ -18,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -51,6 +52,9 @@ public class AddTopicController {
 
     @FXML
     private VBox content;
+
+    @FXML
+    private CheckBox isPrivateCheckbox;
 
     @FXML
     private void initialize() {
@@ -98,7 +102,7 @@ public class AddTopicController {
         if (validateInputs()) {
             try {
                 String abbreviation = SubjectManager.getAbbreviation(subject.getValue());
-                Topic topic = new Topic(topicName.getText(), new Subject(subject.getValue(), abbreviation));
+                Topic topic = new Topic(topicName.getText(), new Subject(subject.getValue(), abbreviation), isPrivateCheckbox.isSelected(), currentUser);
 
                 if (TopicManager.save(topic)) {
                     AlertService.showSuccessAlert("Tématický celek byl uloňen.");

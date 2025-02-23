@@ -8,7 +8,6 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class DatabaseService {
     private static final Dotenv dotenv = Dotenv.load();
-
     private static final String URL = dotenv.get("DB_URL");
     private static final String USER = dotenv.get("DB_USER");
     private static final String PASSWORD = dotenv.get("DB_PASSWORD");
@@ -82,9 +81,12 @@ public class DatabaseService {
         String sql = "CREATE TABLE IF NOT EXISTS topics (" +
                 "topicId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "subjectId INT NOT NULL, " +
+                "userId INT, " +
                 "name VARCHAR(100) UNIQUE NOT NULL, " +
                 "description LONGTEXT, " +
-                "CONSTRAINT FK_TOPICS_SUBJECTS FOREIGN KEY (subjectId) REFERENCES subjects (subjectId) ON DELETE CASCADE ON UPDATE CASCADE)";
+                "isPrivate BOOLEAN DEFAULT FALSE, " +
+                "CONSTRAINT FK_TOPICS_SUBJECTS FOREIGN KEY (subjectId) REFERENCES subjects (subjectId) ON DELETE CASCADE ON UPDATE CASCADE, " +
+                "CONSTRAINT FK_TOPICS_USERS FOREIGN KEY (userId) REFERENCES users (userId) ON DELETE CASCADE ON UPDATE CASCADE)";
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
@@ -311,11 +313,11 @@ public class DatabaseService {
             dbService.useDatabase();
 
             dbService.createTableSubjects();
+            dbService.createTableUsers();
             dbService.createTableTopics();
             dbService.createTablePrompts();
             dbService.createTableTopicsPrompts();
             dbService.createTableQuestions();
-            dbService.createTableUsers();
             dbService.createTableUsersSubjects();
             dbService.createTableTests();
             dbService.createTableQuestionsTests();

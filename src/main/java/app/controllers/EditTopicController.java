@@ -14,6 +14,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -49,6 +50,9 @@ public class EditTopicController {
 
     @FXML
     private VBox content;
+
+    @FXML
+    private CheckBox isPrivateCheckbox;
 
     @FXML
     private void initialize() {
@@ -89,6 +93,7 @@ public class EditTopicController {
         if (topicToEdit != null) {
             topicName.setText(topicToEdit.getName());
             subject.getSelectionModel().select(SubjectManager.getSubject(topicToEdit).getName());
+            isPrivateCheckbox.setSelected(topicToEdit.isPrivate());
         } else {
             System.err.println("[ERROR] - Topic to edit is not set.");
         }
@@ -100,14 +105,13 @@ public class EditTopicController {
 
     public void setTopicToEdit(Topic topicToEdit) {
         this.topicToEdit = topicToEdit;
-        System.out.println("[INFO] - Topic to edit: " + topicToEdit.getName());
     }
 
     @FXML
     public void onUpdateTopic() throws SQLException {
         if (validateInputs()) {
             String abbreviation = SubjectManager.getAbbreviation(subject.getValue());
-            Topic topic = new Topic(topicName.getText(), new Subject(subject.getValue(), abbreviation));
+            Topic topic = new Topic(topicName.getText(), new Subject(subject.getValue(), abbreviation), isPrivateCheckbox.isSelected(), currentUser);
 
             if (TopicManager.update(topicToEdit, topic)) {
                 AlertService.showSuccessAlert("Tématický celek byl upraven.");

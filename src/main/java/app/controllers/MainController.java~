@@ -253,7 +253,7 @@ public class MainController {
             if (!subject.getValue().isEmpty() || !subject.getValue().isBlank()) {
                 ObservableList<String> topicsObservable = FXCollections.observableArrayList();
 
-                topicsObservable.addAll(TopicManager.getTopics(subject.getValue(), currentUser));
+                topicsObservable.addAll(TopicManager.getTopics(subject.getValue()));
 
                 topics.setItems(topicsObservable);
                 hint.setText("Vyberte témata * (Ctrl + Klik):");
