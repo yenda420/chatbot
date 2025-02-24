@@ -7,6 +7,7 @@
     import app.models.User;
     import app.services.AlertService;
     import app.services.DatabaseService;
+    import app.services.DynamicService;
     import app.services.LoaderService;
     import com.google.common.hash.Hashing;
     import javafx.collections.FXCollections;
@@ -68,7 +69,10 @@
         private HBox horizontalMenu;
 
         @FXML
-        private VBox content;
+        private Button testsOverviewButton;
+
+        @FXML
+        private VBox formContainer;
 
         @FXML
         private void initialize() {
@@ -82,19 +86,7 @@
 
         public void initializeUserData() {
             if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
-                int logoutIndex = horizontalMenu.getChildren().indexOf(logoutButton);
-                Button addUserButton = new Button("Přidat uživatele");
-                Button userOverviewButton = new Button("Přehled uživatelů");
-
-                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), firstName, currentUser));
-
-                addUserButton.getStyleClass().add("menu-button-active");
-                userOverviewButton.getStyleClass().add("menu-button");
-
-                horizontalMenu.getChildren().add(logoutIndex, addUserButton);
-                horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
-
-                content.setPrefWidth(content.getPrefWidth() + 400);
+                DynamicService.setAdminNavigation(horizontalMenu, logoutButton, testsOverviewButton, getClass(), firstName, currentUser, formContainer, ViewEnum.ADD_USER);
             }
         }
 

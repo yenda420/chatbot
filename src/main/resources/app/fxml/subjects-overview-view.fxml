@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
-<StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.EditTopicController">
-    <VBox fx:id="formContainer" alignment="TOP_CENTER" prefHeight="950" prefWidth="1300" spacing="10" styleClass="form-container">
+<StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.SubjectsOverviewController">
+    <VBox fx:id="formContainer" alignment="TOP_CENTER" prefHeight="950" prefWidth="1300" styleClass="form-container">
         <!-- Horizontal Navigation -->
         <HBox fx:id="horizontalMenu" alignment="CENTER" spacing="10" styleClass="horizontal-menu">
             <Button onAction="#onGoToMain" styleClass="menu-button" text="Generovat test" />
@@ -31,20 +30,16 @@
         </HBox>
 
         <!-- Main content -->
-        <VBox alignment="CENTER" prefHeight="723.0" prefWidth="550.0">
-          <VBox alignment="CENTER" spacing="10" styleClass="form-container">
-              <Text styleClass="heading" text="Změna tématického celku" />
+        <VBox alignment="CENTER" prefHeight="723.0">
+            <VBox alignment="CENTER" spacing="10" styleClass="form-container">
+                <Text fx:id="heading" styleClass="heading" text="Přehled předmětů" />
 
-              <HBox alignment="CENTER_RIGHT" maxWidth="350" styleClass="explanation-container">
-                  <Text styleClass="explanation" text="* povinné pole" />
-              </HBox>
+                <Button fx:id="createSubjectTopicButton" onAction="#onGoToSubjects" styleClass="button" prefWidth="350" text="Vytvořit prvníhí předmět" visible="false" />
 
-              <TextField fx:id="topicName" maxWidth="350" promptText="Název tématického celku *" styleClass="input" />
-              <ComboBox fx:id="subject" maxWidth="350" promptText="Vyberte předmět *" styleClass="combobox" />
-              <CheckBox fx:id="isPrivateCheckbox" text="Je soukromý (zobrazí se pouze Vám)" styleClass="checkbox-left" maxWidth="350"/>
-
-              <Button fx:id="updateTopicButton" maxWidth="350" onAction="#onUpdateTopic" styleClass="submit" text="Aktualizovat tématický celek" />
-          </VBox>
+                <HBox alignment="CENTER">
+                    <ListView fx:id="subjects" prefWidth="500" prefHeight="300" style="-fx-cursor: context-menu;" styleClass="input-list-view" />
+                </HBox>
+            </VBox>
         </VBox>
     </VBox>
 </StackPane>

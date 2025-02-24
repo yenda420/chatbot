@@ -14,6 +14,7 @@ import app.models.User;
 
 import app.services.AITestGeneratorService;
 import app.services.AlertService;
+import app.services.DynamicService;
 import app.services.LoaderService;
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -82,6 +83,9 @@ public class MainController {
     private Button fileButton;
 
     @FXML
+    private VBox formContainer;
+
+    @FXML
     private ProgressIndicator progressIndicator;
 
     @FXML
@@ -97,13 +101,13 @@ public class MainController {
     private Button logoutButton;
 
     @FXML
+    private Button testsOverviewButton;
+
+    @FXML
     private ImageView logoutIcon;
 
     @FXML
     private HBox horizontalMenu;
-
-    @FXML
-    private VBox content;
 
     @FXML
     private void initialize() {
@@ -147,20 +151,7 @@ public class MainController {
             subject.setItems(subjectsObservable);
 
             if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
-                int logoutIndex = horizontalMenu.getChildren().indexOf(logoutButton);
-                Button addUserButton = new Button("Přidat uživatele");
-                Button userOverviewButton = new Button("Přehled uživatelů");
-
-                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), testName, currentUser));
-                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), testName, currentUser));
-
-                addUserButton.getStyleClass().add("menu-button");
-                userOverviewButton.getStyleClass().add("menu-button");
-
-                horizontalMenu.getChildren().add(logoutIndex, addUserButton);
-                horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
-
-                content.setPrefWidth(content.getPrefWidth() + 400);
+                DynamicService.setAdminNavigation(horizontalMenu, logoutButton, testsOverviewButton, getClass(), testName, currentUser, formContainer, ViewEnum.MAIN);
             }
         } else {
             System.err.println("[ERROR] - User is not set.");

@@ -27,16 +27,17 @@
 
 -- CRUD operace a prohlížení pro admina
     Admin může prohlížet, přidávat, upravovat a mazat:
-        - Jakékoliv témata, předměty, uživatele a testy
+        - Jakékoliv předměty, témata a uživatele
     Admin může prohlížet, zpětně stahovat a mazat:
         - Jakékoliv testy
 
-** Momentálně rozpracováno **
 -- Možnost soukromých tématických celků
--- Manuál aplikace
+
+** Momentálně rozpracováno **
 -- Dokumentace aplikace
 
 ** Na později **
+-- Manuál aplikace
 -- Testování přípony souborů a jejich velikosti
 -- Odkaz na Manuál aplikace
 -- Lepší vzhled alertů

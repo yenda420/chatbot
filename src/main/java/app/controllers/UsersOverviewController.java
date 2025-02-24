@@ -4,21 +4,17 @@ import app.dao.UserManager;
 import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 import app.models.User;
+import app.services.DynamicService;
 import app.services.LoaderService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,13 +31,16 @@ public class UsersOverviewController {
     private Button logoutButton;
 
     @FXML
+    private VBox formContainer;
+
+    @FXML
+    private Button testsOverviewButton;
+
+    @FXML
     private ImageView logoutIcon;
 
     @FXML
     private HBox horizontalMenu;
-
-    @FXML
-    private VBox content;
 
     @FXML
     private Text heading;
@@ -63,76 +62,17 @@ public class UsersOverviewController {
             initializeCustomCellFactory();
 
             if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
-                int logoutIndex = horizontalMenu.getChildren().indexOf(logoutButton);
-                Button addUserButton = new Button("Přidat uživatele");
-                Button userOverviewButton = new Button("Přehled uživatelů");
-
-                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), users, currentUser));
-                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), users, currentUser));
-
-                addUserButton.getStyleClass().add("menu-button");
-                userOverviewButton.getStyleClass().add("menu-button-active");
-
-                horizontalMenu.getChildren().add(logoutIndex, addUserButton);
-                horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
-
-                content.setPrefWidth(content.getPrefWidth() + 400);
+                DynamicService.setAdminNavigation(horizontalMenu, logoutButton, testsOverviewButton, getClass(), users, currentUser, formContainer, ViewEnum.USERS_OVERVIEW);
             }
         }
     }
 
     private void initializeCustomCellFactory() {
-        users.setCellFactory(lv -> new ListCell<>() {
-            {
-                // Instance initializer for event handling for each ListCell
-                setOnMousePressed(event -> {
-                    if (!isEmpty()) {
-                        users.getSelectionModel().clearSelection();
-                    }
-                });
-            }
+        DynamicService.setCellFactory(users, this::handleEdit, this::handleDelete, "Upravit", true);
+    }
 
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                // Called whenever a cell needs updating, such as scrolling or data changes
-                super.updateItem(item, empty);
-
-                // If the cell should display no content, set its graphic to null
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    Button threeDotsButton = new Button("•••");
-                    threeDotsButton.getStyleClass().add("three-dots-button");
-
-                    ContextMenu contextMenu = new ContextMenu();
-                    MenuItem editItem = createMenuItem("Upravit");
-                    MenuItem deleteItem = createMenuItem("Smazat");
-
-                    editItem.getStyleClass().add("context-menu-item-top");
-                    deleteItem.getStyleClass().add("context-menu-item-bottom");
-
-                    editItem.setOnAction(event -> LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), users, currentUser, UserManager.getUser(getUserEmail(item))));
-                    deleteItem.setOnAction(event -> handleDelete(item));
-
-                    contextMenu.getItems().addAll(editItem, deleteItem);
-
-                    threeDotsButton.setOnAction(event -> contextMenu.show(threeDotsButton, Side.RIGHT, 0, 0));
-
-                    Label label = new Label(item);
-                    label.setTextFill(Color.WHITE);
-                    label.setMaxWidth(400);
-                    label.setWrapText(true);
-
-                    Region spacer = new Region();
-                    HBox.setHgrow(spacer, Priority.ALWAYS);
-
-                    HBox hBox = new HBox(label, spacer, threeDotsButton);
-                    hBox.setAlignment(Pos.CENTER_LEFT);
-
-                    setGraphic(hBox);
-                }
-            }
-        });
+    private void handleEdit(String userData) {
+        LoaderService.load(ViewEnum.EDIT_PROFILE, getClass(), users, currentUser, UserManager.getUser(getUserEmail(userData)));
     }
 
     private String getUserEmail(String userData) {
@@ -172,17 +112,15 @@ public class UsersOverviewController {
         }
     }
 
-    private MenuItem createMenuItem(String text) {
-        Label label = new Label(text);
-        CustomMenuItem customItem = new CustomMenuItem(label);
-        label.setStyle("-fx-text-fill: white; -fx-padding: 5;");
-        customItem.setHideOnClick(false);
-        return customItem;
-    }
-
     private void handleDelete(String userData) {
         try {
-            if (UserManager.delete(new User(getUserEmail(userData)))) {
+            User userToDelete = UserManager.getUser(getUserEmail(userData));
+
+            if (UserManager.delete(userToDelete)) {
+                if (userToDelete != null && userToDelete.getEmail().equals(currentUser.getEmail())) {
+                    LoaderService.load(ViewEnum.REGISTER, getClass(), users, currentUser);
+                }
+
                 showUsersListView();
             } else {
                 System.out.println("[INFO] - Failed to delete user " + userData + " from database.");
@@ -225,5 +163,10 @@ public class UsersOverviewController {
     @FXML
     public void onGoToTopicsOverview() {
         LoaderService.load(ViewEnum.TOPICS_OVERVIEW, getClass(), users, currentUser);
+    }
+
+    @FXML
+    public void onGoToUsers() {
+        LoaderService.load(ViewEnum.ADD_USER, getClass(), users, currentUser);
     }
 }

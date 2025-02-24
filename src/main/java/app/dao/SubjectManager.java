@@ -53,6 +53,25 @@ public class SubjectManager {
         return false;
     }
 
+    public static boolean delete(Subject subject) {
+        if (db.getConn() != null) {
+            String sql = "DELETE FROM subjects WHERE name = ?";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                pstmt.setString(1, subject.getName());
+                pstmt.executeUpdate();
+
+                System.out.println("[INFO] - Subject " + subject.getName() + " deleted from database.");
+                return true;
+            } catch (SQLException e) {
+                System.err.println("[ERROR] - Failed to delete subject " + subject.getName() + " from database.");
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
+    }
+
     public static void saveDefaultSubjects() {
         for (Subject subject : defaultSubjects) {
             try {

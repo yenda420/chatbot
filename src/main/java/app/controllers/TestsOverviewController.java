@@ -6,21 +6,17 @@ import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 import app.models.*;
 import app.services.AlertService;
+import app.services.DynamicService;
 import app.services.FileService;
 import app.services.LoaderService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
 import java.sql.SQLException;
@@ -39,6 +35,9 @@ public class TestsOverviewController {
     private Button logoutButton;
 
     @FXML
+    private Button testsOverviewButton;
+
+    @FXML
     private ImageView logoutIcon;
 
     @FXML
@@ -48,11 +47,10 @@ public class TestsOverviewController {
     private Button createFirstTestButton;
 
     @FXML
-    private HBox horizontalMenu;
+    private VBox formContainer;
 
     @FXML
-    private VBox content;
-
+    private HBox horizontalMenu;
 
     @FXML
     private void initialize() {
@@ -65,20 +63,7 @@ public class TestsOverviewController {
             showTestsListView();
 
             if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
-                int logoutIndex = horizontalMenu.getChildren().indexOf(logoutButton);
-                Button addUserButton = new Button("Přidat uživatele");
-                Button userOverviewButton = new Button("Přehled uživatelů");
-
-                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), tests, currentUser));
-                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), tests, currentUser));
-
-                addUserButton.getStyleClass().add("menu-button");
-                userOverviewButton.getStyleClass().add("menu-button");
-
-                horizontalMenu.getChildren().add(logoutIndex, addUserButton);
-                horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
-
-                content.setPrefWidth(content.getPrefWidth() + 400);
+                DynamicService.setAdminNavigation(horizontalMenu, logoutButton, testsOverviewButton, getClass(), tests, currentUser, formContainer, ViewEnum.TESTS_OVERVIEW);
             }
         }
     }
@@ -110,71 +95,7 @@ public class TestsOverviewController {
     }
 
     private void initializeCustomCellFactory() {
-        tests.setCellFactory(lv -> new ListCell<>() {
-            {
-                // Instance initializer for event handling for each ListCell
-                setOnMousePressed(event -> {
-                    if (!isEmpty()) {
-                        tests.getSelectionModel().clearSelection();
-                    }
-                });
-            }
-
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                // Called whenever a cell needs updating
-                super.updateItem(item, empty);
-
-                // If the cell should display no content, set its graphic to null
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    Button threeDotsButton = new Button("•••");
-                    threeDotsButton.getStyleClass().add("three-dots-button");
-
-                    ContextMenu contextMenu = new ContextMenu();
-                    MenuItem downloadButton = createMenuItem("Stáhnout");
-
-                    downloadButton.setOnAction(event -> handleDownload(item));
-                    contextMenu.getItems().addAll(downloadButton);
-
-                    if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
-                        MenuItem deleteButton = createMenuItem("Smazat");
-
-                        downloadButton.getStyleClass().add("context-menu-item-top");
-                        deleteButton.getStyleClass().add("context-menu-item-bottom");
-                        deleteButton.setOnAction(event -> handleDelete(item));
-
-                        contextMenu.getItems().add(deleteButton);
-                    } else {
-                        downloadButton.getStyleClass().add("context-menu-item");
-                    }
-
-                    threeDotsButton.setOnAction(event -> contextMenu.show(threeDotsButton, Side.RIGHT, 0, 0));
-
-                    Label label = new Label(item);
-                    label.setTextFill(Color.WHITE);
-                    label.setMaxWidth(400);
-                    label.setWrapText(true);
-
-                    Region spacer = new Region();
-                    HBox.setHgrow(spacer, Priority.ALWAYS);
-
-                    HBox hBox = new HBox(label, spacer, threeDotsButton);
-                    hBox.setAlignment(Pos.CENTER_LEFT);
-
-                    setGraphic(hBox);
-                }
-            }
-        });
-    }
-
-    private MenuItem createMenuItem(String text) {
-        Label label = new Label(text);
-        CustomMenuItem customItem = new CustomMenuItem(label);
-        label.setStyle("-fx-text-fill: white; -fx-padding: 5;");
-        customItem.setHideOnClick(false);
-        return customItem;
+        DynamicService.setCellFactory(tests, this::handleDownload, this::handleDelete, "Stáhnout", currentUser.getRole().equals(UserRoleEnum.ADMIN));
     }
 
     private int getTestId(String item) {

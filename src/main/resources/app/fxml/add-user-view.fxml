@@ -3,16 +3,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.geometry.Insets?>
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.AddUserController" styleClass="background">
-    <VBox fx:id="content" alignment="TOP_CENTER" prefHeight="950" prefWidth="900" styleClass="form-container">
+    <VBox fx:id="formContainer" alignment="TOP_CENTER" prefHeight="950" prefWidth="1300" styleClass="form-container">
         <!-- Horizontal Navigation -->
         <HBox fx:id="horizontalMenu" alignment="CENTER" spacing="10" styleClass="horizontal-menu">
             <Button onAction="#onGoToMain" styleClass="menu-button" text="Generovat test" />
-            <Button onAction="#onGoToTestsOverview" styleClass="menu-button" text="Přehled testů" />
+            <Button onAction="#onGoToTestsOverview" styleClass="menu-button" text="Přehled testů" fx:id="testsOverviewButton" />
             <Button onAction="#onGoToTopics" styleClass="menu-button" text="Přidat téma" />
             <Button onAction="#onGoToTopicsOverview" styleClass="menu-button" text="Přehled témat" />
             <Button onAction="#onGoToEditProfile" styleClass="menu-button" text="Můj účet" />

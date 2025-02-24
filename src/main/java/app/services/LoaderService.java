@@ -20,15 +20,15 @@ public class LoaderService {
         load(view, clazz, (Stage) someStageInput.getScene().getWindow(), currentUser);
     }
 
-    public static void load(ViewEnum view, Class<?> clazz, ListView someStageInput, User currentUser, Topic topicToEdit) {
+    public static void load(ViewEnum view, Class<?> clazz, ListView<String> someStageInput, User currentUser, Topic topicToEdit) {
         load(view, clazz, (Stage) someStageInput.getScene().getWindow(), currentUser, topicToEdit);
     }
 
-    public static void load(ViewEnum view, Class<?> clazz, ListView someStageInput, User currentUser) {
+    public static void load(ViewEnum view, Class<?> clazz, ListView<String> someStageInput, User currentUser) {
         load(view, clazz, (Stage) someStageInput.getScene().getWindow(), currentUser);
     }
 
-    public static void load(ViewEnum view, Class<?> clazz, ListView someStageInput, User currentUser, User userToEdit) {
+    public static void load(ViewEnum view, Class<?> clazz, ListView<String> someStageInput, User currentUser, User userToEdit) {
         load(view, clazz, (Stage) someStageInput.getScene().getWindow(), currentUser, userToEdit);
     }
 
@@ -83,6 +83,18 @@ public class LoaderService {
                     UsersOverviewController usersOverviewController = loader.getController();
                     usersOverviewController.setCurrentUser(currentUser);
                     usersOverviewController.initializeUserData();
+                    break;
+
+                case ADD_SUBJECT:
+                    AddSubjectController addSubjectController = loader.getController();
+                    addSubjectController.setCurrentUser(currentUser);
+                    addSubjectController.initializeUserData();
+                    break;
+
+                case SUBJECTS_OVERVIEW:
+                    SubjectsOverviewController subjectsOverviewController = loader.getController();
+                    subjectsOverviewController.setCurrentUser(currentUser);
+                    subjectsOverviewController.initializeUserData();
                     break;
 
                 default:
@@ -168,9 +180,11 @@ public class LoaderService {
             case MAIN -> "Generátor testů";
             case ADD_TOPIC -> "Přidejte tématický celek";
             case ADD_USER -> "Přidejte uživatele";
+            case ADD_SUBJECT -> "Přidejte předmět";
             case TOPICS_OVERVIEW -> "Přehled tématických celků";
             case TESTS_OVERVIEW -> "Přehled testů z Vašich předmětů";
             case USERS_OVERVIEW -> "Přehled uživatelů";
+            case SUBJECTS_OVERVIEW -> "Přehled předmětů";
             case EDIT_TOPIC -> "Změna tématického celku";
             case EDIT_PROFILE -> "Váš účet";
             default -> "Neznámá stránka";

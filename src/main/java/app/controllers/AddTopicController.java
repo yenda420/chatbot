@@ -11,6 +11,7 @@ import app.models.Topic;
 import app.models.User;
 
 import app.services.DatabaseService;
+import app.services.DynamicService;
 import app.services.LoaderService;
 import app.services.AlertService;
 
@@ -45,13 +46,16 @@ public class AddTopicController {
     private Button logoutButton;
 
     @FXML
+    private Button testsOverviewButton;
+
+    @FXML
+    private VBox formContainer;
+
+    @FXML
     private ImageView logoutIcon;
 
     @FXML
     private HBox horizontalMenu;
-
-    @FXML
-    private VBox content;
 
     @FXML
     private CheckBox isPrivateCheckbox;
@@ -73,20 +77,7 @@ public class AddTopicController {
             subject.setItems(subjectsObservable);
 
             if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
-                int logoutIndex = horizontalMenu.getChildren().indexOf(logoutButton);
-                Button addUserButton = new Button("Přidat uživatele");
-                Button userOverviewButton = new Button("Přehled uživatelů");
-
-                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), topicName, currentUser));
-                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), topicName, currentUser));
-
-                addUserButton.getStyleClass().add("menu-button");
-                userOverviewButton.getStyleClass().add("menu-button");
-
-                horizontalMenu.getChildren().add(logoutIndex, addUserButton);
-                horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
-
-                content.setPrefWidth(content.getPrefWidth() + 400);
+                DynamicService.setAdminNavigation(horizontalMenu, logoutButton, testsOverviewButton, getClass(), topicName, currentUser, formContainer, ViewEnum.ADD_TOPIC);
             }
         } else {
             System.err.println("[ERROR] - User is not set.");
@@ -154,7 +145,7 @@ public class AddTopicController {
         }
 
         if (subject.getValue() == null) {
-            AlertService.showErrorAlert("Vyberte, prosím, obtížnost testu.");
+            AlertService.showErrorAlert("Vyberte, prosím, předmět.");
             return false;
         }
 

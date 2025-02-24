@@ -10,6 +10,7 @@ import app.models.User;
 
 import app.services.AlertService;
 import app.services.DatabaseService;
+import app.services.DynamicService;
 import app.services.LoaderService;
 
 import com.google.common.hash.Hashing;
@@ -30,11 +31,11 @@ import java.util.ArrayList;
 public class EditProfileController {
     private final ObservableList<String> subjectList =
             FXCollections.observableArrayList(SubjectManager.getSubjects());
+    private boolean editingCurrentUser;
+
     private User currentUser;
 
     private User userToEdit;
-
-    private boolean editingCurrentUser;
 
     @FXML
     private Text selectSubjectsHeading;
@@ -67,13 +68,16 @@ public class EditProfileController {
     private Button logoutButton;
 
     @FXML
+    private Button testsOverviewButton;
+
+    @FXML
+    private VBox formContainer;
+
+    @FXML
     private ImageView logoutIcon;
 
     @FXML
     private HBox horizontalMenu;
-
-    @FXML
-    private VBox content;
 
     @FXML
     private Button myAccountButton;
@@ -165,20 +169,7 @@ public class EditProfileController {
             }
 
             if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
-                int logoutIndex = horizontalMenu.getChildren().indexOf(logoutButton);
-                Button addUserButton = new Button("Přidat uživatele");
-                Button userOverviewButton = new Button("Přehled uživatelů");
-
-                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), firstName, currentUser));
-                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), firstName, currentUser));
-
-                addUserButton.getStyleClass().add("menu-button");
-                userOverviewButton.getStyleClass().add("menu-button");
-
-                horizontalMenu.getChildren().add(logoutIndex, addUserButton);
-                horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
-
-                content.setPrefWidth(content.getPrefWidth() + 400);
+                DynamicService.setAdminNavigation(horizontalMenu, logoutButton, testsOverviewButton, getClass(), firstName, currentUser, formContainer, ViewEnum.EDIT_PROFILE);
             }
         } else {
             System.err.println("[ERROR] - User is not set.");

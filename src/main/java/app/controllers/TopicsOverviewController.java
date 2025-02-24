@@ -5,20 +5,17 @@ import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 import app.models.Topic;
 import app.models.User;
+import app.services.DynamicService;
 import app.services.LoaderService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
-import javafx.geometry.Side;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
 
 import java.sql.SQLException;
 
@@ -34,13 +31,22 @@ public class TopicsOverviewController {
     private Button logoutButton;
 
     @FXML
+    private Button testsOverviewButton;
+
+    @FXML
+    private Button createFirstTopicButton;
+
+    @FXML
+    private VBox formContainer;
+
+    @FXML
     private ImageView logoutIcon;
 
     @FXML
     private HBox horizontalMenu;
 
     @FXML
-    private VBox content;
+    private Text heading;
 
     @FXML
     private void initialize() {
@@ -50,101 +56,46 @@ public class TopicsOverviewController {
 
     public void initializeUserData() throws SQLException {
         if (currentUser != null) {
-            topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
-
-            topics.setItems(topicsList);
+            showTopicsListView();
             initializeCustomCellFactory();
 
             if (currentUser.getRole().equals(UserRoleEnum.ADMIN)) {
-                int logoutIndex = horizontalMenu.getChildren().indexOf(logoutButton);
-                Button addUserButton = new Button("Přidat uživatele");
-                Button userOverviewButton = new Button("Přehled uživatelů");
-
-                addUserButton.setOnAction(event -> LoaderService.load(ViewEnum.ADD_USER, getClass(), topics, currentUser));
-                userOverviewButton.setOnAction(event -> LoaderService.load(ViewEnum.USERS_OVERVIEW, getClass(), topics, currentUser));
-
-                addUserButton.getStyleClass().add("menu-button");
-                userOverviewButton.getStyleClass().add("menu-button");
-
-                horizontalMenu.getChildren().add(logoutIndex, addUserButton);
-                horizontalMenu.getChildren().add(logoutIndex + 1, userOverviewButton);
-
-                content.setPrefWidth(content.getPrefWidth() + 400);
+                DynamicService.setAdminNavigation(horizontalMenu, logoutButton, testsOverviewButton, getClass(), topics, currentUser, formContainer, ViewEnum.TESTS_OVERVIEW);
             }
         }
     }
 
     private void initializeCustomCellFactory() {
-        topics.setCellFactory(lv -> new ListCell<>() {
-            {
-                // Instance initializer for event handling for each ListCell
-                setOnMousePressed(event -> {
-                    if (!isEmpty()) {
-                        topics.getSelectionModel().clearSelection();
-                    }
-                });
-            }
-
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                // Called whenever a cell needs updating, such as scrolling or data changes
-                super.updateItem(item, empty);
-
-                // If the cell should display no content, set its graphic to null
-                if (empty || item == null) {
-                    setGraphic(null);
-                } else {
-                    Button threeDotsButton = new Button("•••");
-                    threeDotsButton.getStyleClass().add("three-dots-button");
-
-                    ContextMenu contextMenu = new ContextMenu();
-                    MenuItem editItem = createMenuItem("Upravit");
-                    MenuItem deleteItem = createMenuItem("Smazat");
-
-                    editItem.getStyleClass().add("context-menu-item-top");
-                    deleteItem.getStyleClass().add("context-menu-item-bottom");
-
-                    editItem.setOnAction(event -> LoaderService.load(ViewEnum.EDIT_TOPIC, getClass(), topics, currentUser, TopicManager.getTopic(item)));
-                    deleteItem.setOnAction(event -> handleDelete(item));
-
-                    contextMenu.getItems().addAll(editItem, deleteItem);
-
-                    threeDotsButton.setOnAction(event -> contextMenu.show(threeDotsButton, Side.RIGHT, 0, 0));
-
-                    Label label = new Label(item);
-                    label.setTextFill(Color.WHITE);
-                    label.setMaxWidth(400);
-                    label.setWrapText(true);
-
-                    Region spacer = new Region();
-                    HBox.setHgrow(spacer, Priority.ALWAYS);
-
-                    HBox hBox = new HBox(label, spacer, threeDotsButton);
-                    hBox.setAlignment(Pos.CENTER_LEFT);
-
-                    setGraphic(hBox);
-                }
-            }
-        });
+        DynamicService.setCellFactory(topics, this::handleEdit, this::handleDelete, "Upravit", true);
     }
 
-    private MenuItem createMenuItem(String text) {
-        Label label = new Label(text);
-        CustomMenuItem customItem = new CustomMenuItem(label);
-        label.setStyle("-fx-text-fill: white; -fx-padding: 5;");
-        customItem.setHideOnClick(false);
-        return customItem;
+    private void handleEdit(String topicName) {
+        LoaderService.load(ViewEnum.EDIT_TOPIC, getClass(), topics, currentUser, TopicManager.getTopic(topicName));
     }
 
     private void handleDelete(String topicName) {
         try {
             if (TopicManager.delete(new Topic(topicName))) {
-                topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
-                topics.setItems(topicsList);
+                showTopicsListView();
             }
         } catch (SQLException e) {
             System.out.println("[INFO] - Failed to delete topic " + topicName + " from database.");
             e.printStackTrace();
+        }
+    }
+    
+    private void showTopicsListView() throws SQLException {
+        topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
+        
+        if (!topicsList.isEmpty()) {
+            topics.setItems(topicsList);
+            topics.setVisible(true);
+            createFirstTopicButton.setVisible(false);
+            heading.setText("Přehled Vašich tématických celků");
+        } else {
+            topics.setVisible(false);
+            createFirstTopicButton.setVisible(true);
+            heading.setText("V databázi nejsou žádné tématické celky z Vašich předmětů");
         }
     }
 
