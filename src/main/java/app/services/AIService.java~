@@ -134,7 +134,7 @@ public class AIService {
                     while ((errorLine = br.readLine()) != null) {
                         errorBuilder.append(errorLine.trim());
                     }
-                    System.err.println("[ERROR] - Details: " + errorBuilder);
+                    System.err.println("[ERROR] - Details: " + errorBuilder.toString());
                 }
             }
         } catch (Exception e) {
