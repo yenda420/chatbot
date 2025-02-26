@@ -53,6 +53,7 @@ public class LoaderService {
                 case EDIT_PROFILE:
                     EditProfileController editProfileController = loader.getController();
                     editProfileController.setCurrentUser(currentUser);
+                    editProfileController.setUserToEdit(currentUser);
                     editProfileController.initializeUserData();
                     break;
 

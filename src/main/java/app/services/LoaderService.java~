@@ -91,11 +91,11 @@ public class LoaderService {
                     addSubjectController.initializeUserData();
                     break;
 
-//                case SUBJECTS_OVERVIEW:
-//                    SubjectsOverviewController subjectsOverviewController = loader.getController();
-//                    subjectsOverviewController.setCurrentUser(currentUser);
-//                    subjectsOverviewController.initializeUserData();
-//                    break;
+                case SUBJECTS_OVERVIEW:
+                    SubjectsOverviewController subjectsOverviewController = loader.getController();
+                    subjectsOverviewController.setCurrentUser(currentUser);
+                    subjectsOverviewController.initializeUserData();
+                    break;
 
                 default:
                     System.out.println("[WARNING] - No specified actions for view: " + view.getName());

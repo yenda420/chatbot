@@ -117,20 +117,16 @@ public class UsersOverviewController {
         try {
             User userToDelete = UserManager.getUser(getUserEmail(userData));
 
-            if (userToDelete != null && userToDelete.getEmail().equals(currentUser.getEmail())) {
-                if (AlertService.showConfirmationAlert("Potvrzení", "Moment!", "Opravdu chcete smazat svůj účet?")) {
-                    if (UserManager.delete(userToDelete)) {
+            if (UserManager.delete(userToDelete)) {
+                if (userToDelete != null && userToDelete.getEmail().equals(currentUser.getEmail())) {
+                    if (AlertService.showConfirmationAlert("Potvrzení", "Moment!", "Opravdu chcete smazat svůj účet?")) {
                         LoaderService.load(ViewEnum.REGISTER, getClass(), users, currentUser);
-                    } else {
-                        System.out.println("[INFO] - Failed to delete user " + userData + " from database.");
                     }
                 }
+
+                showUsersListView();
             } else {
-                if (UserManager.delete(userToDelete)) {
-                    showUsersListView();
-                } else {
-                    System.out.println("[INFO] - Failed to delete user " + userData + " from database.");
-                }
+                System.out.println("[INFO] - Failed to delete user " + userData + " from database.");
             }
         } catch (Exception e) {
             System.out.println("[INFO] - Error while deleting user " + userData + " from database.");

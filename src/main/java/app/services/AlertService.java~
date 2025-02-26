@@ -33,6 +33,7 @@ public class AlertService {
         ButtonType cancel = new ButtonType("Ne", ButtonType.NO.getButtonData());
 
         alert.getButtonTypes().setAll(confirm, cancel);
+        alert.setResult(cancel);
 
         Optional<ButtonType> result = alert.showAndWait();
         return result.isPresent() && result.get() == confirm;
