@@ -15,6 +15,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 
 import java.sql.SQLException;
 
@@ -45,6 +46,9 @@ public class SubjectsOverviewController {
     private Button createSubjectTopicButton;
 
     @FXML
+    private Text heading;
+
+    @FXML
     private void initialize() {
         logoutButton.setOnMouseEntered(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-maroon.png"))));
         logoutButton.setOnMouseExited(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-white.png"))));
@@ -66,7 +70,7 @@ public class SubjectsOverviewController {
     }
 
     private void handleEdit(String subjectName) {
-//        LoaderService.load(ViewEnum.EDIT_SUBJECT, getClass(), subjects, currentUser, subjectName);
+        LoaderService.load(ViewEnum.EDIT_SUBJECT, getClass(), subjects, currentUser);
     }
 
     private void handleDelete(String subjectName) {
@@ -87,9 +91,11 @@ public class SubjectsOverviewController {
             createSubjectTopicButton.setVisible(false);
             subjects.setVisible(true);
             subjects.setItems(subjectsList);
+            heading.setText("Přehled předmětů");
         } else {
             createSubjectTopicButton.setVisible(true);
             subjects.setVisible(false);
+            heading.setText("V databázi nejsou žádné předměty.");
         }
     }
 

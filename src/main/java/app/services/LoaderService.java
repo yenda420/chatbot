@@ -3,6 +3,7 @@ package app.services;
 import app.controllers.*;
 import app.enums.ViewEnum;
 
+import app.models.Subject;
 import app.models.Topic;
 import app.models.User;
 import javafx.fxml.FXMLLoader;
@@ -22,6 +23,10 @@ public class LoaderService {
 
     public static void load(ViewEnum view, Class<?> clazz, ListView<String> someStageInput, User currentUser, Topic topicToEdit) {
         load(view, clazz, (Stage) someStageInput.getScene().getWindow(), currentUser, topicToEdit);
+    }
+
+    public static void load(ViewEnum view, Class<?> clazz, ListView<String> someStageInput, User currentUser, Subject subjectToEdit) {
+        load(view, clazz, (Stage) someStageInput.getScene().getWindow(), currentUser, subjectToEdit);
     }
 
     public static void load(ViewEnum view, Class<?> clazz, ListView<String> someStageInput, User currentUser) {
@@ -98,6 +103,12 @@ public class LoaderService {
                     subjectsOverviewController.initializeUserData();
                     break;
 
+                case EDIT_SUBJECT:
+                    EditSubjectController editSubjectController = loader.getController();
+                    editSubjectController.setCurrentUser(currentUser);
+                    editSubjectController.initializeUserData();
+                    break;
+
                 default:
                     System.out.println("[WARNING] - No specified actions for view: " + view.getName());
                     break;
@@ -128,6 +139,33 @@ public class LoaderService {
                 editTopicController.setCurrentUser(currentUser);
                 editTopicController.setTopicToEdit(topicToEdit);
                 editTopicController.initializeData();
+            } else {
+                System.out.println("[WARNING] - No specified actions for view: " + view.getName());
+            }
+
+            Scene scene = new Scene(root);
+            scene.getStylesheets().add(clazz.getResource("/app/style/style.css").toExternalForm());
+
+            stage.setScene(scene);
+            stage.setTitle(getTitle(view));
+            stage.show();
+            stage.centerOnScreen();
+        } catch (Exception e) {
+            System.err.println("[ERROR] - Failed to load " + view.getName() + "-view.fxml: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public static void load(ViewEnum view, Class<?> clazz, Stage stage, User currentUser, Subject subjectToEdit) {
+        try {
+            FXMLLoader loader = new FXMLLoader(clazz.getResource("/app/fxml/" + view.getName() + "-view.fxml"));
+            Parent root = loader.load();
+
+            if (view.equals(ViewEnum.EDIT_SUBJECT)) {
+                EditSubjectController editSubjectController = loader.getController();
+                editSubjectController.setCurrentUser(currentUser);
+                editSubjectController.setSubjectToEdit(subjectToEdit);
+                editSubjectController.initializeUserData();
             } else {
                 System.out.println("[WARNING] - No specified actions for view: " + view.getName());
             }
@@ -187,6 +225,7 @@ public class LoaderService {
             case USERS_OVERVIEW -> "Přehled uživatelů";
             case SUBJECTS_OVERVIEW -> "Přehled předmětů";
             case EDIT_TOPIC -> "Změna tématického celku";
+            case EDIT_SUBJECT -> "Změna předmětu";
             case EDIT_PROFILE -> "Váš účet";
             default -> "Neznámá stránka";
         };

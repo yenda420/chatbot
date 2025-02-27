@@ -55,13 +55,7 @@ public class SubjectManager {
 
     public static boolean update(Subject oldSubject, Subject newSubject) throws SQLException {
         if (db.getConn() != null) {
-            String sql;
-
-            if (newSubject.getDescription() != null) {
-                sql = "UPDATE subjects SET name = ?, abbreviation = ?, description = ? WHERE name = ?";
-            } else {
-                sql = "UPDATE subjects SET name = ?, abbreviation = ? WHERE name = ?";
-            }
+            String sql = "UPDATE subjects SET name = ?, abbreviation = ?, description = ? WHERE name = ?";
 
             try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
                 pstmt.setString(1, newSubject.getName());

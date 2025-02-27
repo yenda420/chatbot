@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.EditSubjectController">
+    <VBox fx:id="formContainer" alignment="TOP_CENTER" prefHeight="950" prefWidth="1300" styleClass="form-container">
+        <!-- Horizontal Navigation -->
+        <HBox fx:id="horizontalMenu" alignment="CENTER" spacing="10" styleClass="horizontal-menu">
+            <Button onAction="#onGoToMain" styleClass="menu-button" text="Generovat test" />
+            <Button onAction="#onGoToTestsOverview" styleClass="menu-button" text="Přehled testů" fx:id="testsOverviewButton" />
+            <Button onAction="#onGoToTopics" styleClass="menu-button" text="Přidat téma" />
+            <Button onAction="#onGoToTopicsOverview" styleClass="menu-button" text="Přehled témat" />
+            <Button onAction="#onGoToEditProfile" styleClass="menu-button" text="Můj účet" />
+
+            <!-- Logout Button -->
+            <Button fx:id="logoutButton" onAction="#onLogout" styleClass="menu-button">
+                <graphic>
+                   <ImageView fx:id="logoutIcon" fitHeight="24" fitWidth="24" pickOnBounds="true" preserveRatio="true">
+                     <Image url="@../../images/logout-white.png" />
+                   </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- Main content -->
+        <VBox alignment="CENTER" prefHeight="723.0" prefWidth="550.0">
+            <VBox alignment="CENTER" spacing="10" styleClass="form-container">
+                <Text styleClass="heading" text="Změna předmětu" />
+
+                <HBox alignment="CENTER_RIGHT" maxWidth="350" styleClass="explanation-container">
+                    <Text styleClass="explanation" text="* povinné pole" />
+                </HBox>
+
+                <TextField fx:id="subjectName" maxWidth="350" promptText="Název předmětu *" styleClass="input" />
+                <TextField fx:id="abbreviation" maxWidth="350" promptText="Zkratka předmětu *" styleClass="input" />
+                <Text text="Zkratka musí být ve tvaru tří velkých písmen (např. 'ČJL')." styleClass="explanation" wrappingWidth="330" textAlignment="CENTER"/>
+
+                <Button fx:id="updateSubjectButton" maxWidth="350" onAction="#onUpdateSubject" styleClass="submit" text="Aktualizovat předmět" />
+            </VBox>
+        </VBox>
+    </VBox>
+</StackPane>

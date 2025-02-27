@@ -53,6 +53,7 @@ public class LoaderService {
                 case EDIT_PROFILE:
                     EditProfileController editProfileController = loader.getController();
                     editProfileController.setCurrentUser(currentUser);
+                    editProfileController.setUserToEdit(currentUser);
                     editProfileController.initializeUserData();
                     break;
 
@@ -95,6 +96,12 @@ public class LoaderService {
                     SubjectsOverviewController subjectsOverviewController = loader.getController();
                     subjectsOverviewController.setCurrentUser(currentUser);
                     subjectsOverviewController.initializeUserData();
+                    break;
+
+                case EDIT_SUBJECT:
+                    EditSubjectController editSubjectController = loader.getController();
+                    editSubjectController.setCurrentUser(currentUser);
+                    editSubjectController.initializeUserData();
                     break;
 
                 default:
@@ -186,6 +193,7 @@ public class LoaderService {
             case USERS_OVERVIEW -> "Přehled uživatelů";
             case SUBJECTS_OVERVIEW -> "Přehled předmětů";
             case EDIT_TOPIC -> "Změna tématického celku";
+            case EDIT_SUBJECT -> "Změna předmětu";
             case EDIT_PROFILE -> "Váš účet";
             default -> "Neznámá stránka";
         };
