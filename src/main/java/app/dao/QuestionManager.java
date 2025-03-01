@@ -89,7 +89,7 @@ public class QuestionManager {
     // Inserts the question to the database and links it to its test
     public static boolean save(Question question, int testId) throws SQLException {
         if (db.getConn() != null) {
-            if (!DatabaseService.instanceInDatabase("questions", "text", question.getText())) {
+            if (!questionInDatabase(question)) {
                 String sql = "INSERT INTO questions (text, type, difficulty, points) VALUES (?, ?, ?, ?)";
                 try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
                     pstmt.setString(1, question.getText());
@@ -131,9 +131,12 @@ public class QuestionManager {
 
     public static int getId(Question question) {
         if (db.getConn() != null) {
-            String sql = "SELECT questionId FROM questions WHERE text = ?";
+            String sql = "SELECT questionId FROM questions WHERE text = ? AND type = ? AND difficulty = ? AND points = ?";
             try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
                 pstmt.setString(1, question.getText());
+                pstmt.setString(2, question.getType().getName());
+                pstmt.setString(3, question.getDifficulty().getName());
+                pstmt.setInt(4, question.getPoints());
 
                 try (ResultSet rs = pstmt.executeQuery()) {
                     if (rs.next()) {
@@ -200,5 +203,29 @@ public class QuestionManager {
 
             return questions;
         }
+    }
+
+    private static boolean questionInDatabase(Question question) throws SQLException {
+        if (db.getConn() != null) {
+            if (!DatabaseService.instanceInDatabase("questions", "text", question.getText())) {
+                return false;
+            }
+
+            String sql = "SELECT * FROM questions WHERE text = ? AND type = ? AND difficulty = ? AND points = ?";
+
+            try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
+                pstmt.setString(1, question.getText());
+                pstmt.setString(2, question.getType().getName());
+                pstmt.setString(3, question.getDifficulty().getName());
+                pstmt.setInt(4, question.getPoints());
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    if (rs.next()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

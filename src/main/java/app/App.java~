@@ -1,18 +1,94 @@
 package app;
 
+import app.dao.*;
+import app.enums.DifficultyEnum;
+import app.enums.QuestionTypeEnum;
+import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
+import app.models.*;
 import app.services.DatabaseService;
 import app.services.LoaderService;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
 public class App extends Application {
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws SQLException, FileNotFoundException {
         DatabaseService.initialize();
+//        ArrayList<Topic> topics = new ArrayList<>();
+//        topics.add(new Topic("Matematika"));
+//        topics.add(new Topic("Cesky jazyk"));
+//        topics.add(new Topic("Biologie"));
+//        ArrayList<Topic> topics1 = new ArrayList<>();
+//        topics1.add(new Topic("afsfasf"));
+//        topics1.add(new Topic("sdfdsf"));
+//        topics1.add(new Topic("sdfsfd"));
+//        ArrayList<Topic> topics2 = new ArrayList<>();
+//        topics1.add(new Topic("456"));
+//        topics1.add(new Topic("788"));
+//        topics1.add(new Topic("745"));
+//
+//        Question q1 = new Question("What is 1 + 1?", QuestionTypeEnum.MULTIPLE_CHOICE, DifficultyEnum.EASY, 1);
+//        Question q2 = new Question("What is 1 + 1?", QuestionTypeEnum.MULTIPLE_CHOICE, DifficultyEnum.HARD, 2);
+//        Question q3 = new Question("What is 1 + 1?", QuestionTypeEnum.OPEN_ENDED, DifficultyEnum.EASY, 1);
+//        Question q4 = new Question("What is 2 + 2?", QuestionTypeEnum.MULTIPLE_CHOICE, DifficultyEnum.EASY, 1);
+//        Question q5 = new Question("What is 1 + 1?", QuestionTypeEnum.MULTIPLE_CHOICE, DifficultyEnum.EASY, 1);
+//        Prompt prompt = new Prompt("Test z matematiky", null, topics);                   // Instance třídy Prompt
+//        User user = new User("John Doe", "johndoe", UserRoleEnum.TEACHER);
+//        Prompt prompt1 = new Prompt("Test z českého jazyka", null, topics1);          // Instance třídy Prompt
+//        User user1 = new User("John Doe", "johndoe", UserRoleEnum.TEACHER);
+//        Prompt prompt2 = new Prompt("Test z biologie", null, topics2);                     // Instance třídy Prompt
+//        User user2 = new User("John Doe", "johndoe", UserRoleEnum.TEACHER);
+//        // Instance 1: Test z matematiky
+//        Test test1 = new Test(
+//                "Test z matematiky",           // Název testu
+//                10,                            // Počet otázek
+//                45,                            // Časový limit v minutách
+//                DifficultyEnum.EASY,           // Obtížnost – snazší
+//                QuestionTypeEnum.MULTIPLE_CHOICE, // Typ otázek – výběr z možností
+//                prompt, user                       // Instance třídy User
+//        );
+//
+//// Instance 2: Test z českého jazyka
+//        Test test2 = new Test(
+//                "Test z českého jazyka",       // Název testu
+//                15,                            // Počet otázek
+//                60,                            // Časový limit v minutách
+//                DifficultyEnum.MEDIUM,         // Obtížnost – střední
+//                QuestionTypeEnum.YES_NO,       // Typ otázek – ano/ne otázky
+//                prompt1, user1
+//        );
+//
+//// Instance 3: Test z biologie
+//        Test test3 = new Test(
+//                "Test z biologie",             // Název testu
+//                20,                            // Počet otázek
+//                90,                            // Časový limit v minutách
+//                DifficultyEnum.HARD,           // Obtížnost – těžší
+//                QuestionTypeEnum.OPEN_ENDED,   // Typ otázek – otevřené otázky
+//                prompt2, user2
+//        );
+//        PromptManager.save(prompt);
+//        PromptManager.save(prompt1);
+//        PromptManager.save(prompt2);
+//        UserManager.save(user);
+//        UserManager.save(user1);
+//        UserManager.save(user2);
+//        TestManager.save(test1, user, 1);
+//        TestManager.save(test2, user1, 2);
+//        TestManager.save(test3, user2, 3);
+//        QuestionManager.save(q1, 1);
+//        QuestionManager.save(q2, 2);
+//        QuestionManager.save(q3, 2);
+//        QuestionManager.save(q4, 2);
+//        QuestionManager.save(q5, 3);
         LoaderService.load(ViewEnum.LOGIN, getClass(), stage, null);
     }
-    
+
     @Override
     public void stop() throws Exception {
         DatabaseService.disconnect();

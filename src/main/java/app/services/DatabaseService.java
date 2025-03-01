@@ -132,7 +132,7 @@ public class DatabaseService {
     private void createTableQuestions() {
         String sql = "CREATE TABLE IF NOT EXISTS questions (" +
                 "questionId INT PRIMARY KEY AUTO_INCREMENT, " +
-                "text LONGTEXT UNIQUE NOT NULL, " +
+                "text LONGTEXT NOT NULL, " +
                 "type ENUM('Ano / Ne', 'Výběr z odpovědí', 'Otevřená otázka') NOT NULL, " +
                 "difficulty ENUM('Lehká', 'Těžká', 'Střední') NOT NULL, " +
                 "points INT NOT NULL)";
