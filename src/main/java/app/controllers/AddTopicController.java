@@ -96,7 +96,7 @@ public class AddTopicController {
                 Topic topic = new Topic(topicName.getText(), new Subject(subject.getValue(), abbreviation), isPrivateCheckbox.isSelected(), currentUser);
 
                 if (TopicManager.save(topic)) {
-                    AlertService.showSuccessAlert("Tématický celek byl uloňen.");
+                    AlertService.showSuccessAlert("Tematický celek byl uloňen.");
                     LoaderService.load(ViewEnum.ADD_TOPIC, getClass(), topicName, currentUser);
                 }
             } catch (SQLException e) {
@@ -150,7 +150,7 @@ public class AddTopicController {
         }
 
         if (DatabaseService.instanceInDatabase("topics", "name", topicName.getText())) {
-            AlertService.showErrorAlert(topicName, "Tématický celek s názvem '" + topicName.getText() + "' již existuje.");
+            AlertService.showErrorAlert(topicName, "Tematický celek s názvem '" + topicName.getText() + "' již existuje.");
             return false;
         }
 

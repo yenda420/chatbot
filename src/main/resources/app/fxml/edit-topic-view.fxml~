@@ -8,7 +8,6 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
-
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.EditTopicController">
@@ -44,7 +43,7 @@
               <ComboBox fx:id="subject" maxWidth="350" promptText="Vyberte předmět *" styleClass="combobox" />
               <CheckBox fx:id="isPrivateCheckbox" text="Je soukromý (zobrazí se pouze Vám)" styleClass="checkbox-left" maxWidth="350"/>
 
-              <Button fx:id="updateTopicButton" maxWidth="350" onAction="#onUpdateTopic" styleClass="submit" text="Aktualizovat tématický celek" />
+              <Button fx:id="updateTopicButton" maxWidth="350" onAction="#onUpdateTopic" styleClass="submit" text="Aktualizovat Tematický celek" />
           </VBox>
         </VBox>
     </VBox>

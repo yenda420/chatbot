@@ -31,9 +31,9 @@
         <!-- Main content -->
         <VBox alignment="CENTER" prefHeight="723.0">
             <VBox alignment="CENTER" spacing="10" styleClass="form-container">
-                <Text fx:id="heading" styleClass="heading" text="Přehled Vašich tématických celků" />
+                <Text fx:id="heading" styleClass="heading" text="Přehled Vašich Tematických celků" />
 
-                <Button fx:id="createFirstTopicButton" onAction="#onGoToTopics" styleClass="button" prefWidth="350" text="Vytvořit první tématický celek" visible="false" />
+                <Button fx:id="createFirstTopicButton" onAction="#onGoToTopics" styleClass="button" prefWidth="350" text="Vytvořit první Tematický celek" visible="false" />
 
                 <HBox alignment="CENTER">
                     <ListView fx:id="topics" prefWidth="500" prefHeight="300" style="-fx-cursor: context-menu;" styleClass="input-list-view" />

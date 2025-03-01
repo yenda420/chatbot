@@ -65,7 +65,7 @@ public class DatabaseService {
         String sql = "CREATE TABLE IF NOT EXISTS subjects (" +
                 "subjectId INT PRIMARY KEY AUTO_INCREMENT, " +
                 "name VARCHAR(50) UNIQUE NOT NULL, " +
-                "abbreviation VARCHAR(10) UNIQUE NOT NULL, " +
+                "abbreviation VARCHAR(3) UNIQUE NOT NULL, " +
                 "description LONGTEXT)";
 
         try (Statement stmt = conn.createStatement()) {

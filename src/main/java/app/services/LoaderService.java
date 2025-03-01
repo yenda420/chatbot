@@ -217,14 +217,14 @@ public class LoaderService {
             case REGISTER -> "Registrace";
             case LOGIN -> "Přihlášení";
             case MAIN -> "Generátor testů";
-            case ADD_TOPIC -> "Přidejte tématický celek";
+            case ADD_TOPIC -> "Přidejte Tematický celek";
             case ADD_USER -> "Přidejte uživatele";
             case ADD_SUBJECT -> "Přidejte předmět";
-            case TOPICS_OVERVIEW -> "Přehled tématických celků";
+            case TOPICS_OVERVIEW -> "Přehled Tematických celků";
             case TESTS_OVERVIEW -> "Přehled testů z Vašich předmětů";
             case USERS_OVERVIEW -> "Přehled uživatelů";
             case SUBJECTS_OVERVIEW -> "Přehled předmětů";
-            case EDIT_TOPIC -> "Změna tématického celku";
+            case EDIT_TOPIC -> "Změna tematického celku";
             case EDIT_SUBJECT -> "Změna předmětu";
             case EDIT_PROFILE -> "Váš účet";
             default -> "Neznámá stránka";

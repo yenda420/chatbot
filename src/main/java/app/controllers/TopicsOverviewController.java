@@ -91,11 +91,11 @@ public class TopicsOverviewController {
             topics.setItems(topicsList);
             topics.setVisible(true);
             createFirstTopicButton.setVisible(false);
-            heading.setText("Přehled Vašich tématických celků");
+            heading.setText("Přehled Vašich Tematických celků");
         } else {
             topics.setVisible(false);
             createFirstTopicButton.setVisible(true);
-            heading.setText("V databázi nejsou žádné tématické celky z Vašich předmětů");
+            heading.setText("V databázi nejsou žádné tematické celky z Vašich předmětů");
         }
     }
 

@@ -105,7 +105,7 @@ public class EditTopicController {
             Topic topic = new Topic(topicName.getText(), new Subject(subject.getValue(), abbreviation), isPrivateCheckbox.isSelected(), currentUser);
 
             if (TopicManager.update(topicToEdit, topic)) {
-                AlertService.showSuccessAlert("Tématický celek byl upraven.");
+                AlertService.showSuccessAlert("Tematický celek byl upraven.");
                 LoaderService.load(ViewEnum.TOPICS_OVERVIEW, getClass(), topicName, currentUser);
             }
         }
@@ -161,7 +161,7 @@ public class EditTopicController {
 
         if (!topicToEdit.getName().equals(topicName.getText())) {
             if (DatabaseService.instanceInDatabase("topics", "name", topicName.getText())) {
-                AlertService.showErrorAlert(topicName, "Tématický celek s tímto názvem již existuje.");
+                AlertService.showErrorAlert(topicName, "Tematický celek s tímto názvem již existuje.");
                 return false;
             }
         }
