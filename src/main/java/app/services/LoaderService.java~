@@ -115,7 +115,7 @@ public class LoaderService {
             }
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(clazz.getResource("/app/css/style.css").toExternalForm());
+            scene.getStylesheets().add(clazz.getResource("/app/style/style.css").toExternalForm());
 
             stage.setScene(scene);
             stage.setTitle(getTitle(view));
@@ -144,7 +144,7 @@ public class LoaderService {
             }
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(clazz.getResource("/app/css/style.css").toExternalForm());
+            scene.getStylesheets().add(clazz.getResource("/app/style/style.css").toExternalForm());
 
             stage.setScene(scene);
             stage.setTitle(getTitle(view));
@@ -171,7 +171,7 @@ public class LoaderService {
             }
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(clazz.getResource("/app/css/style.css").toExternalForm());
+            scene.getStylesheets().add(clazz.getResource("/app/style/style.css").toExternalForm());
 
             stage.setScene(scene);
             stage.setTitle(getTitle(view));
@@ -198,7 +198,7 @@ public class LoaderService {
             }
 
             Scene scene = new Scene(root);
-            scene.getStylesheets().add(clazz.getResource("/app/css/style.css").toExternalForm());
+            scene.getStylesheets().add(clazz.getResource("/app/style/style.css").toExternalForm());
 
             stage.setScene(scene);
             stage.setTitle("Změna údajů uživatele");

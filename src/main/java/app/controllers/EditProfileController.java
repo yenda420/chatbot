@@ -276,9 +276,10 @@ public class EditProfileController {
         if (UserManager.update(user, oldEmail, emailChanged) &&
                 user.relate(subjects.getSelectionModel().getSelectedItems()) &&
                 user.unrelate(getUnselectedItems())) {
-            AlertService.showSuccessAlert("Profil byl aktualizovan.");
+            AlertService.showSuccessAlert("Profil byl aktualizován.");
 
-            ViewEnum viewEnum = userToEdit.getEmail().equals(currentUser.getEmail()) ? ViewEnum.EDIT_PROFILE : ViewEnum.USERS_OVERVIEW;
+            ViewEnum viewEnum = userToEdit.getEmail().equals(currentUser.getEmail()) ?
+                    ViewEnum.EDIT_PROFILE : ViewEnum.USERS_OVERVIEW;
 
             if (redirectToLogin) {
                 viewEnum = ViewEnum.LOGIN;

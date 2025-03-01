@@ -278,7 +278,8 @@ public class EditProfileController {
                 user.unrelate(getUnselectedItems())) {
             AlertService.showSuccessAlert("Profil byl aktualizovan.");
 
-            ViewEnum viewEnum = userToEdit != null ? ViewEnum.USERS_OVERVIEW : ViewEnum.EDIT_PROFILE;
+            ViewEnum viewEnum = userToEdit.getEmail().equals(currentUser.getEmail()) ?
+                    ViewEnum.EDIT_PROFILE : ViewEnum.USERS_OVERVIEW;
 
             if (redirectToLogin) {
                 viewEnum = ViewEnum.LOGIN;
