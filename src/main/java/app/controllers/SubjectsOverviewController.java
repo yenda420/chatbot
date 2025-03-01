@@ -50,8 +50,11 @@ public class SubjectsOverviewController {
 
     @FXML
     private void initialize() {
-        logoutButton.setOnMouseEntered(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-maroon.png"))));
-        logoutButton.setOnMouseExited(event -> logoutIcon.setImage(new Image(getClass().getResourceAsStream("/images/logout-white.png"))));
+        logoutButton.setOnMouseEntered(event -> logoutIcon.setImage(
+                new Image(getClass().getResourceAsStream("/images/logout-maroon.png"))));
+
+        logoutButton.setOnMouseExited(event -> logoutIcon.setImage(
+                new Image(getClass().getResourceAsStream("/images/logout-white.png"))));
     }
 
     public void initializeUserData() throws SQLException {

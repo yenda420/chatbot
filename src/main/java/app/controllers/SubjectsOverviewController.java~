@@ -70,7 +70,7 @@ public class SubjectsOverviewController {
     }
 
     private void handleEdit(String subjectName) {
-        LoaderService.load(ViewEnum.EDIT_SUBJECT, getClass(), subjects, currentUser);
+        LoaderService.load(ViewEnum.EDIT_SUBJECT, getClass(), subjects, currentUser, new Subject(subjectName, SubjectManager.getAbbreviation(subjectName)));
     }
 
     private void handleDelete(String subjectName) {
