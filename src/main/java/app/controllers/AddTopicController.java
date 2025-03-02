@@ -10,10 +10,7 @@ import app.models.Subject;
 import app.models.Topic;
 import app.models.User;
 
-import app.services.DatabaseService;
-import app.services.DynamicService;
-import app.services.LoaderService;
-import app.services.AlertService;
+import app.services.*;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -80,7 +77,7 @@ public class AddTopicController {
                 DynamicService.setAdminNavigation(horizontalMenu, logoutButton, testsOverviewButton, getClass(), topicName, currentUser, formContainer, ViewEnum.ADD_TOPIC);
             }
         } else {
-            System.err.println("[ERROR] - User is not set.");
+            LogService.logError("User is not set.");
         }
     }
 
@@ -96,11 +93,11 @@ public class AddTopicController {
                 Topic topic = new Topic(topicName.getText(), new Subject(subject.getValue(), abbreviation), isPrivateCheckbox.isSelected(), currentUser);
 
                 if (TopicManager.save(topic)) {
-                    AlertService.showSuccessAlert("Tematický celek byl uloňen.");
+                    AlertService.showSuccessAlert("Tematický celek byl uložen.");
                     LoaderService.load(ViewEnum.ADD_TOPIC, getClass(), topicName, currentUser);
                 }
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to save topic.");
+                LogService.logError("Failed to save topic.");
                 e.printStackTrace();
             }
         }

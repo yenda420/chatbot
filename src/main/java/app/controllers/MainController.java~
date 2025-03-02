@@ -262,14 +262,16 @@ public class MainController {
     }
 
     @FXML
-    private void onUploadFile() {
+    private void onUploadFile() throws IOException {
         FileChooser fileChooser = new FileChooser();
         fileAttached = fileChooser.showOpenDialog(null);
 
         if (checkFile(fileAttached)) {
             fileLabel.setText("Přiložený soubor: " + fileAttached.getName());
             LogService.logInfo("File selected: " + fileAttached.getAbsolutePath());
+            System.out.println(FileService.readFileContent(fileAttached));
         }
+
     }
 
     private boolean checkFile(File file) {

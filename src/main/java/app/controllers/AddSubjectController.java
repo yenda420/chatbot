@@ -5,10 +5,7 @@ import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 import app.models.Subject;
 import app.models.User;
-import app.services.AlertService;
-import app.services.DatabaseService;
-import app.services.DynamicService;
-import app.services.LoaderService;
+import app.services.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -61,7 +58,7 @@ public class AddSubjectController {
                 DynamicService.setAdminNavigation(horizontalMenu, logoutButton, testsOverviewButton, getClass(), subjectName, currentUser, formContainer, ViewEnum.ADD_SUBJECT);
             }
         } else {
-            System.err.println("[ERROR] - User is not set.");
+            LogService.logError("User is not set.");
         }
     }
 
@@ -76,11 +73,11 @@ public class AddSubjectController {
                 Subject subject = new Subject(subjectName.getText(), abbreviation.getText());
 
                 if (SubjectManager.save(subject)) {
-                    AlertService.showSuccessAlert("Předmět byl uloňen.");
+                    AlertService.showSuccessAlert("Předmět byl uložen.");
                     LoaderService.load(ViewEnum.ADD_SUBJECT, getClass(), subjectName, currentUser);
                 }
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to save subject.");
+                LogService.logError("Failed to save subject.");
                 e.printStackTrace();
             }
         }

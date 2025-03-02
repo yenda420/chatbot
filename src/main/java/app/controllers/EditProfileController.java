@@ -8,10 +8,7 @@ import app.enums.ViewEnum;
 
 import app.models.User;
 
-import app.services.AlertService;
-import app.services.DatabaseService;
-import app.services.DynamicService;
-import app.services.LoaderService;
+import app.services.*;
 
 import com.google.common.hash.Hashing;
 import javafx.collections.FXCollections;
@@ -172,7 +169,7 @@ public class EditProfileController {
                 DynamicService.setAdminNavigation(horizontalMenu, logoutButton, testsOverviewButton, getClass(), firstName, currentUser, formContainer, ViewEnum.EDIT_PROFILE);
             }
         } else {
-            System.err.println("[ERROR] - User is not set.");
+            LogService.logError("User is not set.");
         }
     }
 

@@ -5,10 +5,7 @@ import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 import app.models.Subject;
 import app.models.User;
-import app.services.AlertService;
-import app.services.DatabaseService;
-import app.services.DynamicService;
-import app.services.LoaderService;
+import app.services.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -63,14 +60,14 @@ public class EditSubjectController {
                 DynamicService.setAdminNavigation(horizontalMenu, logoutButton, testsOverviewButton, getClass(), subjectName, currentUser, formContainer, ViewEnum.EDIT_SUBJECT);
             }
         } else {
-            System.err.println("[ERROR] - User is not set.");
+            LogService.logError("User is not set.");
         }
 
         if (subjectToEdit != null) {
             subjectName.setText(subjectToEdit.getName());
             abbreviation.setText(subjectToEdit.getAbbreviation());
         } else {
-            System.err.println("[ERROR] - Subject to edit is not set.");
+            LogService.logError("Subject to edit is not set.");
         }
     }
 
@@ -87,13 +84,13 @@ public class EditSubjectController {
         if (validateInputs()) {
             try {
                 Subject newSubject = new Subject(subjectName.getText(), abbreviation.getText());
-                System.out.println("Updating subject: " + subjectToEdit + " to " + newSubject);
+
                 if (SubjectManager.update(subjectToEdit, newSubject)) {
                     AlertService.showSuccessAlert("Předmět byl aktualizován.");
                     LoaderService.load(ViewEnum.SUBJECTS_OVERVIEW, getClass(), subjectName, currentUser);
                 }
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to save subject.");
+                LogService.logError("Failed to save subject.");
                 e.printStackTrace();
             }
         }

@@ -110,7 +110,7 @@ public class LoaderService {
                     break;
 
                 default:
-                    System.out.println("[WARNING] - No specified actions for view: " + view.getName());
+                    LogService.logWarning("No specified actions for view: " + view.getName());
                     break;
             }
 
@@ -122,7 +122,7 @@ public class LoaderService {
             stage.show();
             stage.centerOnScreen();
         } catch (IOException e) {
-            System.err.println("[ERROR] - Failed to load " + view.getName() + "-view.fxml.");
+            LogService.logWarning("Failed to load " + view.getName() + "-view.fxml.");
             e.printStackTrace();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -140,7 +140,7 @@ public class LoaderService {
                 editTopicController.setTopicToEdit(topicToEdit);
                 editTopicController.initializeData();
             } else {
-                System.out.println("[WARNING] - No specified actions for view: " + view.getName());
+                LogService.logWarning("No specified actions for view: " + view.getName());
             }
 
             Scene scene = new Scene(root);
@@ -151,7 +151,7 @@ public class LoaderService {
             stage.show();
             stage.centerOnScreen();
         } catch (Exception e) {
-            System.err.println("[ERROR] - Failed to load " + view.getName() + "-view.fxml: " + e.getMessage());
+            LogService.logError("Failed to load " + view.getName() + "-view.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -167,7 +167,7 @@ public class LoaderService {
                 editSubjectController.setSubjectToEdit(subjectToEdit);
                 editSubjectController.initializeUserData();
             } else {
-                System.out.println("[WARNING] - No specified actions for view: " + view.getName());
+                LogService.logWarning("No specified actions for view: " + view.getName());
             }
 
             Scene scene = new Scene(root);
@@ -178,7 +178,7 @@ public class LoaderService {
             stage.show();
             stage.centerOnScreen();
         } catch (Exception e) {
-            System.err.println("[ERROR] - Failed to load " + view.getName() + "-view.fxml: " + e.getMessage());
+            LogService.logError("Failed to load " + view.getName() + "-view.fxml: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -194,7 +194,7 @@ public class LoaderService {
                 editProfileController.setUserToEdit(userToEdit);
                 editProfileController.initializeUserData();
             } else {
-                System.out.println("[WARNING] - No specified actions for view: " + view.getName());
+                LogService.logWarning("No specified actions for view: " + view.getName());
             }
 
             Scene scene = new Scene(root);
@@ -205,7 +205,7 @@ public class LoaderService {
             stage.show();
             stage.centerOnScreen();
         } catch (IOException e) {
-            System.err.println("[ERROR] - Failed to load " + view.getName() + "-view.fxml.");
+            LogService.logError("Failed to load " + view.getName() + "-view.fxml.");
             e.printStackTrace();
         } catch (SQLException e) {
             throw new RuntimeException(e);

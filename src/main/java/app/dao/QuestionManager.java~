@@ -45,7 +45,7 @@ public class QuestionManager {
                 }
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] - Failed to get question difficulties");
+            LogService.logError("Failed to get question difficulties");
             e.printStackTrace();
         }
 
@@ -79,7 +79,7 @@ public class QuestionManager {
                 }
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] - Failed to get question types");
+            LogService.logError("Failed to get question types");
             e.printStackTrace();
         }
 
@@ -99,9 +99,9 @@ public class QuestionManager {
 
                     pstmt.executeUpdate();
 
-                    System.out.println("[INFO] - Question " + question + " inserted into database.");
+                    LogService.logInfo("Question " + question + " inserted into database.");
                 } catch (SQLException e) {
-                    System.err.println("[ERROR] - Failed to save question " + question + " into database.");
+                    LogService.logError("Failed to save question " + question + " into database.");
                     e.printStackTrace();
                     return false;
                 }
@@ -118,10 +118,10 @@ public class QuestionManager {
 
                 pstmt.executeUpdate();
 
-                System.out.println("[INFO] - Question " + question + " linked to tests in 'questions_tests' table.");
+                LogService.logInfo("Question " + question + " linked to tests in 'questions_tests' table.");
                 return true;
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Falied to link question " + question + " to tests in 'questions_tests' table.");
+                LogService.logError("Falied to link question " + question + " to tests in 'questions_tests' table.");
                 e.printStackTrace();
                 return false;
             }
@@ -131,9 +131,12 @@ public class QuestionManager {
 
     public static int getId(Question question) {
         if (db.getConn() != null) {
-            String sql = "SELECT questionId FROM questions WHERE text = ?";
+            String sql = "SELECT questionId FROM questions WHERE text = ? AND type = ? AND difficulty = ? AND points = ?";
             try (PreparedStatement pstmt = db.getConn().prepareStatement(sql)) {
                 pstmt.setString(1, question.getText());
+                pstmt.setString(2, question.getType().getName());
+                pstmt.setString(3, question.getDifficulty().getName());
+                pstmt.setInt(4, question.getPoints());
 
                 try (ResultSet rs = pstmt.executeQuery()) {
                     if (rs.next()) {
@@ -162,15 +165,15 @@ public class QuestionManager {
                         pstmt.executeUpdate();
                     }
 
-                    System.out.println("[INFO] - Question " + question + " linked to test with id " + testId + ".");
+                    LogService.logInfo("Question " + question + " linked to test with id " + testId + ".");
                     return true;
                 } catch (SQLException e) {
-                    System.err.println("[ERROR] - Failed to link question " + question + " to test with id " + testId + ".");
+                    LogService.logError("Failed to link question " + question + " to test with id " + testId + ".");
                     e.printStackTrace();
                     return false;
                 }
             } else {
-                System.out.println("[INFO] - Question " + question + " already linked to test with id " + testId + ".");
+                LogService.logInfo("Question " + question + " already linked to test with id " + testId + ".");
                 return true;
             }
         }

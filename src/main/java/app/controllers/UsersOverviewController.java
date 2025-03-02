@@ -7,6 +7,7 @@ import app.models.User;
 import app.services.AlertService;
 import app.services.DynamicService;
 import app.services.LoaderService;
+import app.services.LogService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -80,7 +81,7 @@ public class UsersOverviewController {
         String[] parts = userData.split(" | ");
 
         if (parts.length < 2) {
-            System.err.println("[ERROR] - Unable to extract test email from userData.");
+            LogService.logError("Unable to extract test email from userData.");
             return null;
         }
 
@@ -122,18 +123,18 @@ public class UsersOverviewController {
                     if (UserManager.delete(userToDelete)) {
                         LoaderService.load(ViewEnum.REGISTER, getClass(), users, currentUser);
                     } else {
-                        System.out.println("[INFO] - Failed to delete user " + userData + " from database.");
+                        LogService.logInfo("Failed to delete user " + userData + " from database.");
                     }
                 }
             } else {
                 if (UserManager.delete(userToDelete)) {
                     showUsersListView();
                 } else {
-                    System.out.println("[INFO] - Failed to delete user " + userData + " from database.");
+                    LogService.logInfo("Failed to delete user " + userData + " from database.");
                 }
             }
         } catch (Exception e) {
-            System.out.println("[INFO] - Error while deleting user " + userData + " from database.");
+            LogService.logInfo("Error while deleting user " + userData + " from database.");
             e.printStackTrace();
         }
     }

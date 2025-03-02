@@ -134,13 +134,13 @@ public class AITestGeneratorService extends AIService {
         // Extract attributes from the Test object
         Prompt prompt = test.getPrompt();
         if (prompt == null) {
-            System.err.println("[ERROR] - Missing prompt information in the test.");
+            LogService.logError("Missing prompt information in the test.");
             return null;
         }
 
         ArrayList<Topic> topicsList = prompt.getTopics();
         if (topicsList == null || topicsList.isEmpty()) {
-            System.err.println("[ERROR] - Missing topics in the Prompt object.");
+            LogService.logError("Missing topics in the Prompt object.");
             return null;
         }
 
@@ -148,7 +148,7 @@ public class AITestGeneratorService extends AIService {
         Subject subject = SubjectManager.getTopicsSubject(firstTopicName);
 
         if (subject == null) {
-            System.err.println("[ERROR] - Subject not found for topic: " + firstTopicName);
+            LogService.logError("Subject not found for topic: " + firstTopicName);
             return null;
         }
 
@@ -199,22 +199,22 @@ public class AITestGeneratorService extends AIService {
                 String fileContent = FileService.readFileContent(attachedFile);
 
                 if (!fileContent.isEmpty() && !fileContent.isBlank()) {
-                    userPromptBuilder.append("Obsah přiloženého souboru:\n").append(fileContent).append("\n");
+                    userPromptBuilder.append("Obsah přiloženého souboru s názvem '").append(attachedFile.getName()).append("':\n").append(fileContent).append("\n");
                 }
             } catch (IOException e) {
-                System.err.println("[ERROR] - Failed to read the attached file. Error: " + e.getMessage());
+                LogService.logError("Failed to read the attached file. Error: " + e.getMessage());
             }
         }
 
         JsonObject userPromptJson = stringPromptToJsonObject(userPromptBuilder.toString());
         messages.add(userPromptJson);
 
-        System.out.println("[INFO] - Prompting the AI...\n");
+        LogService.logInfo("Prompting the AI...\n");
 
         // Send the prompt to the AI and get the response
         String response = this.askAI(messages);
 
-        System.out.println("[INFO] - Assistant response:\n" + response + "\n");
+        LogService.logInfo("Assistant response:\n" + response + "\n");
 
         AIValidatorService validator = new AIValidatorService();
 

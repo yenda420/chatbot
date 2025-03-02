@@ -13,13 +13,13 @@ public class AIValidatorService extends AIService {
 
     // Validates the assistant's response and handles corrections
     public String validateOutput(String assistantResponse, AITestGeneratorService ai, Test test) {
-        System.out.println("[INFO] - Validating output...");
+        LogService.logInfo("Validating output...");
 
         while (attempts < MAX_ATTEMPTS) {
             List<String> issues = checkFormatIssues(assistantResponse, test);
 
             if (issues == null) {
-                System.err.println("[ERROR] - Failed to check format issues.");
+                LogService.logError("Failed to check format issues.");
                 return null;
             }
 
@@ -54,21 +54,21 @@ public class AIValidatorService extends AIService {
             assistantResponse = ai.askAI(correctionPrompt.toString());
 
             if (assistantResponse == null) {
-                System.err.println("[ERROR] - Failed to get a response from the assistant.");
+                LogService.logError("Failed to get a response from the assistant.");
                 return null;
             }
 
-            System.out.println("[INFO] - Attempt " + attempts + ": \n" + correctionPrompt + "\n");
-            System.out.println("[INFO] - New response number " + attempts + ": \n" + assistantResponse);
+            LogService.logInfo("Attempt " + attempts + ": \n" + correctionPrompt + "\n");
+            LogService.logInfo("New response number " + attempts + ": \n" + assistantResponse);
         }
 
-        System.err.println("[WARNING] - Failed to get a valid response from the assistant after " + MAX_ATTEMPTS + " attempts.");
+        LogService.logError("Failed to get a valid response from the assistant after " + MAX_ATTEMPTS + " attempts.");
         return null;
     }
 
     // Checks for format issues in the assistant's response
     private List<String> checkFormatIssues(String response, Test test) {
-        System.out.println("[INFO] - Looking for format issues...");
+        LogService.logInfo("Looking for format issues...");
 
         QuestionTypeEnum questionType = test.getQuestionType();
         List<String> issues = new ArrayList<>();
@@ -77,7 +77,7 @@ public class AIValidatorService extends AIService {
         try {
             lines = response.split("\n");
         } catch (Exception e) {
-            System.err.println("[ERROR] - Failed to split response into lines.");
+            LogService.logError("Failed to split response into lines.");
             return null;
         }
 
@@ -310,7 +310,7 @@ public class AIValidatorService extends AIService {
     public boolean isFactuallyCorrect(String testContent) {
         AIService ai = new AIService();
 
-        System.out.println("[INFO] - Fact-checking the test...");
+        LogService.logInfo("Fact-checking the test...");
 
         String factCheckPrompt = "Prosím, proveď kontrolu faktických chyb v následujícím testu. "
                 + "Jsou v testu nějaké faktické chyby v odpovědích nebo vysvětleních? "
@@ -321,7 +321,7 @@ public class AIValidatorService extends AIService {
         String assistantResponse = ai.askAI(factCheckPrompt);
 
         if (assistantResponse == null || assistantResponse.isEmpty()) {
-            System.err.println("[ERROR] - Failed to get a response from the assistant during fact-checking.");
+            LogService.logError("Failed to get a response from the assistant during fact-checking.");
             return false;
         }
 
@@ -329,15 +329,15 @@ public class AIValidatorService extends AIService {
         String responseLowerCase = assistantResponse.trim().toLowerCase(Locale.ROOT);
         if (responseLowerCase.startsWith("ne")) {
             // Assistant indicates no factual errors
-            System.out.println("[INFO] - Test fact-checked successfully with no errors.");
+            LogService.logInfo("Test fact-checked successfully with no errors.");
             return true;
         } else if (responseLowerCase.startsWith("ano")) {
             // Assistant indicates there are factual errors
-            System.err.println("[WARNING] - Test contains factual errors.");
+            LogService.logWarning("Test contains factual errors.");
             return false;
         } else {
             // Unclear response, defaulting to false
-            System.err.println("[WARNING] - Assistant response unclear. Assuming test has factual errors.");
+            LogService.logWarning("Assistant response unclear. Assuming test has factual errors.");
             return false;
         }
     }

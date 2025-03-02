@@ -4,10 +4,13 @@ target/
 !**/src/test/**/target/
 
 ### App notes ###
-## notes
+notes
 
 ### App configuration ###
-## .env
+.env
+
+### App logs ###
+logs/
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

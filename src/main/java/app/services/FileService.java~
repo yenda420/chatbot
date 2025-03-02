@@ -26,6 +26,7 @@ public class FileService {
                 contentBuilder.append(line).append("\n");
             }
         }
+        System.out.println(contentBuilder);
         return contentBuilder.toString();
     }
 

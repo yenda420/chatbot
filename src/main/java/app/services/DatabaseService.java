@@ -21,13 +21,14 @@ public class DatabaseService {
                 conn = DriverManager.getConnection(URL, USER, PASSWORD);
 
                 if (!conn.isClosed()) {
-                    System.out.println("[INFO] - Database connected.");
+                    LogService.logInfo("Database connected.");
+                    LogService.logInfo("Database connected.");
                 }
             } else {
-                System.out.println("[INFO] - Using existing database connection.");
+                LogService.logInfo("Using existing database connection.");
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] - Failed to connect to the database.");
+            LogService.logError("Failed to connect to the database.");
             e.printStackTrace();
         }
     }
@@ -42,9 +43,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Database '" + DB_NAME + "' created.");
+            LogService.logInfo("Database '" + DB_NAME + "' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create database '" + DB_NAME + "'.");
+            LogService.logError("Failed to create database '" + DB_NAME + "'.");
             e.printStackTrace();
         }
     }
@@ -54,9 +55,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Now using database '" + DB_NAME + "'.");
+            LogService.logInfo("Now using database '" + DB_NAME + "'.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to switch to database '" + DB_NAME + "'.");
+            LogService.logError("Failed to switch to database '" + DB_NAME + "'.");
             e.printStackTrace();
         }
     }
@@ -70,9 +71,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Table 'subjects' created.");
+            LogService.logInfo("Table 'subjects' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'subjects'.");
+            LogService.logError("Failed to create table 'subjects'.");
             e.printStackTrace();
         }
     }
@@ -90,9 +91,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Table 'topics' created.");
+            LogService.logInfo("Table 'topics' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'topics'.");
+            LogService.logError("Failed to create table 'topics'.");
             e.printStackTrace();
         }
     }
@@ -105,9 +106,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Table 'prompts' created.");
+            LogService.logInfo("Table 'prompts' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'prompts'.");
+            LogService.logError("Failed to create table 'prompts'.");
             e.printStackTrace();
         }
     }
@@ -122,9 +123,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Table 'topics_prompts' created.");
+            LogService.logInfo("Table 'topics_prompts' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'topics_prompts'.");
+            LogService.logError("Failed to create table 'topics_prompts'.");
             e.printStackTrace();
         }
     }
@@ -139,9 +140,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Table 'questions' created.");
+            LogService.logInfo("Table 'questions' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'questions'.");
+            LogService.logError("Failed to create table 'questions'.");
             e.printStackTrace();
         }
     }
@@ -157,9 +158,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Table 'users' created.");
+            LogService.logInfo("Table 'users' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'users'.");
+            LogService.logError("Failed to create table 'users'.");
             e.printStackTrace();
         }
     }
@@ -174,9 +175,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Table 'users_subjects' created.");
+            LogService.logInfo("Table 'users_subjects' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'users_subjects'.");
+            LogService.logError("Failed to create table 'users_subjects'.");
             e.printStackTrace();
         }
     }
@@ -195,9 +196,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Table 'tests' created.");
+            LogService.logInfo("Table 'tests' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'tests'.");
+            LogService.logError("Failed to create table 'tests'.");
             e.printStackTrace();
         }
     }
@@ -212,9 +213,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Table 'questions_tests' created.");
+            LogService.logInfo("Table 'questions_tests' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'questions_tests'.");
+            LogService.logError("Failed to create table 'questions_tests'.");
             e.printStackTrace();
         }
     }
@@ -226,9 +227,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Table 'answers' created.");
+            LogService.logInfo("Table 'answers' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'answers'.");
+            LogService.logError("Failed to create table 'answers'.");
             e.printStackTrace();
         }
     }
@@ -245,9 +246,9 @@ public class DatabaseService {
 
         try (Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
-            System.out.println("[INFO] - Table 'questions_answers' created.");
+            LogService.logInfo("Table 'questions_answers' created.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to create table 'questions_answers'.");
+            LogService.logError("Failed to create table 'questions_answers'.");
             e.printStackTrace();
         }
     }
@@ -327,7 +328,7 @@ public class DatabaseService {
             dbService.setConnections();
             dbService.saveDefaultData();
         } else {
-            System.err.println("[ERROR] - Database initialization failed due to connection issues.");
+            LogService.logError("Database initialization failed due to connection issues.");
         }
     }
 
@@ -337,9 +338,9 @@ public class DatabaseService {
     private void dropDatabase() {
         try (Statement stmt = conn.createStatement()) {
             stmt.execute("DROP DATABASE IF EXISTS " + DB_NAME);
-            System.out.println("[INFO] - Database '" + DB_NAME + "' dropped.");
+            LogService.logInfo("Database '" + DB_NAME + "' dropped.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to drop database '" + DB_NAME + "'.");
+            LogService.logError("Failed to drop database '" + DB_NAME + "'.");
             e.printStackTrace();
         }
     }
@@ -349,10 +350,10 @@ public class DatabaseService {
             try {
                 if (!conn.isClosed()) {
                     conn.close();
-                    System.out.println("[INFO] - Database connection closed.");
+                    LogService.logInfo("Database connection closed.");
                 }
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to close the database connection.");
+                LogService.logError("Failed to close the database connection.");
                 e.printStackTrace();
             }
         }

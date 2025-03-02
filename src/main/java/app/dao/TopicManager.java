@@ -6,6 +6,7 @@ import app.models.Topic;
 
 import app.models.User;
 import app.services.DatabaseService;
+import app.services.LogService;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class TopicManager {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to get topic.");
+            LogService.logError("Failed to get topic.");
             e.printStackTrace();
         }
 
@@ -78,7 +79,7 @@ public class TopicManager {
             int subjectId = SubjectManager.getId(topic.getSubject());
 
             if (subjectId == -1) {
-                System.err.println("[ERROR] - Subject " + topic.getSubject() + " not found in database.");
+                LogService.logError("Subject " + topic.getSubject() + " not found in database.");
                 return false;
             }
 
@@ -103,15 +104,15 @@ public class TopicManager {
 
                     pstmt.executeUpdate();
 
-                    System.out.println("[INFO] - Topic " + topic.getName() + " inserted into database.");
+                    LogService.logInfo("Topic " + topic.getName() + " inserted into database.");
                     return true;
                 } catch (SQLException e) {
-                    System.err.println("[ERROR] - Failed to save topic " + topic.getName() + " into database.");
+                    LogService.logError("Failed to save topic " + topic.getName() + " into database.");
                     e.printStackTrace();
                     return false;
                 }
             } else {
-                System.out.println("[INFO] - Topic " + topic.getName() + " already exists in database.");
+                LogService.logInfo("Topic " + topic.getName() + " already exists in database.");
                 return true;
             }
         }
@@ -127,14 +128,14 @@ public class TopicManager {
 
                 int rowsDeleted = pstmt.executeUpdate();
                 if (rowsDeleted > 0) {
-                    System.out.println("[INFO] - Topic " + topic.getName() + " deleted from database.");
+                    LogService.logInfo("Topic " + topic.getName() + " deleted from database.");
                     return true;
                 } else {
-                    System.out.println("[INFO] - Topic " + topic.getName() + " not found in database.");
+                    LogService.logInfo("Topic " + topic.getName() + " not found in database.");
                     return false;
                 }
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to delete topic " + topic.getName() + " from database.");
+                LogService.logError("Failed to delete topic " + topic.getName() + " from database.");
                 e.printStackTrace();
                 return false;
             }
@@ -170,14 +171,14 @@ public class TopicManager {
 
             int rowsUpdated = pstmt.executeUpdate();
             if (rowsUpdated > 0) {
-                System.out.println("[INFO] - Topic " + newTopic.getName() + " updated in database.");
+                LogService.logInfo("Topic " + newTopic.getName() + " updated in database.");
                 return true;
             } else {
-                System.out.println("[INFO] - Topic " + newTopic.getName() + " not found in database.");
+                LogService.logInfo("Topic " + newTopic.getName() + " not found in database.");
                 return false;
             }
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to update topic " + newTopic.getName() + " in database.");
+            LogService.logError("Failed to update topic " + newTopic.getName() + " in database.");
             e.printStackTrace();
             return false;
         }
@@ -188,7 +189,7 @@ public class TopicManager {
             try {
                 save(topic);
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to save default topic.");
+                LogService.logError("Failed to save default topic.");
                 e.printStackTrace();
                 return;
             }
@@ -264,7 +265,7 @@ public class TopicManager {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to get topic ID.");
+            LogService.logError("Failed to get topic ID.");
             e.printStackTrace();
         }
         return topicId;

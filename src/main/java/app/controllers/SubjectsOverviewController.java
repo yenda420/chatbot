@@ -7,6 +7,7 @@ import app.models.Subject;
 import app.models.User;
 import app.services.DynamicService;
 import app.services.LoaderService;
+import app.services.LogService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -82,7 +83,7 @@ public class SubjectsOverviewController {
                 showSubjectsListView();
             }
         } catch (SQLException e) {
-            System.out.println("[INFO] - Failed to delete subject " + subjectName + " from database.");
+            LogService.logInfo("Failed to delete subject " + subjectName + " from database.");
             e.printStackTrace();
         }
     }

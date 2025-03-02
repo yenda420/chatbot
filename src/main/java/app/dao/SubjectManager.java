@@ -7,6 +7,7 @@ import app.models.Topic;
 import app.models.User;
 
 import app.services.DatabaseService;
+import app.services.LogService;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -41,10 +42,10 @@ public class SubjectManager {
 
                     pstmt.executeUpdate();
 
-                    System.out.println("[INFO] - Subject " + subject.getName() + " inserted into database.");
+                    LogService.logInfo("Subject " + subject.getName() + " inserted into database.");
                     return true;
                 } catch (SQLException e) {
-                    System.err.println("[ERROR] - Failed to save subject " + subject.getName() + "  into database.");
+                    LogService.logError("Failed to save subject " + subject.getName() + "  into database.");
                     e.printStackTrace();
                     return false;
                 }
@@ -73,18 +74,17 @@ public class SubjectManager {
                 } else {
                     pstmt.setString(3, oldSubject.getName());
                 }
-                System.out.println(pstmt);
 
                 int rowsUpdated = pstmt.executeUpdate();
                 if (rowsUpdated > 0) {
-                    System.out.println("[INFO] - Subject " + newSubject.getName() + " updated in database.");
+                    LogService.logInfo("Subject " + newSubject.getName() + " updated in database.");
                     return true;
                 } else {
-                    System.err.println("[ERROR] - Failed to update subject " + newSubject.getName() + " in database.");
+                    LogService.logError("Failed to update subject " + newSubject.getName() + " in database.");
                     return false;
                 }
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to update subject " + newSubject.getName() + " in database.");
+                LogService.logError("Failed to update subject " + newSubject.getName() + " in database.");
                 e.printStackTrace();
                 return false;
             }
@@ -100,10 +100,10 @@ public class SubjectManager {
                 pstmt.setString(1, subject.getName());
                 pstmt.executeUpdate();
 
-                System.out.println("[INFO] - Subject " + subject.getName() + " deleted from database.");
+                LogService.logInfo("Subject " + subject.getName() + " deleted from database.");
                 return true;
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to delete subject " + subject.getName() + " from database.");
+                LogService.logError("Failed to delete subject " + subject.getName() + " from database.");
                 e.printStackTrace();
                 return false;
             }
@@ -161,11 +161,11 @@ public class SubjectManager {
             if (rs.next()) {
                 return rs.getString("abbreviation");
             } else {
-                System.err.println("[ERROR] - Failed to get subject abbreviation.");
+                LogService.logError("Failed to get subject abbreviation.");
                 return null;
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] - Failed to get subject abbreviation.");
+            LogService.logError("Failed to get subject abbreviation.");
             e.printStackTrace();
             return null;
         }
@@ -249,7 +249,7 @@ public class SubjectManager {
                 return rs.getInt("subjectId");
             }
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to get the user ID.");
+            LogService.logError("Failed to get the user ID.");
             e.printStackTrace();
         }
         return -1;

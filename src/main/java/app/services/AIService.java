@@ -30,7 +30,7 @@ public class AIService {
             // Initialize the conversation history
             conversationHistory = new JsonArray();
         } catch (IOException e) {
-            System.err.println("[ERROR] - Failed to set up the connection to the OpenAI API");
+            LogService.logError("Failed to set up the connection to the OpenAI API");
             e.printStackTrace();
         }
     }
@@ -38,7 +38,7 @@ public class AIService {
     // Method to send a single prompt
     public String askAI(String userPrompt) {
         if (userPrompt == null) {
-            System.err.println("[ERROR] - User prompt is null or empty.");
+            LogService.logError("User prompt is null or empty.");
             return null;
         }
 
@@ -55,7 +55,7 @@ public class AIService {
     // Method to send a list of messages
     public String askAI(ArrayList<JsonObject> messagesToSend) {
         if (messagesToSend == null || messagesToSend.isEmpty()) {
-            System.err.println("[ERROR] - Messages to send are null or empty.");
+            LogService.logError("Messages to send are null or empty.");
             return null;
         }
 
@@ -126,7 +126,7 @@ public class AIService {
                 }
             } else {
                 // Error response
-                System.err.println("[ERROR] - HTTP " + statusCode);
+                LogService.logError("HTTP " + statusCode);
                 try (BufferedReader br = new BufferedReader(
                         new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8))) {
                     StringBuilder errorBuilder = new StringBuilder();
@@ -134,11 +134,11 @@ public class AIService {
                     while ((errorLine = br.readLine()) != null) {
                         errorBuilder.append(errorLine.trim());
                     }
-                    System.err.println("[ERROR] - Details: " + errorBuilder);
+                    LogService.logError("Details: " + errorBuilder);
                 }
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] - Failed to send prompt to the OpenAI API");
+            LogService.logError("Failed to send prompt to the OpenAI API");
             e.printStackTrace();
         }
         return null;

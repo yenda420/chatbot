@@ -5,10 +5,7 @@ import app.enums.QuestionTypeEnum;
 import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 import app.models.*;
-import app.services.AlertService;
-import app.services.DynamicService;
-import app.services.FileService;
-import app.services.LoaderService;
+import app.services.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -102,7 +99,7 @@ public class TestsOverviewController {
         try {
             return Integer.parseInt(item.substring(item.indexOf("ID: ") + 4).trim());
         } catch (NumberFormatException e) {
-            System.err.println("[ERROR] - Invalid test ID format: " + item.substring(item.indexOf("ID: ")));
+            LogService.logError("Invalid test ID format: " + item.substring(item.indexOf("ID: ")));
             return -1;
         }
     }
@@ -112,10 +109,10 @@ public class TestsOverviewController {
             if (TestManager.deleteTestData(getTestId(item))) {
                 showTestsListView();
             } else {
-                System.err.println("[ERROR] - Failed to delete test " + item + " from database.");
+                LogService.logError("Failed to delete test " + item + " from database.");
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] - Error while deleting test: " + item + " from database.");
+            LogService.logError("Error while deleting test: " + item + " from database.");
         }
     }
 
@@ -124,7 +121,7 @@ public class TestsOverviewController {
             int testId = getTestId(item);
 
             if (testId < 0) {
-                System.err.println("[ERROR] - Unable to extract test ID from item.");
+                LogService.logError("Unable to extract test ID from item.");
                 return;
             }
 
@@ -133,23 +130,26 @@ public class TestsOverviewController {
             if (testForDownload != null) {
                 testForDownload.setId(testId);
             } else {
-                System.err.println("[ERROR] - Test with ID " + testId + " not found in database.");
+                LogService.logError("Test with ID " + testId + " not found in database.");
                 return;
             }
 
             String testContent = generateTestContent(testForDownload);
 
             if (!FileService.writeTestToFile(testContent, testForDownload)) {
-                System.err.println("[ERROR] - Failed to write test to file.");
-                AlertService.showErrorAlert("Test se nepodařilo uložit z technických důvodů.");
+                LogService.logError("Failed to write test to file.");
+                AlertService.showErrorAlert(
+                        "Test se nepodařilo uložit z technických důvodů.",
+                        "Chyba!",
+                        "Aplikace selhala.");
             } else {
-                System.out.println("[INFO] - Test downloaded successfully.");
+                LogService.logInfo("Test downloaded successfully.");
                 AlertService.showSuccessAlert("Test byl uložen do Stažených souborů (Downloads).");
             }
         } catch (NumberFormatException e) {
-            System.err.println("[ERROR] - Invalid test ID format.");
+            LogService.logError("Invalid test ID format.");
         } catch (SQLException e) {
-            System.err.println("[ERROR] - SQL exception occurred while downloading test.");
+            LogService.logError("SQL exception occurred while downloading test.");
             e.printStackTrace();
         }
     }
@@ -157,7 +157,7 @@ public class TestsOverviewController {
     private String generateTestContent(Test test) throws SQLException {
         StringBuilder contentBuilder = new StringBuilder();
 
-        System.out.println("[INFO] - Generating content for test: " + test.getName());
+        LogService.logInfo("Generating content for test: " + test.getName());
 
         contentBuilder.append("Název testu: ").append(test.getName()).append("\n");
         contentBuilder.append("Předmět: ").append(SubjectManager.getSubject(test.getPrompt().getTopics().get(0)).getName()).append("\n");

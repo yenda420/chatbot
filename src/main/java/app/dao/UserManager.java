@@ -4,6 +4,7 @@ import app.enums.UserRoleEnum;
 import app.models.User;
 import app.services.DatabaseService;
 
+import app.services.LogService;
 import com.google.common.hash.Hashing;
 import io.github.cdimascio.dotenv.Dotenv;
 
@@ -38,15 +39,15 @@ public class UserManager {
 
                     pstmt.executeUpdate();
 
-                    System.out.println("[INFO] - User " + user.getEmail() + " inserted into database.");
+                    LogService.logInfo("User " + user.getEmail() + " inserted into database.");
                     return true;
                 } catch (SQLException e) {
-                    System.err.println("[ERROR] - Failed to save user " + user.getEmail() + " into database.");
+                    LogService.logError("Failed to save user " + user.getEmail() + " into database.");
                     e.printStackTrace();
                     return false;
                 }
             } else {
-                System.out.println("[INFO] - User " + user.getFirstName() + " " + user.getLastName() + " already exists in database.");
+                LogService.logInfo("User " + user.getFirstName() + " " + user.getLastName() + " already exists in database.");
                 return true;
             }
         }
@@ -62,10 +63,10 @@ public class UserManager {
 
                 pstmt.executeUpdate();
 
-                System.out.println("[INFO] - User " + user.getEmail() + " deleted from database.");
+                LogService.logInfo("User " + user.getEmail() + " deleted from database.");
                 return true;
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to delete user " + user.getEmail() + " from database.");
+                LogService.logError("Failed to delete user " + user.getEmail() + " from database.");
                 e.printStackTrace();
                 return false;
             }
@@ -86,7 +87,7 @@ public class UserManager {
                     return rs.getInt("userId");
                 }
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to get the user ID.");
+                LogService.logError("Failed to get the user ID.");
                 e.printStackTrace();
             }
         }
@@ -109,13 +110,13 @@ public class UserManager {
 
                         pstmt.executeUpdate();
 
-                        System.out.println("[INFO] - User with ID " + userId + " unlinked from subject with ID " + subjectId + ".");
+                        LogService.logInfo("User with ID " + userId + " unlinked from subject with ID " + subjectId + ".");
                     }
                 }
 
                 return true;
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to unlink user from subjects.");
+                LogService.logError("Failed to unlink user from subjects.");
                 e.printStackTrace();
                 return false;
             }
@@ -139,12 +140,12 @@ public class UserManager {
                         pstmt.executeUpdate();
                     }
 
-                    System.out.println("[INFO] - User with ID " + userId + " linked to subject with ID " + subjectId + ".");
+                    LogService.logInfo("User with ID " + userId + " linked to subject with ID " + subjectId + ".");
                 }
 
                 return true;
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to save subjects into database.");
+                LogService.logError("Failed to save subjects into database.");
                 e.printStackTrace();
                 return false;
             }
@@ -165,7 +166,7 @@ public class UserManager {
                     return rs.getString("passwordHash");
                 }
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to get password hash.");
+                LogService.logError("Failed to get password hash.");
                 e.printStackTrace();
             }
         }
@@ -192,7 +193,7 @@ public class UserManager {
                     );
                 }
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to get the user.");
+                LogService.logError("Failed to get the user.");
                 e.printStackTrace();
             }
         }
@@ -219,7 +220,7 @@ public class UserManager {
                     );
                 }
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to get the user.");
+                LogService.logError("Failed to get the user.");
                 e.printStackTrace();
             }
         }
@@ -244,7 +245,7 @@ public class UserManager {
                 }
             }
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to get the users.");
+            LogService.logError("Failed to get the users.");
             e.printStackTrace();
         }
 
@@ -282,14 +283,14 @@ public class UserManager {
 
                 int rowsUpdated = pstmt.executeUpdate();
                 if (rowsUpdated > 0) {
-                    System.out.println("[INFO] - User " + oldEmail + " updated in database.");
+                    LogService.logInfo("User " + oldEmail + " updated in database.");
                     return true;
                 } else {
-                    System.out.println("[INFO] - User " + oldEmail + " not found in database.");
+                    LogService.logInfo("User " + oldEmail + " not found in database.");
                     return false;
                 }
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to update user " + user.getEmail() + ".");
+                LogService.logError("Failed to update user " + user.getEmail() + ".");
                 e.printStackTrace();
                 return false;
             }
@@ -323,7 +324,7 @@ public class UserManager {
                 }
             }
         } catch (Exception e) {
-            System.err.println("[ERROR] - Failed to get question roles");
+            LogService.logError("Failed to get question roles");
             e.printStackTrace();
         }
 
@@ -364,7 +365,7 @@ public class UserManager {
             user.relate(subjects);
             testUser.relate(subjects);
         } catch (SQLException e) {
-            System.err.println("[ERROR] - Failed to save default users.");
+            LogService.logError("Failed to save default users.");
             e.printStackTrace();
         }
     }

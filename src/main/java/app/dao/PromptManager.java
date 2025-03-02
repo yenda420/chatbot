@@ -4,6 +4,7 @@ import app.models.Prompt;
 import app.models.Topic;
 
 import app.services.DatabaseService;
+import app.services.LogService;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -54,9 +55,9 @@ public class PromptManager {
                 try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
                     if (generatedKeys.next()) {
                         promptId = generatedKeys.getInt(1);
-                        System.out.println("[INFO] - Prompt " + prompt + " inserted into database.");
+                        LogService.logInfo("Prompt " + prompt + " inserted into database.");
                     } else {
-                        throw new SQLException("[ERROR] - Failed to save prompt " + promptId + " into database, no ID obtained.");
+                        throw new SQLException("Failed to save prompt " + promptId + " into database, no ID obtained.");
                     }
                 }
 
@@ -76,11 +77,11 @@ public class PromptManager {
 
                 linkStmt.executeBatch();
 
-                System.out.println("[INFO] - Prompt " + prompt + " linked to topics in 'topics_prompts' table.");
+                LogService.logInfo("Prompt " + prompt + " linked to topics in 'topics_prompts' table.");
 
                 return promptId;
             } catch (SQLException e) {
-                System.err.println("[ERROR] - Failed to save prompt " + promptId + " into database.");
+                LogService.logError("Failed to save prompt " + promptId + " into database.");
                 e.printStackTrace();
             } finally {
                 if (pstmt != null) {
@@ -88,7 +89,7 @@ public class PromptManager {
                 }
             }
         } else {
-            System.err.println("[ERROR] - Database connection is null.");
+            LogService.logError("Database connection is null.");
         }
 
         return promptId;

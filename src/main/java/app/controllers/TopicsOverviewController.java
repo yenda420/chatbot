@@ -7,6 +7,7 @@ import app.models.Topic;
 import app.models.User;
 import app.services.DynamicService;
 import app.services.LoaderService;
+import app.services.LogService;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -79,7 +80,7 @@ public class TopicsOverviewController {
                 showTopicsListView();
             }
         } catch (SQLException e) {
-            System.out.println("[INFO] - Failed to delete topic " + topicName + " from database.");
+            LogService.logInfo("Failed to delete topic " + topicName + " from database.");
             e.printStackTrace();
         }
     }

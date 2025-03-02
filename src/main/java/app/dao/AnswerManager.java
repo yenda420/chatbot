@@ -4,6 +4,7 @@ import app.models.Answer;
 import app.models.Question;
 
 import app.services.DatabaseService;
+import app.services.LogService;
 
 import java.sql.PreparedStatement;
 import java.sql.Statement;
@@ -40,10 +41,10 @@ public class AnswerManager {
                         }
                     }
 
-                    System.out.println("[INFO] - Answer " + answer + " inserted into database.");
+                    LogService.logInfo("Answer " + answer + " inserted into database.");
                     return true;
                 } catch (SQLException e) {
-                    System.err.println("[ERROR] - Failed to save answer " + answer + " into database.");
+                    LogService.logError("Failed to save answer " + answer + " into database.");
                     e.printStackTrace();
                     return false;
                 }
@@ -52,10 +53,10 @@ public class AnswerManager {
                 int answerId = getId(answer);
                 if (answerId > 0) {
                     answer.setId(answerId);
-                    System.out.println("[INFO] - Answer " + answer + " already exists in database with ID " + answerId + ".");
+                    LogService.logInfo("Answer " + answer + " already exists in database with ID " + answerId + ".");
                     return true;
                 } else {
-                    System.err.println("[ERROR] - Failed to retrieve existing answer ID for " + answer);
+                    LogService.logError("Failed to retrieve existing answer ID for " + answer);
                     return false;
                 }
             }
@@ -82,15 +83,15 @@ public class AnswerManager {
 
                     pstmt.executeUpdate();
 
-                    System.out.println("[INFO] - Answer " + answer + " linked to question " + question + ".");
+                    LogService.logInfo("Answer " + answer + " linked to question " + question + ".");
                     return true;
                 } catch (SQLException e) {
-                    System.err.println("[ERROR] - Failed to link answer " + answer + " to question " + question + ".");
+                    LogService.logError("Failed to link answer " + answer + " to question " + question + ".");
                     e.printStackTrace();
                     return false;
                 }
             } else {
-                System.out.println("[INFO] - Answer " + answer + " is already linked to question " + question + ".");
+                LogService.logInfo("Answer " + answer + " is already linked to question " + question + ".");
                 return true;
             }
         }

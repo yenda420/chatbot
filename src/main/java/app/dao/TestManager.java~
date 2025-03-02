@@ -160,7 +160,7 @@ public class TestManager {
 
             String[] lines = testContent.split("\n");
 
-            LogService.logDebug("Number of lines: " + lines.length);
+            LogService.log("Number of lines: " + lines.length);
 
             QuestionTypeEnum questionType = test.getQuestionType();
             DifficultyEnum difficulty = test.getDifficulty();
@@ -170,7 +170,7 @@ public class TestManager {
 
             // Log initial lines
             for (int i = 0; i < lines.length; i++) {
-                LogService.logDebug("Line " + i + ": " + lines[i]);
+                LogService.log("Line " + i + ": " + lines[i]);
             }
 
             // Remove any leading unwanted lines
@@ -198,7 +198,7 @@ public class TestManager {
 
             while (index < lines.length) {
                 String line = lines[index].trim();
-                LogService.logDebug("Processing line: " + line);
+                LogService.log("Processing line: " + line);
 
                 if (line.equalsIgnoreCase("Správné odpovědi:")) {
                     inQuestions = false;
@@ -244,7 +244,7 @@ public class TestManager {
                         int points = Integer.parseInt(pointsString);
 
                         Question question = new Question(questionText.toString(), questionType, difficulty, points);
-                        LogService.logDebug("Question: " + questionText);
+                        LogService.log("Question: " + questionText);
 
                         index += 1; // Move index past 'Body:' line
                         List<Answer> answersForQuestion = new ArrayList<>();
@@ -267,7 +267,7 @@ public class TestManager {
                             }
 
                             String optionLine = lines[index].trim();
-                            LogService.logDebug("Expected 'Ano / Ne' line, got: " + optionLine);
+                            LogService.log("Expected 'Ano / Ne' line, got: " + optionLine);
 
                             if (!optionLine.equalsIgnoreCase("Ano / Ne")) {
                                 LogService.logError("Expected 'Ano / Ne' line for question " + (questionCount + 1) + ", but got: '" + optionLine + "'");

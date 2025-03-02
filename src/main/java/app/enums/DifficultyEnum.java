@@ -21,6 +21,6 @@ public enum DifficultyEnum {
                 return difficulty;
             }
         }
-        throw new IllegalArgumentException("[ERROR] - No constant with name " + name + " found");
+        throw new IllegalArgumentException("No constant with name " + name + " found");
     }
 }
