@@ -11,7 +11,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.EditTopicController">
-    <VBox fx:id="formContainer" alignment="TOP_CENTER" prefHeight="950" prefWidth="1300" spacing="10" styleClass="form-container">
+    <VBox fx:id="formContainer" alignment="TOP_CENTER" prefHeight="990" prefWidth="1300" spacing="10" styleClass="form-container">
         <!-- Horizontal Navigation -->
         <HBox fx:id="horizontalMenu" alignment="CENTER" spacing="10" styleClass="horizontal-menu">
             <Button onAction="#onGoToMain" styleClass="menu-button" text="Generovat test" />

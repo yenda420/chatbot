@@ -15,14 +15,6 @@ public class TopicManager {
     private static DatabaseService db;
     private static final ArrayList<Topic> defaultTopics = new ArrayList<>();
 
-    public TopicManager() {
-        db = new DatabaseService();
-
-        for (TopicEnum topicEnum : TopicEnum.values()) {
-            defaultTopics.add(topicEnum.getTopic());
-        }
-    }
-
     public static Topic getTopic(String topicName) {
         String sql = "SELECT * FROM topics WHERE name = ?";
 
@@ -48,6 +40,14 @@ public class TopicManager {
         }
 
         return null;
+    }
+
+    public TopicManager() {
+        db = new DatabaseService();
+
+        for (TopicEnum topicEnum : TopicEnum.values()) {
+            defaultTopics.add(topicEnum.getTopic());
+        }
     }
 
     public static ArrayList<Topic> getTopicsByPromptId(int promptId) throws SQLException {

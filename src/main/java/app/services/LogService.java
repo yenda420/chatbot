@@ -89,8 +89,4 @@ public class LogService {
     public static void logError(String message) {
         logger.log(Level.SEVERE, message);
     }
-
-    public static void logError(String message, Throwable throwable) {
-        logger.log(Level.SEVERE, message, throwable);
-    }
 }

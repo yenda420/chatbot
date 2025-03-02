@@ -33,13 +33,13 @@
         <!-- Main content -->
         <VBox alignment="CENTER" prefHeight="723.0" prefWidth="550.0">
           <VBox alignment="CENTER" spacing="10" styleClass="form-container">
-              <Text styleClass="heading" text="Změna tématického celku" />
+              <Text styleClass="heading" text="Změna tematického celku" />
 
               <HBox alignment="CENTER_RIGHT" maxWidth="350" styleClass="explanation-container">
                   <Text styleClass="explanation" text="* povinné pole" />
               </HBox>
 
-              <TextField fx:id="topicName" maxWidth="350" promptText="Název tématického celku *" styleClass="input" />
+              <TextField fx:id="topicName" maxWidth="350" promptText="Název tematického celku *" styleClass="input" />
               <ComboBox fx:id="subject" maxWidth="350" promptText="Vyberte předmět *" styleClass="combobox" />
               <CheckBox fx:id="isPrivateCheckbox" text="Je soukromý (zobrazí se pouze Vám)" styleClass="checkbox-left" maxWidth="350"/>
 

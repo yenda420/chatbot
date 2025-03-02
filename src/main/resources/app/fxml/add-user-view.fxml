@@ -7,7 +7,7 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.geometry.Insets?>
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.AddUserController" styleClass="background">
-    <VBox fx:id="formContainer" alignment="TOP_CENTER" prefHeight="950" prefWidth="1300" styleClass="form-container">
+    <VBox fx:id="formContainer" alignment="TOP_CENTER" prefHeight="990" prefWidth="1300" styleClass="form-container">
         <!-- Horizontal Navigation -->
         <HBox fx:id="horizontalMenu" alignment="CENTER" spacing="10" styleClass="horizontal-menu">
             <Button onAction="#onGoToMain" styleClass="menu-button" text="Generovat test" />

@@ -41,7 +41,7 @@ public class TestManager {
             }
         }
 
-        LogService.logError("Test with promptId " + promptId + " not found in database[");
+        LogService.logError("Test with promptId " + promptId + " not found in database.");
         return -1;
     }
 

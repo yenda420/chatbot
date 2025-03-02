@@ -55,7 +55,7 @@
       <Region prefHeight="10" />
 
       <Text fx:id="hint" styleClass="label" text="Vyberte předmět než vyberete témata" />
-      <ListView fx:id="topics" maxWidth="350" prefHeight="350" styleClass="input-list-view" />
+      <ListView fx:id="topics" maxWidth="350" prefHeight="400" styleClass="input-list-view" />
 
       <TextArea fx:id="message" maxWidth="350" prefHeight="300" promptText="Další specifikace testu" styleClass="textarea" wrapText="true" />
 
