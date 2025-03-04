@@ -34,7 +34,7 @@
         <!-- Main content -->
         <VBox alignment="CENTER" prefHeight="723.0" prefWidth="550.0">
             <VBox alignment="CENTER" spacing="10" styleClass="form-container">
-                <Text styleClass="heading" text="Přidejte Tematický celek" />
+                <Text styleClass="heading" text="Přidejte tematický celek" />
 
                 <HBox alignment="CENTER_RIGHT" maxWidth="350" styleClass="explanation-container">
                     <Text styleClass="explanation" text="* povinné pole" />

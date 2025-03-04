@@ -115,7 +115,7 @@ public class FileService {
         XWPFParagraph maxPoints = document.createParagraph();
         maxPoints.setAlignment(ParagraphAlignment.RIGHT);
 
-        String maxPointsLine = "Maximalní počet bodů: " + TestManager.calculateMaxPoints(test.getId());
+        String maxPointsLine = "Maximální počet bodů: " + TestManager.calculateMaxPoints(test.getId());
         maxPointsLine = maxPointsLine.replace("\n", "");
 
         XWPFRun maxPointsRun = maxPoints.createRun();

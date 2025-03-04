@@ -18,8 +18,7 @@ public class LogService {
         public String format(LogRecord record) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(PATTERN);
             String timestamp = simpleDateFormat.format(new Date(record.getMillis()));
-            return String.format("[%s] %s: %s%n", timestamp,
-                    record.getLevel().equals(Level.FINE) ? "DEBUG" : record.getLevel(), record.getMessage());
+            return String.format("[%s] %s: %s%n", timestamp, record.getLevel().equals(Level.FINE) ? "DEBUG" : record.getLevel(), record.getMessage());
         }
     }
 

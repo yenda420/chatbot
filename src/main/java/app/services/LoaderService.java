@@ -129,7 +129,7 @@ public class LoaderService {
         }
     }
 
-    public static void load(ViewEnum view, Class<?> clazz, Stage stage, User currentUser, Topic topicToEdit) {
+    private static void load(ViewEnum view, Class<?> clazz, Stage stage, User currentUser, Topic topicToEdit) {
         try {
             FXMLLoader loader = new FXMLLoader(clazz.getResource("/app/fxml/" + view.getName() + "-view.fxml"));
             Parent root = loader.load();
@@ -156,7 +156,7 @@ public class LoaderService {
         }
     }
 
-    public static void load(ViewEnum view, Class<?> clazz, Stage stage, User currentUser, Subject subjectToEdit) {
+    private static void load(ViewEnum view, Class<?> clazz, Stage stage, User currentUser, Subject subjectToEdit) {
         try {
             FXMLLoader loader = new FXMLLoader(clazz.getResource("/app/fxml/" + view.getName() + "-view.fxml"));
             Parent root = loader.load();
@@ -183,7 +183,7 @@ public class LoaderService {
         }
     }
 
-    public static void load(ViewEnum view, Class<?> clazz, Stage stage, User currentUser, User userToEdit) {
+    private static void load(ViewEnum view, Class<?> clazz, Stage stage, User currentUser, User userToEdit) {
         try {
             FXMLLoader loader = new FXMLLoader(clazz.getResource("/app/fxml/" + view.getName() + "-view.fxml"));
             Parent root = loader.load();
@@ -217,7 +217,7 @@ public class LoaderService {
             case REGISTER -> "Registrace";
             case LOGIN -> "Přihlášení";
             case MAIN -> "Generátor testů";
-            case ADD_TOPIC -> "Přidejte Tematický celek";
+            case ADD_TOPIC -> "Přidejte tematický celek";
             case ADD_USER -> "Přidejte uživatele";
             case ADD_SUBJECT -> "Přidejte předmět";
             case TOPICS_OVERVIEW -> "Přehled Tematických celků";
