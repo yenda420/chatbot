@@ -2,6 +2,7 @@ package app.services;
 
 import app.enums.ViewEnum;
 import app.models.User;
+
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
 import javafx.scene.control.*;
@@ -115,7 +116,7 @@ public class DynamicService {
 
             @Override
             protected void updateItem(String item, boolean empty) {
-                // Called whenever a cell needs updating, such as scrolling or data changes
+                // Called whenever a cell needs updating
                 super.updateItem(item, empty);
 
                 // If the cell should display no content, set its graphic to null

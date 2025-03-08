@@ -10,6 +10,7 @@ module com.example.chatbot {
     requires io.github.cdimascio.dotenv.java;
     requires com.google.common;
     requires org.apache.poi.ooxml;
+    requires java.desktop;
 
     opens app to javafx.fxml;
     exports app;

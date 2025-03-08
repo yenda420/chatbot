@@ -132,7 +132,6 @@ public class AIValidatorService extends AIService {
         boolean foundMaxPoints = false;
         int questionCount = 0;
         int answerCount = 0;
-
         int index = 0;
 
         while (index < lines.length) {
@@ -179,7 +178,6 @@ public class AIValidatorService extends AIService {
             }
 
             if (inQuestions) {
-                // Pattern example: "1. Otazka"
                 if (questionPattern.matcher(line).matches()) {
                     index++;
                     questionCount++;
@@ -201,7 +199,6 @@ public class AIValidatorService extends AIService {
                         index++;
                     }
 
-                    // Start with 'Body: [number]'
                     if (!pointsFound) {
                         issues.add("Otázka " + questionNumber + " nemá zadané 'Body:'.");
                     }
@@ -227,12 +224,11 @@ public class AIValidatorService extends AIService {
                     index++;
                 }
             } else if (inAnswers) {
-                // Pattern example: "1. Odpověď"
                 if (questionPattern.matcher(line).matches()) {
                     index++;
                     answerCount++;
-                    int answerNumber = answerCount;
 
+                    int answerNumber = answerCount;
                     boolean foundExplanation = false;
 
                     // Read lines until explanation is found or next answer starts
@@ -249,16 +245,14 @@ public class AIValidatorService extends AIService {
 
                                 // Does the explanation end
                                 if (questionPattern.matcher(explanationLine).matches() || explanationLine.startsWith("Maximální počet bodů:")) {
-                                    // Reached next answer or end of answers
-                                    break;
+                                    break; // Reached next answer or end of answers
                                 }
 
                                 index++;
                             }
                             break;
                         } else if (questionPattern.matcher(currentLine).matches() || currentLine.startsWith("Maximální počet bodů:")) {
-                            // No explanation provided before next answer or end
-                            break;
+                            break; // No explanation provided before next answer or end
                         } else {
                             index++;
                         }
@@ -328,11 +322,9 @@ public class AIValidatorService extends AIService {
         // Locale.ROOT ensures lower case conversion independent to the language rules
         String responseLowerCase = assistantResponse.trim().toLowerCase(Locale.ROOT);
         if (responseLowerCase.startsWith("ne")) {
-            // Assistant indicates no factual errors
             LogService.logInfo("Test fact-checked successfully with no errors.");
             return true;
         } else if (responseLowerCase.startsWith("ano")) {
-            // Assistant indicates there are factual errors
             LogService.logWarning("Test contains factual errors.");
             return false;
         } else {

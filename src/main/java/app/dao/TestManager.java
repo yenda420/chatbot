@@ -2,9 +2,7 @@ package app.dao;
 
 import app.enums.DifficultyEnum;
 import app.enums.QuestionTypeEnum;
-
 import app.models.*;
-
 import app.services.DatabaseService;
 import app.services.LogService;
 
@@ -168,7 +166,7 @@ public class TestManager {
             int startIndex = 0;
             int endIndex = lines.length;
 
-            // Log initial lines
+            // Log initial lines for debugging potential errors when parsing the test
             for (int i = 0; i < lines.length; i++) {
                 LogService.logDebug("Line " + i + ": " + lines[i]);
             }
@@ -208,8 +206,7 @@ public class TestManager {
                 }
 
                 if (line.startsWith("Maximální počet bodů:")) {
-                    // End of test
-                    break;
+                    break; // End of test
                 }
 
                 if (inQuestions) {
@@ -465,7 +462,7 @@ public class TestManager {
             return null;
         }
 
-        // Extract correct answer (e.g., 'c) New York City')
+        // Extract correct answer
         String answerText = lines[index].trim().replace(questionNumber + ". ", "").trim();
 
         // Remove 'a) ', 'b) ', 'c) ' if present

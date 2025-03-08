@@ -3,6 +3,7 @@ package app;
 import app.enums.ViewEnum;
 import app.services.DatabaseService;
 import app.services.LoaderService;
+
 import javafx.application.Application;
 import javafx.stage.Stage;
 

@@ -3,7 +3,6 @@ package app.dao;
 import app.enums.DifficultyEnum;
 import app.enums.QuestionTypeEnum;
 import app.models.Question;
-
 import app.services.DatabaseService;
 import app.services.LogService;
 
@@ -153,7 +152,13 @@ public class QuestionManager {
 
     public static boolean linkQuestionToTest(Question question, int testId) throws SQLException {
         if (db.getConn() != null) {
-            boolean linkExists = DatabaseService.instanceInDatabase("questions_tests", testId, question.getId(), "testId", "questionId");
+            boolean linkExists =
+                    DatabaseService.instanceInDatabase(
+                            "questions_tests",
+                            testId,
+                            question.getId(),
+                            "testId",
+                            "questionId");
 
             if (!linkExists) {
                 String sql = "INSERT INTO questions_tests (questionId, testId) VALUES (?, ?)";

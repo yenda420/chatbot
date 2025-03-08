@@ -2,14 +2,11 @@ package app.controllers;
 
 import app.dao.SubjectManager;
 import app.dao.TopicManager;
-
 import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
-
 import app.models.Subject;
 import app.models.Topic;
 import app.models.User;
-
 import app.services.*;
 
 import javafx.collections.FXCollections;

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.logging.*;
 
 public class LogService {
-
     // Custom formatter class to ensure logs are on a single line
     private static class OneLineFormatter extends Formatter {
         private static final String PATTERN = "yyyy-MM-dd HH:mm:ss";

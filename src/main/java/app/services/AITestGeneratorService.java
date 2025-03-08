@@ -7,12 +7,12 @@ import app.models.Test;
 import app.models.Topic;
 import app.enums.QuestionTypeEnum;
 
-import com.google.gson.JsonObject;
-
 import java.io.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.JsonObject;
 
 public class AITestGeneratorService extends AIService {
     private ArrayList<JsonObject> messages;
@@ -133,12 +133,14 @@ public class AITestGeneratorService extends AIService {
     public String generateTest(Test test) throws SQLException {
         // Extract attributes from the Test object
         Prompt prompt = test.getPrompt();
+
         if (prompt == null) {
             LogService.logError("Missing prompt information in the test.");
             return null;
         }
 
         ArrayList<Topic> topicsList = prompt.getTopics();
+
         if (topicsList == null || topicsList.isEmpty()) {
             LogService.logError("Missing topics in the Prompt object.");
             return null;

@@ -2,7 +2,6 @@ package app.controllers;
 
 import app.dao.UserManager;
 import app.enums.ViewEnum;
-
 import app.services.LoaderService;
 import app.services.AlertService;
 
@@ -11,6 +10,7 @@ import javafx.scene.control.*;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
+
 import com.google.common.hash.Hashing;
 
 import static app.services.DatabaseService.instanceInDatabase;

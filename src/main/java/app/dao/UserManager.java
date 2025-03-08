@@ -3,10 +3,7 @@ package app.dao;
 import app.enums.UserRoleEnum;
 import app.models.User;
 import app.services.DatabaseService;
-
 import app.services.LogService;
-import com.google.common.hash.Hashing;
-import io.github.cdimascio.dotenv.Dotenv;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -14,6 +11,9 @@ import javafx.collections.ObservableList;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
+
+import com.google.common.hash.Hashing;
+import io.github.cdimascio.dotenv.Dotenv;
 
 import static app.services.DatabaseService.instanceInDatabase;
 
@@ -282,6 +282,7 @@ public class UserManager {
                 }
 
                 int rowsUpdated = pstmt.executeUpdate();
+
                 if (rowsUpdated > 0) {
                     LogService.logInfo("User " + oldEmail + " updated in database.");
                     return true;
@@ -341,29 +342,22 @@ public class UserManager {
                 .hashString("user", StandardCharsets.UTF_8)
                 .toString();
 
-        String testPasswordHash = Hashing.sha256()
-                .hashString("test", StandardCharsets.UTF_8)
-                .toString();
-
         String adminPasswordHash = Hashing.sha256()
                 .hashString(adminPassword, StandardCharsets.UTF_8)
                 .toString();
 
         // Test user
         User user = new User("user", userPasswordHash, UserRoleEnum.TEACHER);
-        User testUser = new User("test", testPasswordHash, UserRoleEnum.TEACHER);
         // Default admin
         User admin = new User(adminEmail, adminPasswordHash, UserRoleEnum.ADMIN);
 
         try {
             UserManager.save(user);
-            UserManager.save(testUser);
             UserManager.save(admin);
 
             // Test subjects
             ObservableList<String> subjects = FXCollections.observableArrayList("Programování", "Anglický jazyk");
             user.relate(subjects);
-            testUser.relate(subjects);
         } catch (SQLException e) {
             LogService.logError("Failed to save default users.");
             e.printStackTrace();

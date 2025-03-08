@@ -2,12 +2,9 @@
 
     import app.dao.SubjectManager;
     import app.dao.UserManager;
-
     import app.enums.UserRoleEnum;
     import app.enums.ViewEnum;
-
     import app.models.User;
-
     import app.services.DatabaseService;
     import app.services.LoaderService;
     import app.services.AlertService;
@@ -17,8 +14,12 @@
     import javafx.fxml.FXML;
     import javafx.scene.control.*;
 
+    import java.io.File;
+    import java.io.IOException;
     import java.nio.charset.StandardCharsets;
     import java.sql.SQLException;
+    import java.awt.Desktop;
+
     import com.google.common.hash.Hashing;
 
     public class RegisterController {
@@ -119,6 +120,26 @@
             }
 
             return true;
+        }
+
+        @FXML
+        private void onOpenManual() {
+            File file = new File("project-documentation/uzivatelsky-manual.pdf");
+            if (file.exists()) {
+                try {
+                    Desktop.getDesktop().open(file);
+                } catch (IOException e) {
+                    AlertService.showErrorAlert(
+                            "Nepodařilo se otevřít soubor s manuálem.",
+                            "Chyba!",
+                            "Aplikace selhala.");
+                }
+            } else {
+                AlertService.showErrorAlert(
+                        "Soubor s manuálem nebyl nalezen.",
+                        "Chyba!",
+                        "Aplikace selhala.");
+            }
         }
 
         private boolean emailIsValid(String email) {

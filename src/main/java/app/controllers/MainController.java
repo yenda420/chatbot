@@ -1,20 +1,15 @@
 package app.controllers;
 
 import app.dao.*;
-
 import app.enums.DifficultyEnum;
 import app.enums.QuestionTypeEnum;
 import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
-
 import app.models.Prompt;
 import app.models.Test;
 import app.models.Topic;
 import app.models.User;
-
 import app.services.*;
-
-import io.github.cdimascio.dotenv.Dotenv;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,10 +26,11 @@ import javafx.stage.FileChooser;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 import static app.services.FileService.writeTestToFile;
 
@@ -50,7 +46,7 @@ public class MainController {
             ".swift", ".go", ".rs", ".kt", ".cs", ".scala", ".sh", ".sql"
     ));
     
-    private static long MAX_FILE_SIZE = 1024 * 1024 * 5; // 5 MB size limit
+    private static final long MAX_FILE_SIZE = 1024 * 1024 * 5; // 5 MB size limit
 
     @FXML
     private TextField testName;

@@ -1,16 +1,12 @@
 package app.controllers;
 
 import app.dao.SubjectManager;
-
 import app.dao.UserManager;
 import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
-
 import app.models.User;
-
 import app.services.*;
 
-import com.google.common.hash.Hashing;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,6 +20,8 @@ import javafx.scene.text.Text;
 import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import com.google.common.hash.Hashing;
 
 public class EditProfileController {
     private final ObservableList<String> subjectList =

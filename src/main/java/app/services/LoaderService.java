@@ -2,10 +2,10 @@ package app.services;
 
 import app.controllers.*;
 import app.enums.ViewEnum;
-
 import app.models.Subject;
 import app.models.Topic;
 import app.models.User;
+
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;

@@ -9,19 +9,26 @@
     import app.services.DatabaseService;
     import app.services.DynamicService;
     import app.services.LoaderService;
-    import com.google.common.hash.Hashing;
+
     import javafx.collections.FXCollections;
     import javafx.collections.ObservableList;
     import javafx.fxml.FXML;
     import javafx.scene.control.*;
+    import javafx.scene.control.Button;
+    import javafx.scene.control.TextField;
     import javafx.scene.image.Image;
     import javafx.scene.image.ImageView;
     import javafx.scene.layout.HBox;
     import javafx.scene.layout.VBox;
     import javafx.scene.text.Text;
 
+    import java.awt.*;
+    import java.io.File;
+    import java.io.IOException;
     import java.nio.charset.StandardCharsets;
     import java.sql.SQLException;
+
+    import com.google.common.hash.Hashing;
 
     public class AddUserController {
         private User currentUser;
@@ -129,6 +136,26 @@
                     selectSubjectsHeading.setStyle("-fx-pref-height: 0; -fx-pref-width: 0;");
                     subjects.setStyle("-fx-pref-height: 0; -fx-pref-width: 0;");
                 }
+            }
+        }
+
+        @FXML
+        private void onOpenManual() {
+            File file = new File("project-documentation/uzivatelsky-manual.pdf");
+            if (file.exists()) {
+                try {
+                    Desktop.getDesktop().open(file);
+                } catch (IOException e) {
+                    AlertService.showErrorAlert(
+                            "Nepodařilo se otevřít soubor s manuálem.",
+                            "Chyba!",
+                            "Aplikace selhala.");
+                }
+            } else {
+                AlertService.showErrorAlert(
+                        "Soubor s manuálem nebyl nalezen.",
+                        "Chyba!",
+                        "Aplikace selhala.");
             }
         }
 

@@ -6,6 +6,7 @@ import app.enums.UserRoleEnum;
 import app.enums.ViewEnum;
 import app.models.*;
 import app.services.*;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -22,8 +23,6 @@ import java.util.Comparator;
 
 public class TestsOverviewController {
     private User currentUser;
-
-    private ObservableList<String> testsList = null;
 
     @FXML
     private ListView<String> tests;
@@ -78,7 +77,7 @@ public class TestsOverviewController {
                 testsArrayListString.add(test.getName() + " | ID: " + test.getId());
             }
 
-            testsList = FXCollections.observableArrayList(testsArrayListString);
+            ObservableList<String> testsList = FXCollections.observableArrayList(testsArrayListString);
 
             tests.setItems(testsList);
             tests.setVisible(true);

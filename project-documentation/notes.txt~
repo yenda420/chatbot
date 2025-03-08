@@ -1,0 +1,60 @@
+** Již probráno **
+-- Použití vlastního API klíče
+-- Použití dotenv-java knihovny pro .env proměnné
+-- One-to-One vztah v aplikaci pravděpodobně funguje, co nefunguje je spíše Reverse engineer funkce v MySQL Workbench
+-- Přidal jsem E-R Model (nově i s tabulkou users)
+-- Opravily se errory při generování testů (conversationHistory)
+-- Úspěšně se vkládají a linkují všechna data z vytvořeného testu
+-- Přidávání uživatelů
+-- Úprava UI
+-- Zobrazení informace o nahraném souboru
+-- Loader
+-- Automatické stáhnutí souboru po vygenerování
+-- Generování docx soubor
+-- Checkbox "Četl(a) jsem Manuál aplikace"
+-- Problém s kódem uvnitř testu
+-- Text wrap u TextArea
+-- Problém po přesměrování na stránku
+-- Základní operace oro uživatele
+-- Custom scrollbar, ikona pro odhlášní uživatele
+-- Dodělání a zdokonalení operací pro uživatele
+    User může prohlížet, přidávat, upravovat a mazat:
+       - Témata předmětů, které učí
+    User může prohlížet a zpětně stahovat:
+       - Testy z předmětů, které učí
+
+-- CRUD operace a prohlížení pro admina
+    Admin může prohlížet, přidávat, upravovat a mazat:
+        - Jakékoliv předměty, témata a uživatele
+    Admin může prohlížet, zpětně stahovat a mazat:
+        - Jakékoliv testy
+
+-- Možnost soukromých Tematických celků
+-- Ptát se admina, jestli opravdu chce smazat svůj účet nebo změnit roli
+-- Lepší vzhled alertů
+-- Custom logger
+-- Testování přípony souborů a jejich velikosti
+
+** Co je nového **
+-- Code review
+-- Odkaz na Manuál aplikace
+
+** Momentálně rozpracováno **
+-- Manuál aplikace
+-- Dokumentace aplikace
+    Zbývá:
+        - Číslování stránek
+        - Pokyny pro instalaci
+        - Všechny zdroje pro integraci AI, regex výrazů, lambda výrazů, JavaFX CSS...
+        - Review dokumentace
+
+** Na později **
+-- Review dokumentace
+-- Review manuálu
+-- Testování aplikace
+
+** Nestihne se **
+-- Rozpoznání, že uživatel není připojen k Wi-Fi
+-- Tagy v databázi jsou redundantní data => zmiňovaná funkcionalita by mohla být (?), ne však pomocí tags tabulky
+-- Abstraktní třída pro volání dotazů
+-- Technický dluh (lepší rozdělení souborů a jejich jednotlivých metod)

@@ -6,6 +6,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.geometry.Insets?>
+
 <StackPane xmlns:fx="http://javafx.com/fxml" fx:controller="app.controllers.AddUserController" styleClass="background">
     <VBox fx:id="formContainer" alignment="TOP_CENTER" prefHeight="990" prefWidth="1300" styleClass="form-container">
         <!-- Horizontal Navigation -->
@@ -51,7 +52,12 @@
             <Text fx:id="selectSubjectsHeading" text="Vyberte roli než vyberete vyučované předměty" styleClass="label"/>
             <ListView fx:id="subjects" maxWidth="350" maxHeight="120" styleClass="input-list-view"/>
 
-            <CheckBox fx:id="confirmationCheckbox" text="Tento uživatel četl Manuál aplikace *" styleClass="checkbox" maxWidth="350"/>
+            <HBox alignment="CENTER" spacing="3">
+                <CheckBox fx:id="confirmationCheckbox" text="Tento uživatel četl" styleClass="checkbox" />
+                <Hyperlink text="Uživatelský manuál" onAction="#onOpenManual" styleClass="hyperlink-manual" />
+                <Label text="*" styleClass="checkbox" />
+            </HBox>
+
 
             <Button fx:id="saveUserButton" text="Uložit uživatele" onAction="#onSaveUser" styleClass="submit" maxWidth="350"/>
         </VBox>

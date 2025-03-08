@@ -1,16 +1,16 @@
 package app.services;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import io.github.cdimascio.dotenv.Dotenv;
-
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class AIService {
     private static final Dotenv dotenv = Dotenv.load();
@@ -22,6 +22,11 @@ public class AIService {
 
     protected static URL url;
     private JsonArray conversationHistory;
+
+    static {
+        System.out.println("API KEY LOADED: " + OPENAI_API_KEY.length() + " chars, starts with: " + OPENAI_API_KEY.substring(0, 8));
+        System.out.println("API KEY: '" + OPENAI_API_KEY + "'");
+    }
 
     public AIService() {
         try {
@@ -46,6 +51,7 @@ public class AIService {
         JsonObject userMessage = new JsonObject();
         userMessage.addProperty("role", "user");
         userMessage.addProperty("content", userPrompt);
+
         conversationHistory.add(userMessage);
 
         // Call the helper method with the entire conversation history
@@ -59,7 +65,6 @@ public class AIService {
             return null;
         }
 
-        // Add the messages to the conversation history
         for (JsonObject message : messagesToSend) {
             conversationHistory.add(message);
         }
@@ -93,6 +98,7 @@ public class AIService {
 
             // Read the response
             int statusCode = conn.getResponseCode();
+
             if (statusCode == 200) {
                 // Success response
                 try (BufferedReader br = new BufferedReader(
@@ -119,13 +125,12 @@ public class AIService {
                     JsonObject assistantMessage = new JsonObject();
                     assistantMessage.addProperty("role", "assistant");
                     assistantMessage.addProperty("content", assistantResponse);
+
                     conversationHistory.add(assistantMessage);
 
-                    // Return the assistant's response
                     return assistantResponse;
                 }
             } else {
-                // Error response
                 LogService.logError("HTTP " + statusCode);
                 try (BufferedReader br = new BufferedReader(
                         new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8))) {

@@ -8,6 +8,7 @@ import app.models.User;
 import app.services.DynamicService;
 import app.services.LoaderService;
 import app.services.LogService;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -22,8 +23,6 @@ import java.sql.SQLException;
 
 public class TopicsOverviewController {
     private User currentUser;
-
-    private ObservableList<String> topicsList = null;
 
     @FXML
     private ListView<String> topics;
@@ -86,7 +85,7 @@ public class TopicsOverviewController {
     }
     
     private void showTopicsListView() throws SQLException {
-        topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
+        ObservableList<String> topicsList = FXCollections.observableArrayList(TopicManager.getTopics(currentUser));
         
         if (!topicsList.isEmpty()) {
             topics.setItems(topicsList);

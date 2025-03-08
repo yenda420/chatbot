@@ -2,7 +2,6 @@ package app.dao;
 
 import app.models.Answer;
 import app.models.Question;
-
 import app.services.DatabaseService;
 import app.services.LogService;
 
@@ -66,7 +65,13 @@ public class AnswerManager {
 
     public static boolean linkAnswerToQuestion(Answer answer, Question question) throws SQLException {
         if (db.getConn() != null) {
-            boolean linkExists = DatabaseService.instanceInDatabase("questions_answers", question.getId(), answer.getId(), "questionId", "answerId");
+            boolean linkExists =
+                    DatabaseService.instanceInDatabase(
+                            "questions_answers",
+                            question.getId(),
+                            answer.getId(),
+                            "questionId",
+                            "answerId");
 
             if (!linkExists) {
                 boolean isExplanation = answer.getExplanation() != null;

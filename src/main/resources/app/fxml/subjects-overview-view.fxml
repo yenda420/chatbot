@@ -4,11 +4,11 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
 <StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.SubjectsOverviewController">
     <VBox fx:id="formContainer" alignment="TOP_CENTER" prefHeight="990" prefWidth="1300" styleClass="form-container">
         <!-- Horizontal Navigation -->

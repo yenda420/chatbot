@@ -3,7 +3,6 @@ package app.dao;
 import app.enums.TopicEnum;
 import app.enums.UserRoleEnum;
 import app.models.Topic;
-
 import app.models.User;
 import app.services.DatabaseService;
 import app.services.LogService;
@@ -59,7 +58,6 @@ public class TopicManager {
             pstmt.setInt(1, promptId);
 
             ResultSet rs = pstmt.executeQuery();
-
             ArrayList<Topic> topics = new ArrayList<>();
 
             while (rs.next()) {

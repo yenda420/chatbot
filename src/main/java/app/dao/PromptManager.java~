@@ -59,6 +59,7 @@ public class PromptManager {
                     }
                 }
 
+                // Link the prompt to its topics in the topics_prompts table
                 String linkSql = "INSERT INTO topics_prompts (topicId, promptId) VALUES (?, ?)";
                 PreparedStatement linkStmt = db.getConn().prepareStatement(linkSql);
 

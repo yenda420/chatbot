@@ -8,6 +8,7 @@
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+
 <StackPane styleClass="background" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controllers.TopicsOverviewController">
     <VBox fx:id="formContainer" alignment="TOP_CENTER" prefHeight="990" prefWidth="1300" styleClass="form-container">
         <!-- Horizontal Navigation -->

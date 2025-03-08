@@ -22,7 +22,6 @@ public class DatabaseService {
 
                 if (!conn.isClosed()) {
                     LogService.logInfo("Database connected.");
-                    LogService.logInfo("Database connected.");
                 }
             } else {
                 LogService.logInfo("Using existing database connection.");
@@ -253,7 +252,7 @@ public class DatabaseService {
         }
     }
 
-    // Specifically for simple tables with one column
+    // Specifically for simple tables with a unique column
     public static boolean instanceInDatabase(String table, String column, String instance) throws SQLException {
         String sql = "SELECT * FROM " + table + " WHERE " + column + " = ?";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
