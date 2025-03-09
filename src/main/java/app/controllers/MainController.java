@@ -43,7 +43,7 @@ public class MainController {
 
     private static final ArrayList<String> ALLOWED_FILE_TYPES = new ArrayList<>(List.of(
             ".txt", ".c", ".java", ".js", ".css", ".html", ".cpp", ".py", ".rb", ".php",
-            ".swift", ".go", ".rs", ".kt", ".cs", ".scala", ".sh", ".sql"
+            ".swift", ".go", ".rs", ".kt", ".cs", ".scala", ".sh", ".sql", ".md", ".json", ".xml"
     ));
     
     private static final long MAX_FILE_SIZE = 1024 * 1024 * 5; // 5 MB size limit

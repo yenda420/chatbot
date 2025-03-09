@@ -14,6 +14,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 
 public class AIService {
     private static final Dotenv dotenv = Dotenv.load();
+
     protected static final String OPENAI_API_KEY = dotenv.get("OPENAI_API_KEY");
     protected static final String OPENAI_API_URL = dotenv.get("OPENAI_API_URL");
     protected static final String OPENAI_MODEL = dotenv.get("OPENAI_MODEL");
@@ -131,17 +132,13 @@ public class AIService {
                 }
             } else {
                 LogService.logError("HTTP " + statusCode);
-
                 try (BufferedReader br = new BufferedReader(
                         new InputStreamReader(conn.getErrorStream(), StandardCharsets.UTF_8))) {
-
                     StringBuilder errorBuilder = new StringBuilder();
                     String errorLine;
-
                     while ((errorLine = br.readLine()) != null) {
                         errorBuilder.append(errorLine.trim());
                     }
-
                     LogService.logError("Details: " + errorBuilder);
                 }
             }
