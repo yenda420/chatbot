@@ -211,24 +211,24 @@ public class TopicManager {
         return topics;
     }
 
-    public static ArrayList<String> getTopics(User forUser) throws SQLException {
-        if (forUser.getRole().equals(UserRoleEnum.ADMIN)) {
+    public static ArrayList<String> getTopics(User user) throws SQLException {
+        if (user.getRole().equals(UserRoleEnum.ADMIN)) {
             return getAllTopics();
         } else {
             ArrayList<String> topics = new ArrayList<>();
-            ArrayList<String> subjects = SubjectManager.getSubjects(forUser);
+            ArrayList<String> subjects = SubjectManager.getSubjects(user);
 
             for (String subject : subjects) {
-                topics.addAll(getTopics(subject, forUser));
+                topics.addAll(getTopics(subject, user));
             }
 
             return topics;
         }
     }
 
-    public static ArrayList<String> getTopics(String fromSubject, User forUser) throws SQLException {
+    public static ArrayList<String> getTopics(String fromSubject, User user) throws SQLException {
         int subjectId = SubjectManager.getId(fromSubject);
-        int userId = UserManager.getId(forUser.getEmail());
+        int userId = UserManager.getId(user.getEmail());
         ArrayList<String> topics = new ArrayList<>();
 
         String sql = "SELECT name FROM topics " +

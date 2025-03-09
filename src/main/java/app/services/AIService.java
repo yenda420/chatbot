@@ -22,11 +22,6 @@ public class AIService {
     protected static URL url;
     private JsonArray conversationHistory;
 
-    static {
-        System.out.println("API KEY LOADED: " + OPENAI_API_KEY.length() + " chars, starts with: " + OPENAI_API_KEY.substring(0, 8));
-        System.out.println("API KEY: '" + OPENAI_API_KEY + "'");
-    }
-
     public AIService() {
         try {
             // Set up the connection URL

@@ -36,7 +36,7 @@
 
     <!-- Main content -->
     <VBox alignment="CENTER" spacing="10" styleClass="form-container">
-      <Text fx:id="heading" styleClass="heading" text="Generátor Testů" />
+      <Text fx:id="heading" styleClass="heading" text="Generátor testů" />
 
       <HBox alignment="CENTER_RIGHT" maxWidth="350" style="-fx-padding: 0 17 0 0;">
         <Text fx:id="explanation" styleClass="explanation" text="* povinné pole" />

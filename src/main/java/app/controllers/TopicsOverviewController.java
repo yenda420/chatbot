@@ -91,7 +91,7 @@ public class TopicsOverviewController {
             topics.setItems(topicsList);
             topics.setVisible(true);
             createFirstTopicButton.setVisible(false);
-            heading.setText("Přehled Vašich Tematických celků");
+            heading.setText("Přehled Vašich tematických celků");
         } else {
             topics.setVisible(false);
             createFirstTopicButton.setVisible(true);

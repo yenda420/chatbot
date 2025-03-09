@@ -42,10 +42,8 @@ public class FileService {
             FileOutputStream fileOutputStream = new FileOutputStream(file);
             XWPFDocument document = createDocxFile(content, test);
 
-            // Save the content of the Word document to a file
             document.write(fileOutputStream);
 
-            // Open the Word document
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().open(file);
             }

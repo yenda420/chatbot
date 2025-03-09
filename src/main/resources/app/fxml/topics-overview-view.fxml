@@ -32,7 +32,7 @@
         <!-- Main content -->
         <VBox alignment="CENTER" prefHeight="723.0">
             <VBox alignment="CENTER" spacing="10" styleClass="form-container">
-                <Text fx:id="heading" styleClass="heading" text="Přehled Vašich Tematických celků" />
+                <Text fx:id="heading" styleClass="heading" text="Přehled Vašich tematických celků" />
 
                 <Button fx:id="createFirstTopicButton" onAction="#onGoToTopics" styleClass="button" prefWidth="350" text="Vytvořit první Tematický celek" visible="false" />
 
