@@ -308,7 +308,6 @@ public class DatabaseService {
         DatabaseService dbService = new DatabaseService();
 
         if (dbService.getConn() != null) {
-            // dbService.dropDatabase(); // Only for testing
             dbService.createDatabase();
             dbService.useDatabase();
 
@@ -328,19 +327,6 @@ public class DatabaseService {
             dbService.saveDefaultData();
         } else {
             LogService.logError("Database initialization failed due to connection issues.");
-        }
-    }
-
-    // ======================== //
-    // DELETE THIS METHOD LATER //
-    // ======================== //
-    private void dropDatabase() {
-        try (Statement stmt = conn.createStatement()) {
-            stmt.execute("DROP DATABASE IF EXISTS " + DB_NAME);
-            LogService.logInfo("Database '" + DB_NAME + "' dropped.");
-        } catch (SQLException e) {
-            LogService.logError("Failed to drop database '" + DB_NAME + "'.");
-            e.printStackTrace();
         }
     }
 

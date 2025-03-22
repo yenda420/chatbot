@@ -76,7 +76,7 @@ public class TestManager {
         }
 
         if (tests.isEmpty()) {
-            LogService.logError("There are no tests for user " + user.getEmail() + "'s subjects.");
+            LogService.logWarning("There are no tests for user " + user.getEmail() + "'s subjects.");
             return null;
         }
 
