@@ -18,7 +18,6 @@ public class AITestGeneratorService extends AIService {
     private ArrayList<JsonObject> messages;
 
     public AITestGeneratorService() {
-        // Initialize the messages list
         messages = new ArrayList<>();
     }
 
@@ -165,19 +164,15 @@ public class AITestGeneratorService extends AIService {
         String messageContent = prompt.getMessage();
         File attachedFile = prompt.getAttachedFile();
 
-        // List of topics
         List<String> topics = new ArrayList<>();
         for (Topic topicObj : topicsList) {
             topics.add(topicObj.getName());
         }
 
-        // Get the context
-        String context = getContextFor(test);
-
         // Build the user prompt with the test attributes
         StringBuilder userPromptBuilder = new StringBuilder();
         userPromptBuilder
-                .append(context)
+                .append(getContextFor(test))
                 .append("\nVygenerujte test s následujícími parametry.")
                 .append(" Dodrž stejné formátování, které jsi použil u předchozího testu.")
                 .append(" Důkladně ověř správnost všech informací a faktů ve tvém testu.\n\n")
@@ -214,7 +209,7 @@ public class AITestGeneratorService extends AIService {
         LogService.logInfo("Prompting the AI...\n");
 
         // Send the prompt to the AI and get the response
-        String response = this.askAI(messages);
+        String response = askAI(messages);
 
         LogService.logInfo("Assistant response:\n" + response + "\n");
 

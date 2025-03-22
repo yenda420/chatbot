@@ -40,7 +40,7 @@
 
                 <TextField fx:id="subjectName" maxWidth="350" promptText="Název předmětu *" styleClass="input" />
                 <TextField fx:id="abbreviation" maxWidth="350" promptText="Zkratka předmětu *" styleClass="input" />
-                <Text text="Zkratka musí být ve tvaru tří velkých písmen (např. 'ČJL')." styleClass="explanation" wrappingWidth="330" textAlignment="CENTER"/>
+                <Text text="Zkratka musí být ve tvaru tří velkých písmen bez diakritiky (např. 'CJL')." styleClass="explanation" wrappingWidth="330" textAlignment="CENTER"/>
 
                 <Button fx:id="addSubjectButton" maxWidth="350" onAction="#onAddSubject" styleClass="submit" text="Přidat předmět" />
             </VBox>
