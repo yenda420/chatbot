@@ -108,7 +108,7 @@ To run this application, you will need Java Development Kit (JDK) and a MySQL se
 
 ## Project Documentation & Manual
 
-As this project was developed as a Maturita work, comprehensive documentation and an application manual are available within the `project-documentation` directory. This includes detailed explanations of the algorithms, design choices, and user instructions.
+As this project was developed as a Maturita work, comprehensive documentation and an application manual are available (in Czech) within the `project-documentation` directory. This includes detailed explanations of the algorithms, design choices, and user instructions.
 
 ## Future Enhancements & Extensibility
 
