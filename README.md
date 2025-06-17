@@ -63,8 +63,8 @@ To run this application, you will need Java Development Kit (JDK) and a MySQL se
 
 1.  **Clone the Repository:**
     ```bash
-    git clone [repository_url]
-    cd [project_directory]
+    git clone https://github.com/yenda420/chatbot.git
+    cd chatbot
     ```
 2.  **Database Setup:**
     * Ensure a MySQL server is running.
