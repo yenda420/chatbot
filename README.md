@@ -1,6 +1,6 @@
 # AI Test Generator
 
-The "AI Test Generator" is a robust desktop application developed in Java using the JavaFX framework for its user interface. This project served as my long-term maturita (final high school examination) work, emphasizing advanced concepts in AI integration, prompt engineering, and sophisticated output validation.
+The "AI Test Generator" is a robust desktop application developed in Java using the JavaFX framework for its user interface. This project served as my long-term maturita (final high school examination) work, emphasizing concepts in AI integration, prompt engineering, and sophisticated output validation.
 
 ## Overview
 
@@ -42,7 +42,7 @@ This application is designed for high school teachers, providing a powerful tool
 * **Database Management (MySQL):**
     * Parses and stores the generated test data into a MySQL database.
     * Enables **test retrieval and download** for other users.
-    * Includes comprehensive **management functionalities** for database objects, such as users, roles, subjects, topics, and tests.
+    * Includes comprehensive **management functionalities** for database objects, such as users, their roles, subjects, topics, and tests.
 
 * **User Role Management:**
     * Supports distinct user roles: **Administrator** and **Teacher**, each with specific permissions and access levels.
@@ -88,15 +88,15 @@ To run this application, you will need Java Development Kit (JDK) and a MySQL se
 
     # OpenAI configuration
     OPENAI_MODEL=gpt-3.5-turbo # Can be changed to other OpenAI models (e.g., gpt-4)
-    OPENAI_API_KEY=your_openai_api_key_here
+    OPENAI_API_KEY=<your_openai_api_key_here>
 
-    OPENAI_API_URL=[https://api.openai.com/v1/chat/completions](https://api.openai.com/v1/chat/completions)
+    OPENAI_API_URL=https://api.openai.com/v1/chat/completions # (https://api.openai.com/v1/chat/completions)
     OPENAI_TEMPERATURE=0.7
     ```
     * Replace `your_openai_api_key_here` with your actual OpenAI API key.
 
-4.  **Run with Maven/Gradle (or your preferred build tool):**
-    * Build the project using Maven:
+4.  **Run with Maven:**
+    * Build the project:
         ```bash
         mvn clean install
         ```
@@ -110,6 +110,11 @@ To run this application, you will need Java Development Kit (JDK) and a MySQL se
 
 As this project was developed as a Maturita work, comprehensive documentation and an application manual are available within the `project-documentation` directory. This includes detailed explanations of the algorithms, design choices, and user instructions.
 
-## Project Vision & Extensibility
+## Future Enhancements & Extensibility
 
-While the UI is kept simple and intuitive, the core strength of this application lies in its sophisticated AI integration, robust prompt engineering, and advanced validation capabilities. The architecture is designed to be highly extensible, allowing for future enhancements such as support for additional AI models, more complex question types, or further reporting features.
+While the UI is kept simple and intuitive, the core strength of this application lies in its sophisticated AI integration, robust prompt engineering, and advanced validation capabilities. The architecture is designed for significant future enhancements, including:
+
+* **Student Interface:** Developing a dedicated module for students to take tests directly within the application.
+* **Automated Grading:** Implementing features for automatic correction and evaluation of student responses.
+* **Performance Analysis:** Generating detailed statistics and analytical reports on student performance.
+* **Additional AI Model Support:** Integrating with other AI models beyond OpenAI.
