@@ -90,7 +90,7 @@ To run this application, you will need Java Development Kit (JDK) and a MySQL se
     OPENAI_MODEL=gpt-3.5-turbo # Can be changed to other OpenAI models (e.g., gpt-4)
     OPENAI_API_KEY=<your_openai_api_key_here>
 
-    OPENAI_API_URL=https://api.openai.com/v1/chat/completions # (https://api.openai.com/v1/chat/completions)
+    OPENAI_API_URL=https://api.openai.com/v1/chat/completions 
     OPENAI_TEMPERATURE=0.7
     ```
     * Replace `your_openai_api_key_here` with your actual OpenAI API key.
